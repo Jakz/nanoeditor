@@ -25,15 +25,36 @@ public class Model
     return levels.size();
   }
   
-  public void allocateLevels(int count)
+  public void addPiece(Level l, PieceType type, int x, int y)
   {
-    for (int i = 0; i < count; ++i)
-      levels.add(new Level(width,height));
+    addPiece(l.index, type, x, y);
   }
   
-  public void removePiece(Piece piece)
+  public void addPiece(int l, PieceType type, int x, int y)
   {
-    for (Level l : levels)
-      l.removePiece(piece);
+    Piece piece = new Piece(type, x, y);
+    levelAt(l).addPiece(piece);
   }
+  
+  public void allocateLevels(int count)
+  {
+    Level previous = null;
+    for (int i = 0; i < count+1; ++i)
+    {
+      Level level = new Level(i, width,height,previous);
+      
+      if (previous != null)
+        previous.setNext(level);
+      
+      levels.add(level);
+      
+      previous = level;
+    }
+  }
+  
+  public void removePiece(Level l, Piece piece)
+  {
+    l.removePiece(piece);
+  }
+
 }

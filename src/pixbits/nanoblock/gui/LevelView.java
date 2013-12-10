@@ -1,5 +1,6 @@
 package pixbits.nanoblock.gui;
 
+import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 
 import processing.core.*;
@@ -9,14 +10,16 @@ public class LevelView extends Drawable
   private final int width, height;
   private final int cellSize;
   private final Level level;
+  private final Model model;
   
-  LevelView(Level level, int ox, int oy, int width, int height, int cellSize)
+  LevelView(Model model, Level level, int ox, int oy, int width, int height, int cellSize)
   {
     super(ox, oy);
     this.width = width;
     this.height = height;
     this.cellSize = cellSize;
     this.level = level;
+    this.model = model;
   }
   
   public boolean isInside(int x, int y)
@@ -37,10 +40,12 @@ public class LevelView extends Drawable
     
     Piece piece = level.pieceAt(x,y);
     
-    if (piece == null)
-      level.addPiece(new Piece(PieceType.P1x1,x,y));
+    if (piece == null || piece.type == PieceType.CAP)
+      model.addPiece(level,PieceType.P1x1,x,y);
     else
-      level.removePiece(piece);
+      model.removePiece(level, piece);
+    
+    Main.sketch.redraw();
   }
   
   public void draw(PApplet p)
@@ -50,7 +55,9 @@ public class LevelView extends Drawable
     for (int x = 0; x < width; ++x)
       for (int y = 0; y < height; ++y)
       {
-        if (level.pieceAt(x, y) != null)
+        Piece piece = level.pieceAt(x,y);
+        
+        if (piece != null && piece.type != PieceType.CAP)
           p.rect(ox+x*cellSize, oy+y*cellSize, cellSize, cellSize);
       }
 

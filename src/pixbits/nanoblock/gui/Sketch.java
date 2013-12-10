@@ -35,66 +35,74 @@ public class Sketch extends PApplet implements ChangeListener
     model = new Model(10,10);
     model.allocateLevels(3);
     
-    LevelView levelView = new LevelView(model.levelAt(2),10,50,10,10,10);
+    LevelView levelView = new LevelView(model, model.levelAt(2),10,50,10,10,10);
     drawables.add(levelView);
     
-    levelView = new LevelView(model.levelAt(1),10,190,10,10,10);
+    levelView = new LevelView(model, model.levelAt(1),10,190,10,10,10);
     drawables.add(levelView);
     
-    levelView = new LevelView(model.levelAt(0),10,330,10,10,10);
+    levelView = new LevelView(model, model.levelAt(0),10,330,10,10,10);
     drawables.add(levelView);
     
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 0, 0));
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 0, 1));
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 0, 2));
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 2, 0));
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 2, 1));
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 2, 2));
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 1, 0));
-    model.levelAt(0).addPiece(new Piece(PieceType.P1x1, 1, 2));
-    
-    model.levelAt(1).addPiece(new Piece(PieceType.P1x1, 0, 0));
-    model.levelAt(1).addPiece(new Piece(PieceType.P1x1, 2, 2));
-    model.levelAt(1).addPiece(new Piece(PieceType.P1x1, 2, 0));
-    model.levelAt(1).addPiece(new Piece(PieceType.P1x1, 0, 2));
+    model.addPiece(0, PieceType.P1x1, 0, 0);
+    model.addPiece(0, PieceType.P1x1, 0, 1);
+    model.addPiece(0, PieceType.P1x1, 0, 2);
+    model.addPiece(0, PieceType.P1x1, 2, 0);
+    model.addPiece(0, PieceType.P1x1, 2, 1);
+    model.addPiece(0, PieceType.P1x1, 2, 2);
+    model.addPiece(0, PieceType.P1x1, 1, 0);
+    model.addPiece(0, PieceType.P1x1, 1, 2);
+    model.addPiece(1, PieceType.P1x1, 0, 0);
+    model.addPiece(1, PieceType.P1x1, 2, 2);
+    model.addPiece(1, PieceType.P1x1, 2, 0);
+    model.addPiece(1, PieceType.P1x1, 0, 2);
+
     System.out.println("COUNT: "+model.levelAt(0).count());
+    
+    noLoop();
   }
   
   public void draw()
   {
   	background(220); 
 
-
-  	
   	for (int l = 0; l < model.levelCount(); ++l)
   	{
+  	  System.out.println("Drawing level "+l);
   	  Level level = model.levelAt(l);
   	  Iterator<Piece> pieces = level.iterator();
 
   	  while (pieces.hasNext())
       {
         Piece piece = pieces.next();
-        
-        int x = piece.x;
-        int y = piece.y;
-        
-        drawPiece(piece, 500+tileset.xOffset*x-tileset.yOffset*y,200+tileset.hOffset*(x+y-l*2)+2*l);
+
+        drawPiece(piece, piece.x, piece.y, l);
       }
   	}
   	
-  	
-
   	for (Drawable d : drawables)
   	  d.draw(this);
   }
   
-  public void drawPiece(Piece piece, int x, int y)
+  public int baseX = 500;
+  public int baseY = 200;
+  
+  public void drawPiece(Piece piece, int x, int y, int l)
   {
+    int fx = baseX+tileset.xOffset*x-tileset.yOffset*y;
+    int fy = baseY+tileset.hOffset*(x+y-l*2)+2*l;
+    
     Tileset.PieceSpec spec = tileset.spec(piece.type);
-    this.blend(tileset.image, spec.x, spec.y, spec.w, spec.h, x+spec.ox, y+spec.oy, spec.w, spec.h, BLEND);
-    Tileset.PieceSpec cap = tileset.spec(PieceType.CAP);
-    this.blend(tileset.image, cap.x, cap.y, cap.w, cap.h, x+cap.ox, y+cap.oy-tileset.hOffset*2, cap.w, cap.h, BLEND);
+    this.blend(tileset.image, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
 
+  }
+  
+  public void drawCap(int x, int y, int l)
+  {
+    int fx = baseX+tileset.xOffset*x-tileset.yOffset*y;
+    int fy = baseY+tileset.hOffset*(x+y-l*2)+2*l;
+    Tileset.PieceSpec cap = tileset.spec(PieceType.CAP);
+    this.blend(tileset.image, cap.x, cap.y, cap.w, cap.h, fx+cap.ox, fy+cap.oy-tileset.hOffset*2, cap.w, cap.h, BLEND);
   }
   
  
