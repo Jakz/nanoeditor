@@ -2,6 +2,8 @@ package pixbits.nanoblock.data;
 
 import java.util.*;
 
+import pixbits.nanoblock.Main;
+
 public class Level
 {
   Set<Piece> pieces;
@@ -42,16 +44,16 @@ public class Level
     pieces.remove(piece);
     
     /* add caps to current level */
-    if (previous != null && piece.type != PieceType.CAP)
+    if (Main.drawCaps && previous != null && piece.type != PieceType.CAP)
     {
       for (int i = piece.x; i < piece.x+piece.type.width; ++i)
         for (int j = piece.y; j < piece.y+piece.type.height; ++j)
           if (previous.table[i][j] != null && previous.table[i][j].type != PieceType.CAP)
-            addPiece(new Piece(PieceType.CAP, i,j));
+            addPiece(new Piece(PieceType.CAP, piece.color, i,j));
     }
     
     /* remove caps to next level */
-    if (next != null && piece.type != PieceType.CAP)
+    if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
     {
       for (int i = piece.x; i < piece.x+piece.type.width; ++i)
         for (int j = piece.y; j < piece.y+piece.type.height; ++j)
@@ -62,26 +64,43 @@ public class Level
   
   void addPiece(Piece piece)
   {
-    /* remove caps to current level */
     for (int i = piece.x; i < piece.x+piece.type.width; ++i)
       for (int j = piece.y; j < piece.y+piece.type.height; ++j)
-        if (table[i][j] != null)
-        {
+      {
+        /* remove caps to current level */
+        if (Main.drawCaps && table[i][j] != null)
           pieces.remove(table[i][j]);
-        }
+        table[i][j] = piece;
+      }
     
     pieces.add(piece);
-    table[piece.x][piece.y] = piece;
+    System.out.println("Placing piece at "+piece.x+","+piece.y);
+    
     
     /* add caps to next level */
-    if (next != null && piece.type != PieceType.CAP)
+    if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
     {
       for (int i = piece.x; i < piece.x+piece.type.width; ++i)
         for (int j = piece.y; j < piece.y+piece.type.height; ++j)
           if (next.table[i][j] == null)
-            next.addPiece(new Piece(PieceType.CAP, i,j));
+            next.addPiece(new Piece(PieceType.CAP, piece.color, i,j));
     }
     
+  }
+  
+  public boolean isFreeAt(int x, int y)
+  {
+    return table[x][y] == null || table[x][y].type == PieceType.CAP;
+  }
+  
+  public boolean canPlace(PieceType type, int x, int y)
+  {
+    for (int i = x; i < x+type.width; ++i)
+      for (int j = y; j < y+type.height; ++j)
+        if (!isFreeAt(i,j))
+          return false;
+    
+    return true;
   }
   
   public Piece pieceAt(int x, int y)
@@ -103,7 +122,17 @@ public class Level
   {
     public int compare(Piece p1, Piece p2)
     {
-      if (p1.x < p2.x)
+      if (p1.equals(p2))
+        return 0;
+      else
+      {
+        if (p1.x + p1.type.width - 1 < p2.x || p1.y + p1.type.height - 1 < p2.y)
+          return -1;
+        else
+          return 1;
+      }
+      
+      /*if (p1.x < p2.x)
         return -1;
       else if (p2.x < p1.x)
         return 1;
@@ -115,7 +144,7 @@ public class Level
           return 1;
         else
           return 0;
-      }
+      }*/
       
       /*int M1x = p1.x + p1.type.width-1;
       int M1y = p1.y + p1.type.height-1;

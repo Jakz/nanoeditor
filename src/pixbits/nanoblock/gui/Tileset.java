@@ -4,6 +4,7 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.Main;
 import processing.core.PImage;
 import java.util.*;
+import java.awt.Point;
 
 public class Tileset {
   final public PImage image;
@@ -11,10 +12,12 @@ public class Tileset {
   final public int xOffset;
   final public int yOffset;
   final public Map<PieceType, PieceSpec> specs;
+  final public Map<PieceColor, Point> colors;
   
   Tileset(String image, int hOffset, int xOffset, int yOffset)
   {
     specs = new HashMap<PieceType, PieceSpec>();
+    colors = new HashMap<PieceColor, Point>();
     this.image = Main.sketch.loadImage(image);
     this.hOffset = hOffset;
     this.xOffset = xOffset;
@@ -24,6 +27,16 @@ public class Tileset {
   public void addSpec(PieceType piece, int x, int y, int w, int h, int ox, int oy)
   {
     specs.put(piece, new PieceSpec(x,y,w,h,ox,oy));
+  }
+  
+  public void addColor(PieceColor color, int ox, int oy)
+  {
+    colors.put(color, new Point(ox,oy));
+  }
+  
+  public Point color(PieceColor color)
+  {
+    return colors.get(color);
   }
   
   public PieceSpec spec(PieceType type) { return specs.get(type); }

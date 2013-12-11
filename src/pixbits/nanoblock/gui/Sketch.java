@@ -30,21 +30,26 @@ public class Sketch extends PApplet implements ChangeListener
     tileset = new Tileset("tileset.png", 11, 22, 22);
     
     tileset.addSpec(PieceType.P1x1, 1, 6, 44, 43, -22, -33);
+    tileset.addSpec(PieceType.P2x1, 46, 6, 66, 54, -22, -33);
+
     tileset.addSpec(PieceType.CAP, 269, 1, 20, 21, -10, -16);
+    
+    tileset.addColor(PieceColor.WHITE, 0, 0);
+    tileset.addColor(PieceColor.BLACK, 0, 71);
     
     model = new Model(10,10);
     model.allocateLevels(3);
     
-    LevelView levelView = new LevelView(model, model.levelAt(2),10,50,10,10,10);
+    LevelView levelView = new LevelView(model, model.levelAt(2),10,50,10);
     drawables.add(levelView);
     
-    levelView = new LevelView(model, model.levelAt(1),10,190,10,10,10);
+    levelView = new LevelView(model, model.levelAt(1),10,190,10);
     drawables.add(levelView);
     
-    levelView = new LevelView(model, model.levelAt(0),10,330,10,10,10);
+    levelView = new LevelView(model, model.levelAt(0),10,330,10);
     drawables.add(levelView);
     
-    model.addPiece(0, PieceType.P1x1, 0, 0);
+    /*model.addPiece(0, PieceType.P1x1, 0, 0);
     model.addPiece(0, PieceType.P1x1, 0, 1);
     model.addPiece(0, PieceType.P1x1, 0, 2);
     model.addPiece(0, PieceType.P1x1, 2, 0);
@@ -55,9 +60,9 @@ public class Sketch extends PApplet implements ChangeListener
     model.addPiece(1, PieceType.P1x1, 0, 0);
     model.addPiece(1, PieceType.P1x1, 2, 2);
     model.addPiece(1, PieceType.P1x1, 2, 0);
-    model.addPiece(1, PieceType.P1x1, 0, 2);
+    model.addPiece(1, PieceType.P1x1, 0, 2);*/
 
-    System.out.println("COUNT: "+model.levelAt(0).count());
+    //System.out.println("COUNT: "+model.levelAt(0).count());
     
     noLoop();
   }
@@ -68,7 +73,6 @@ public class Sketch extends PApplet implements ChangeListener
 
   	for (int l = 0; l < model.levelCount(); ++l)
   	{
-  	  System.out.println("Drawing level "+l);
   	  Level level = model.levelAt(l);
   	  Iterator<Piece> pieces = level.iterator();
 
@@ -91,20 +95,12 @@ public class Sketch extends PApplet implements ChangeListener
   {
     int fx = baseX+tileset.xOffset*x-tileset.yOffset*y;
     int fy = baseY+tileset.hOffset*(x+y-l*2)+2*l;
+    java.awt.Point c = tileset.color(piece.color);
     
     Tileset.PieceSpec spec = tileset.spec(piece.type);
-    this.blend(tileset.image, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
+    this.blend(tileset.image, spec.x + c.x, spec.y + c.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
 
   }
-  
-  public void drawCap(int x, int y, int l)
-  {
-    int fx = baseX+tileset.xOffset*x-tileset.yOffset*y;
-    int fy = baseY+tileset.hOffset*(x+y-l*2)+2*l;
-    Tileset.PieceSpec cap = tileset.spec(PieceType.CAP);
-    this.blend(tileset.image, cap.x, cap.y, cap.w, cap.h, fx+cap.ox, fy+cap.oy-tileset.hOffset*2, cap.w, cap.h, BLEND);
-  }
-  
  
   public void keyPressed()
   {

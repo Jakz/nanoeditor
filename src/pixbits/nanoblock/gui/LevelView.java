@@ -12,11 +12,11 @@ public class LevelView extends Drawable
   private final Level level;
   private final Model model;
   
-  LevelView(Model model, Level level, int ox, int oy, int width, int height, int cellSize)
+  LevelView(Model model, Level level, int ox, int oy, int cellSize)
   {
     super(ox, oy);
-    this.width = width;
-    this.height = height;
+    this.width = model.width;
+    this.height = model.height;
     this.cellSize = cellSize;
     this.level = level;
     this.model = model;
@@ -40,9 +40,9 @@ public class LevelView extends Drawable
     
     Piece piece = level.pieceAt(x,y);
     
-    if (piece == null || piece.type == PieceType.CAP)
-      model.addPiece(level,PieceType.P1x1,x,y);
-    else
+    if (level.canPlace(PieceType.P2x1, x, y))
+      model.addPiece(level,PieceType.P2x1,PieceColor.BLACK,x,y);
+    else if (!level.isFreeAt(x,y))
       model.removePiece(level, piece);
     
     Main.sketch.redraw();
@@ -55,9 +55,7 @@ public class LevelView extends Drawable
     for (int x = 0; x < width; ++x)
       for (int y = 0; y < height; ++y)
       {
-        Piece piece = level.pieceAt(x,y);
-        
-        if (piece != null && piece.type != PieceType.CAP)
+        if (!level.isFreeAt(x,y))
           p.rect(ox+x*cellSize, oy+y*cellSize, cellSize, cellSize);
       }
 

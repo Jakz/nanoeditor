@@ -25,14 +25,14 @@ public class Model
     return levels.size();
   }
   
-  public void addPiece(Level l, PieceType type, int x, int y)
+  public void addPiece(Level l, PieceType type, PieceColor color, int x, int y)
   {
-    addPiece(l.index, type, x, y);
+    addPiece(l.index, type, color, x, y);
   }
   
-  public void addPiece(int l, PieceType type, int x, int y)
+  public void addPiece(int l, PieceType type, PieceColor color, int x, int y)
   {
-    Piece piece = new Piece(type, x, y);
+    Piece piece = new Piece(type, color, x, y);
     levelAt(l).addPiece(piece);
   }
   
