@@ -38,7 +38,7 @@ public class PieceType
   public final static PieceType P2x4 = new PieceType(2,4,false);
   
   public final static PieceType[] pieces = new PieceType[] {
-    P1x1, P2x1, P1x2, P2x2
+    P1x1, P1x1r, P2x1, P1x2, P2x2
   };
   
   public static int count() { return pieces.length; }
