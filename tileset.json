@@ -1,0 +1,46 @@
+{
+  "name": "Tileset",
+  "image": "tileset.png",
+  "hOffset": 11,
+  "xOffset": 22,
+  "yOffset": 22,
+  "pieces": [
+    {
+      "name": "cap",
+      "offset": [1, 0],
+      "size": [20, 21],
+      "pivot": [-10, -16]
+    },
+    {
+      "name": "1x1",
+      "offset": [22, 0],
+      "size": [44, 43],
+      "pivot": [-22, -33]
+    },
+    {
+      "name": "2x1",
+      "offset": [67, 0],
+      "size": [66, 54],
+      "pivot": [-22,-33]
+    },
+    {
+      "name": "1x2",
+      "offset": [134, 0],
+      "size": [66, 54],
+      "pivot": [-44, -33]
+    },
+    {
+      "name": "2x2",
+      "offset": [201, 0],
+      "size": [88, 65],
+      "pivot": [-44, -33]
+    }
+  ],
+  "colors": [
+    {"name": "WHITE", "offset": [0,0]},
+    {"name": "BLACK", "offset": [0,142]},
+    {"name": "PINK", "offset": [0,274]},
+    {"name": "GREEN_LIME", "offset": [0,406]},
+    {"name": "YELLOW", "offset": [0,538]}
+  ]
+}

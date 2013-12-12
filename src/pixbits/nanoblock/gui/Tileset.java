@@ -15,7 +15,7 @@ public class Tileset {
   final public Map<PieceType, PieceSpec> specs;
   final public Map<PieceColor, Point> colors;
   
-  Tileset(String image, int hOffset, int xOffset, int yOffset)
+  public Tileset(String image, int hOffset, int xOffset, int yOffset)
   {
     specs = new HashMap<PieceType, PieceSpec>();
     colors = new HashMap<PieceColor, Point>();

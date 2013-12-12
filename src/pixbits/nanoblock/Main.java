@@ -1,6 +1,7 @@
 package pixbits.nanoblock;
 
 import pixbits.nanoblock.gui.*;
+import pixbits.nanoblock.json.*;
 
 public class Main
 {
@@ -14,6 +15,8 @@ public class Main
   
   public static void main(String[] args)
   {
+    TileSetLoader.loadTileset("tileset.json");
+    
     sketch = new Sketch();
     mainFrame = new MainFrame();
   }

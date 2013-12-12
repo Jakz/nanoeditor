@@ -3,6 +3,7 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.json.TileSetLoader;
 
 import java.awt.Color;
 import java.util.*;
@@ -26,24 +27,9 @@ public class Sketch extends PApplet implements ChangeListener
     smooth();
     size(Main.SW, Main.SH, P2D);
     
-    Brush.tileset = new Tileset("tileset.png", 11, 22, 22);
-    
-    Brush.tileset.addSpec(PieceType.P1x1, 1, 6, 44, 43, -22, -33);
-    Brush.tileset.addSpec(PieceType.P2x1, 46, 6, 66, 54, -22, -33);
-    Brush.tileset.addSpec(PieceType.P1x2, 113, 6, 66, 54, -44, -33);
-    Brush.tileset.addSpec(PieceType.P2x2, 180, 6, 88, 65, -44, -33);
+    PieceType.initMapping();
+    Brush.tileset = TileSetLoader.loadAndBuild("tileset.json");
 
-    
-
-    Brush.tileset.addSpec(PieceType.CAP, 269, 1, 20, 21, -10, -16);
-    
-    Brush.tileset.addColor(PieceColor.WHITE, 0, 0);
-    Brush.tileset.addColor(PieceColor.BLACK, 0, 71);
-    Brush.tileset.addColor(PieceColor.PINK, 0, 142);
-    Brush.tileset.addColor(PieceColor.GREEN_LIME, 0, 213);
-    Brush.tileset.addColor(PieceColor.YELLOW, 0, 284);
-
-    
     
     model = new Model(20,20);
     model.allocateLevels(5);

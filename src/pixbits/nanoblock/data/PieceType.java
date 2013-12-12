@@ -1,10 +1,12 @@
 package pixbits.nanoblock.data;
 
+import java.util.*;
+
 public class PieceType
 {
   public final int width, height;
   public final boolean rounded;
-  
+
   PieceType(int width, int height, boolean rounded)
   {
     this.width = width;
@@ -41,4 +43,34 @@ public class PieceType
   
   public static int count() { return pieces.length; }
   public static PieceType at(int index) { return pieces[index]; }
+  
+  public static final Map<String, PieceType> mapping = new HashMap<String, PieceType>();
+  
+  public static void initMapping()
+  {
+    mapping.put("cap", CAP);
+
+    mapping.put("1x1", P1x1);
+    mapping.put("1x1r", P1x1r);
+    
+    mapping.put("2x1", P2x1);
+    mapping.put("1x2", P1x2);
+    
+    mapping.put("3x1", P3x1);
+    mapping.put("1x3", P1x3);
+    mapping.put("3x1r", P3x1r);
+    mapping.put("1x3r", P1x3r);
+    
+    mapping.put("4x1", P4x1);
+    mapping.put("1x4", P1x4);
+    mapping.put("4x1r", P4x1r);
+    mapping.put("1x4r", P1x4r);
+    
+    mapping.put("2x2", P2x2);
+    
+    mapping.put("4x2", P4x2);
+    mapping.put("2x4", P2x4);
+  }
+  
+  public static PieceType forName(String name) { return mapping.get(name); }
 }
