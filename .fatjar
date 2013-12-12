@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Wed Dec 11 23:51:33 CET 2013
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=nanoblock.jar
+manifest.mergeall=true
+manifest.mainclass=pixbits.nanoblock.Main
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=
+includes=

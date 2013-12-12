@@ -5,6 +5,7 @@ import pixbits.nanoblock.Main;
 import processing.core.PImage;
 import java.util.*;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 public class Tileset {
   final public PImage image;
@@ -56,5 +57,13 @@ public class Tileset {
       this.ox = ox;
       this.oy = oy;
     }
+  }
+  
+  public Rectangle rectFor(PieceType type, PieceColor color)
+  {
+    PieceSpec spec = specs.get(type);
+    Point cspec = colors.get(color);
+    
+    return new Rectangle(spec.x + cspec.x, spec.y + cspec.y, spec.w, spec.h);
   }
 }

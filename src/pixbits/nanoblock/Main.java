@@ -4,8 +4,8 @@ import pixbits.nanoblock.gui.*;
 
 public class Main
 {
-  public static final int SW = 1280;
-  public static final int SH = 800;
+  public static final int SW = 1440;
+  public static final int SH = 900;
   
   public static Sketch sketch;
   public static MainFrame mainFrame;

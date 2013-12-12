@@ -19,50 +19,49 @@ public class Sketch extends PApplet implements ChangeListener
 {
 	final List<Drawable> drawables = new ArrayList<Drawable>();
   
-  
-  Tileset tileset;
 	Model model;
   
   public void setup()
   {
     smooth();
     size(Main.SW, Main.SH, P2D);
-    tileset = new Tileset("tileset.png", 11, 22, 22);
     
-    tileset.addSpec(PieceType.P1x1, 1, 6, 44, 43, -22, -33);
-    tileset.addSpec(PieceType.P2x1, 46, 6, 66, 54, -22, -33);
+    Brush.tileset = new Tileset("tileset.png", 11, 22, 22);
+    
+    Brush.tileset.addSpec(PieceType.P1x1, 1, 6, 44, 43, -22, -33);
+    Brush.tileset.addSpec(PieceType.P2x1, 46, 6, 66, 54, -22, -33);
+    Brush.tileset.addSpec(PieceType.P1x2, 113, 6, 66, 54, -44, -33);
+    Brush.tileset.addSpec(PieceType.P2x2, 180, 6, 88, 65, -44, -33);
 
-    tileset.addSpec(PieceType.CAP, 269, 1, 20, 21, -10, -16);
     
-    tileset.addColor(PieceColor.WHITE, 0, 0);
-    tileset.addColor(PieceColor.BLACK, 0, 71);
-    
-    model = new Model(10,10);
-    model.allocateLevels(3);
-    
-    LevelView levelView = new LevelView(model, model.levelAt(2),10,50,10);
-    drawables.add(levelView);
-    
-    levelView = new LevelView(model, model.levelAt(1),10,190,10);
-    drawables.add(levelView);
-    
-    levelView = new LevelView(model, model.levelAt(0),10,330,10);
-    drawables.add(levelView);
-    
-    /*model.addPiece(0, PieceType.P1x1, 0, 0);
-    model.addPiece(0, PieceType.P1x1, 0, 1);
-    model.addPiece(0, PieceType.P1x1, 0, 2);
-    model.addPiece(0, PieceType.P1x1, 2, 0);
-    model.addPiece(0, PieceType.P1x1, 2, 1);
-    model.addPiece(0, PieceType.P1x1, 2, 2);
-    model.addPiece(0, PieceType.P1x1, 1, 0);
-    model.addPiece(0, PieceType.P1x1, 1, 2);
-    model.addPiece(1, PieceType.P1x1, 0, 0);
-    model.addPiece(1, PieceType.P1x1, 2, 2);
-    model.addPiece(1, PieceType.P1x1, 2, 0);
-    model.addPiece(1, PieceType.P1x1, 0, 2);*/
 
-    //System.out.println("COUNT: "+model.levelAt(0).count());
+    Brush.tileset.addSpec(PieceType.CAP, 269, 1, 20, 21, -10, -16);
+    
+    Brush.tileset.addColor(PieceColor.WHITE, 0, 0);
+    Brush.tileset.addColor(PieceColor.BLACK, 0, 71);
+    Brush.tileset.addColor(PieceColor.PINK, 0, 142);
+    Brush.tileset.addColor(PieceColor.GREEN_LIME, 0, 213);
+    Brush.tileset.addColor(PieceColor.YELLOW, 0, 284);
+
+    
+    
+    model = new Model(20,20);
+    model.allocateLevels(5);
+    
+    LevelView levelView = new LevelView(model, model.levelAt(2),10,10,14);
+    drawables.add(levelView);
+    
+    levelView = new LevelView(model, model.levelAt(1),10,300,14);
+    drawables.add(levelView);
+    
+    levelView = new LevelView(model, model.levelAt(0),10,590,14);
+    drawables.add(levelView);
+    
+    ColorPaletteView paletteView = new ColorPaletteView(300,700,30,5);
+    drawables.add(paletteView);
+    
+    PiecePaletteView pieceView = new PiecePaletteView(300,760,100,5);
+    drawables.add(pieceView);
     
     noLoop();
   }
@@ -88,17 +87,17 @@ public class Sketch extends PApplet implements ChangeListener
   	  d.draw(this);
   }
   
-  public int baseX = 500;
+  public int baseX = 800;
   public int baseY = 200;
   
   public void drawPiece(Piece piece, int x, int y, int l)
   {
-    int fx = baseX+tileset.xOffset*x-tileset.yOffset*y;
-    int fy = baseY+tileset.hOffset*(x+y-l*2)+2*l;
-    java.awt.Point c = tileset.color(piece.color);
+    int fx = baseX+Brush.tileset.xOffset*x-Brush.tileset.yOffset*y;
+    int fy = baseY+Brush.tileset.hOffset*(x+y-l*2)+2*l;
+    java.awt.Point c = Brush.tileset.color(piece.color);
     
-    Tileset.PieceSpec spec = tileset.spec(piece.type);
-    this.blend(tileset.image, spec.x + c.x, spec.y + c.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
+    Tileset.PieceSpec spec = Brush.tileset.spec(piece.type);
+    this.blend(Brush.tileset.image, spec.x + c.x, spec.y + c.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
 
   }
  
@@ -163,6 +162,11 @@ public class Sketch extends PApplet implements ChangeListener
   void fill(Color c)
   {
   	fill(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
+  }
+  
+  void stroke(Color c)
+  {
+    stroke(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
   }
 
 }

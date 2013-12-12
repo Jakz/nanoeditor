@@ -1,7 +1,5 @@
 package pixbits.nanoblock.gui;
 
-import processing.core.*;
-
 public abstract class Drawable
 {
   final int ox, oy;
@@ -14,6 +12,7 @@ public abstract class Drawable
   
   public abstract boolean isInside(int x, int y);
   public abstract void mouseClicked(int x, int y);
+  public abstract void mouseMoved(int x, int y);
   
-  public abstract void draw(PApplet p);
+  public abstract void draw(Sketch p);
 }

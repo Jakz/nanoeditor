@@ -7,7 +7,6 @@ import pixbits.nanoblock.Main;
 public class Level
 {
   Set<Piece> pieces;
-  Piece[][] table;
   final int width;
   final int height;
   
@@ -24,7 +23,6 @@ public class Level
     this.previous = previous;
     
     pieces = new TreeSet<Piece>(new PieceComparator());
-    table = new Piece[width][height];
   }
   
   void setNext(Level next)
@@ -32,15 +30,10 @@ public class Level
     this.next = next;
   }
   
+  public Level previous() { return previous; }
+  
   void removePiece(Piece piece)
-  {
-    for (int i = piece.x; i < piece.x+piece.type.width; ++i)
-      for (int j = piece.y; j < piece.y+piece.type.height; ++j)
-      {
-        if (table[i][j].equals(piece) || (table[i][j] != null && table[i][j].type == PieceType.CAP))
-          table[i][j] = null;
-      }
-    
+  {    
     pieces.remove(piece);
     
     /* add caps to current level */
@@ -48,8 +41,11 @@ public class Level
     {
       for (int i = piece.x; i < piece.x+piece.type.width; ++i)
         for (int j = piece.y; j < piece.y+piece.type.height; ++j)
-          if (previous.table[i][j] != null && previous.table[i][j].type != PieceType.CAP)
-            addPiece(new Piece(PieceType.CAP, piece.color, i,j));
+        {
+          Piece piece2 = previous.pieceAt(i, j);
+          if (piece2 != null && piece2.type != PieceType.CAP)
+            addPiece(new Piece(PieceType.CAP, piece2.color, i,j));
+        }
     }
     
     /* remove caps to next level */
@@ -57,21 +53,29 @@ public class Level
     {
       for (int i = piece.x; i < piece.x+piece.type.width; ++i)
         for (int j = piece.y; j < piece.y+piece.type.height; ++j)
-          if (next.table[i][j] != null && next.table[i][j].type == PieceType.CAP)
-            next.removePiece(next.table[i][j]);
+        {
+          Piece piece2 = next.pieceAt(i,j);
+          if (piece2 != null && piece2.type == PieceType.CAP)
+            next.removePiece(piece2);
+        }
     }
   }
   
   void addPiece(Piece piece)
   {
-    for (int i = piece.x; i < piece.x+piece.type.width; ++i)
-      for (int j = piece.y; j < piece.y+piece.type.height; ++j)
+    /* remove caps to current level */
+    if (Main.drawCaps)
+    {   
+      Iterator<Piece> pieces = iterator();
+      while (pieces.hasNext())
       {
-        /* remove caps to current level */
-        if (Main.drawCaps && table[i][j] != null)
-          pieces.remove(table[i][j]);
-        table[i][j] = piece;
+        Piece piece2 = pieces.next();
+        if (piece2.type == PieceType.CAP)
+          if (piece2.x >= piece.x && piece2.x < piece.x+piece.type.width && piece2.y >= piece.y && piece2.y < piece.y+piece.type.height)
+            pieces.remove();
+         
       }
+    }
     
     pieces.add(piece);
     System.out.println("Placing piece at "+piece.x+","+piece.y);
@@ -82,7 +86,7 @@ public class Level
     {
       for (int i = piece.x; i < piece.x+piece.type.width; ++i)
         for (int j = piece.y; j < piece.y+piece.type.height; ++j)
-          if (next.table[i][j] == null)
+          if (next.isFreeAt(i,j))
             next.addPiece(new Piece(PieceType.CAP, piece.color, i,j));
     }
     
@@ -90,7 +94,9 @@ public class Level
   
   public boolean isFreeAt(int x, int y)
   {
-    return table[x][y] == null || table[x][y].type == PieceType.CAP;
+    Piece piece = pieceAt(x,y);
+    
+    return piece == null || piece.type == PieceType.CAP;
   }
   
   public boolean canPlace(PieceType type, int x, int y)
@@ -105,7 +111,19 @@ public class Level
   
   public Piece pieceAt(int x, int y)
   {
-    return table[x][y];
+    Iterator<Piece> pieces = iterator();
+    
+    while (pieces.hasNext())
+    {
+      Piece piece = pieces.next();
+      if (x >= piece.x && x < piece.x+piece.type.width && y >= piece.y && y < piece.y+piece.type.height)
+      {
+        System.out.println("found piece at "+x+","+y);
+        return piece;
+      }
+    }
+
+    return null;
   }
   
   public int count()
@@ -131,37 +149,6 @@ public class Level
         else
           return 1;
       }
-      
-      /*if (p1.x < p2.x)
-        return -1;
-      else if (p2.x < p1.x)
-        return 1;
-      else
-      {
-        if (p1.y < p2.y)
-          return -1;
-        else if (p2.y < p1.y)
-          return 1;
-        else
-          return 0;
-      }*/
-      
-      /*int M1x = p1.x + p1.type.width-1;
-      int M1y = p1.y + p1.type.height-1;
-      int m1x = p1.x, m1y = p1.y;
-      
-      int M2x = p2.x + p2.type.width-1;
-      int M2y = p2.y + p2.type.height-1;
-      int m2y = p2.x;
-      
-      if (M1x < M2x && M1y < M2y)
-        return -1;
-      else if (M2x > M1x && M2y > M2x)
-        return 1;
-      else
-      {
-        return 0;
-      }*/
     }
   }
 }

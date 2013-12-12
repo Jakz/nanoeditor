@@ -1,5 +1,7 @@
 package pixbits.nanoblock.gui;
 
+import java.util.Iterator;
+
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 
@@ -8,11 +10,11 @@ import processing.core.*;
 public class LevelView extends Drawable
 {
   private final int width, height;
-  private final int cellSize;
+  private final float cellSize;
   private final Level level;
   private final Model model;
   
-  LevelView(Model model, Level level, int ox, int oy, int cellSize)
+  LevelView(Model model, Level level, int ox, int oy, float cellSize)
   {
     super(ox, oy);
     this.width = model.width;
@@ -30,6 +32,11 @@ public class LevelView extends Drawable
     return rx >= 0 && rx < width*cellSize && ry >= 0 && ry < height*cellSize;
   }
   
+  public void mouseMoved(int x, int y)
+  {
+    
+  }
+  
   public void mouseClicked(int x, int y)
   {
     x -= ox;
@@ -39,27 +46,31 @@ public class LevelView extends Drawable
     y /= cellSize;
     
     Piece piece = level.pieceAt(x,y);
-    
-    if (level.canPlace(PieceType.P2x1, x, y))
-      model.addPiece(level,PieceType.P2x1,PieceColor.BLACK,x,y);
+
+    if (level.canPlace(Brush.type, x, y))
+      model.addPiece(level,Brush.type,Brush.color,x,y);
     else if (!level.isFreeAt(x,y))
       model.removePiece(level, piece);
     
     Main.sketch.redraw();
   }
   
-  public void draw(PApplet p)
+  public void draw(Sketch p)
   {
-    p.noStroke();
-    p.fill(255.0f,0f,0f);
-    for (int x = 0; x < width; ++x)
-      for (int y = 0; y < height; ++y)
-      {
-        if (!level.isFreeAt(x,y))
-          p.rect(ox+x*cellSize, oy+y*cellSize, cellSize, cellSize);
-      }
+    p.strokeWeight(1.0f);
 
-    p.stroke(0.0f);
+    // draw grid
+    for (int x = 0; x < width*2+1; ++x)
+      for (int y = 0; y < height*2+1; ++y)
+      {
+        if (x%2 != 0 && y%2 != 0)
+          p.stroke(50.0f);
+        else
+          p.stroke(0.0f);
+          
+        p.point(ox+cellSize/2*x, oy+cellSize/2*y);
+      }
+      
 
     for (int x = 0; x < width+1; ++x)
     {
@@ -83,7 +94,53 @@ public class LevelView extends Drawable
       p.line(ox, oy+cellSize*y, ox+width*cellSize, oy+cellSize*y);
     }
     
-   
+    // draw pieces
+    p.noStroke();
+    p.fill(255.0f,0f,0f);
+    p.rectMode(PApplet.CORNER);
+    p.ellipseMode(PApplet.CENTER);
+    
+    /*evel prev = level.previous();
+    
+    if (prev != null)
+    {
+      Iterator<Piece> pieces = prev.iterator();
+      while (pieces.hasNext())
+      {
+        Piece piece = pieces.next();
+        
+        if (piece.type != PieceType.CAP)
+        {
+          p.fill(piece.color.fillColor);
+          p.stroke(piece.color.strokeColor);
+          
+          p.rect(ox+piece.x*cellSize+1, oy+piece.y*cellSize+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
+          
+        }
+      }
+    }*/
+    
+    Iterator<Piece> pieces = level.iterator();
+    while (pieces.hasNext())
+    {
+      Piece piece = pieces.next();
+      
+      if (piece.type != PieceType.CAP)
+      {
+        p.fill(piece.color.fillColor);
+        p.stroke(piece.color.strokeColor);
+      }
+      else
+      {
+        java.awt.Color f = piece.color.fillColor, s = piece.color.strokeColor;
+        
+        p.fill(f.getRed(),f.getGreen(),f.getBlue(),128);
+        p.stroke(s.getRed(),s.getGreen(),s.getBlue(),128);
+
+      }
+        
+      p.rect(ox+piece.x*cellSize+1, oy+piece.y*cellSize+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
+    }
 
     
   }
