@@ -27,4 +27,5 @@ public enum PieceColor {
   public static int count() { return PieceColor.values().length; }
   public static PieceColor at(int index) { return PieceColor.values()[index]; }
   public static PieceColor forName(String name) { return valueOf(name); }
+  public static String forColor(PieceColor color) { return color.name(); }
 }

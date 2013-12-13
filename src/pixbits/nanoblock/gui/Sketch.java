@@ -3,11 +3,13 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.files.TileSetLoader;
 import pixbits.nanoblock.gui.ui.*;
 
 import java.awt.Color;
 import java.util.*;
+import java.awt.event.*;
 import javax.swing.event.*;
 import processing.core.*;
 
@@ -21,7 +23,7 @@ public class Sketch extends PApplet implements ChangeListener
 {
 	final List<Drawable> drawables = new ArrayList<Drawable>();
   
-	Model model;
+	public Model model;
   
   public void setup()
   {
@@ -32,8 +34,13 @@ public class Sketch extends PApplet implements ChangeListener
     Brush.tileset = TileSetLoader.loadAndBuild("tileset.json");
 
     
-    model = new Model(20,20);
-    model.allocateLevels(5);
+    model = ModelLoader.loadModel("model.nblock");
+    
+    if (model == null)
+    { 
+      model = new Model(20,20);
+      model.allocateLevels(5);
+    }
     
     LevelView levelView = new LevelView(model, model.levelAt(2),10,10,14);
     drawables.add(levelView);
@@ -96,7 +103,7 @@ public class Sketch extends PApplet implements ChangeListener
     this.blend(Brush.tileset.image, spec.x + c.x, spec.y + c.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
 
   }
- 
+
   public void keyPressed()
   {
     if (this.key == 'r')

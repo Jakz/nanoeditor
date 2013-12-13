@@ -2,7 +2,7 @@ package pixbits.nanoblock.data;
 
 import java.util.*;
 
-public class Model
+public class Model implements Iterable<Level>
 {
   final private List<Level> levels;
   public final int width, height;
@@ -57,4 +57,6 @@ public class Model
     for (Level l : levels)
       l.clear();
   }
+  
+  public Iterator<Level> iterator() { return levels.iterator(); }
 }

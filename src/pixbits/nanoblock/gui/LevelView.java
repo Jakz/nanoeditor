@@ -149,6 +149,7 @@ public class LevelView extends Drawable
       }
     }*/
     
+    //int order = 0;
     Iterator<Piece> pieces = level.iterator();
     while (pieces.hasNext())
     {
@@ -169,6 +170,11 @@ public class LevelView extends Drawable
       }
         
       p.rect(ox+piece.x*cellSize+1, oy+piece.y*cellSize+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
+      
+      //p.fill(0);
+      //p.text(""+order, ox+piece.x*cellSize+1, oy+(piece.y+1)*cellSize+1);
+      
+      //++order;
     }
     
     if (hx != -1)

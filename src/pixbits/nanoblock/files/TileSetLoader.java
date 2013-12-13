@@ -51,6 +51,9 @@ public class TileSetLoader
       Gson gson = builder.create();
       
       JsonTilesetSpec spec = gson.fromJson(rdr, JsonTilesetSpec.class);
+      
+      rdr.close();
+      
       return spec;
     }
     catch (Exception e)

@@ -4,7 +4,7 @@ import java.util.*;
 
 import pixbits.nanoblock.Main;
 
-public class Level
+public class Level implements Iterable<Piece>
 {
   Set<Piece> pieces;
   final int width;
@@ -54,7 +54,7 @@ public class Level
       next.removeCaps(piece.x, piece.y, piece.type.width, piece.type.height);
     }
   }
-  
+    
   void addPiece(Piece piece)
   {
     /* remove caps to current level */
@@ -157,10 +157,35 @@ public class Level
         return 0;
       else
       {
-        if (p1.x + p1.type.width - 1 < p2.x || p1.y + p1.type.height - 1 < p2.y)
+        int sum1x = p1.x + p1.type.width - 1;
+        int sum2x = p2.x + p2.type.width - 1;
+        int sum1y = p1.y + p1.type.height - 1;
+        int sum2y = p2.y + p2.type.height - 1;
+        
+        if ((sum1x < p2.x || sum1y < p2.y) && (sum2x < p1.x || sum2y < p1.y))
+        {
+          int sum1 = sum1x+sum1y;
+          int sum2 = sum2x+sum2y;
+          
+          if (sum1 < sum2) return -1;
+          else if (sum1 > sum2) return 1;
+          else
+          {
+            if (p1.x < p2.x) return -1;
+            else if (p1.x > p2.x) return 1;
+            else
+            {
+              if (p1.y < p2.y) return -1;
+              else if (p1.y > p2.y) return 1;
+              else return 0;
+            }
+          }
+        }
+        else if (sum1x < p2.x || sum1y < p2.y)
           return -1;
-        else
+        else if (sum2x < p1.x || sum2y < p1.y)
           return 1;
+        else return 0;
       }
     }
   }
