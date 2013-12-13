@@ -1,13 +1,13 @@
 package pixbits.nanoblock.gui.ui;
 
-import pixbits.nanoblock.data.PieceType;
+import pixbits.nanoblock.data.PieceColor;
 import pixbits.nanoblock.gui.*;
 
-public class PieceScrollBar extends UIScrollBar
+public class ColorScrollBar extends UIScrollBar
 {
-  private final PiecePaletteView view;
+  private final ColorPaletteView view;
   
-  public PieceScrollBar(Sketch p, PiecePaletteView view, int ox, int oy, int width, int height, int buttonSize)
+  public ColorScrollBar(Sketch p, ColorPaletteView view, int ox, int oy, int width, int height, int buttonSize)
   {
     super(p,ox,oy,width,height,buttonSize);
     this.view = view;
@@ -16,7 +16,7 @@ public class PieceScrollBar extends UIScrollBar
   public int min() { return 0; }
   
   public int max() {
-    return PieceType.count() - view.cellCount;
+    return PieceColor.count() - view.cellCount;
   }
   
   public void progressChanged(int value)

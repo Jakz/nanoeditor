@@ -9,7 +9,7 @@ import java.awt.Rectangle;
 
 public class PiecePaletteView extends Drawable
 {
-  private final int cellSize, cellCount;
+  public final int cellSize, cellCount;
   private int offset;
   private final PGraphics buffer;
   
@@ -22,8 +22,11 @@ public class PiecePaletteView extends Drawable
     
     buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, PGraphics.P2D);
     
-    PieceScrollBar scrollBar = new PieceScrollBar(p, ox, oy + cellSize, cellSize*cellCount, 20, 20);
-    p.addDrawable(scrollBar);
+    if (cellCount < PieceType.count())
+    {
+      PieceScrollBar scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, 20, 20);
+      p.addDrawable(scrollBar);
+    }
   }
   
   
@@ -38,7 +41,7 @@ public class PiecePaletteView extends Drawable
     y -= oy;
     
     x /= cellSize;
-    Brush.type = PieceType.at(x);
+    Brush.type = PieceType.at(offset+x);
     
     Main.sketch.redraw();
   }
@@ -107,5 +110,8 @@ public class PiecePaletteView extends Drawable
       p.rect(ox+i*cellSize,oy,cellSize,cellSize);
     }
   }
+  
+  public int offset() { return offset; }
+  public void setOffset(int value) { offset = value; }
 
 }

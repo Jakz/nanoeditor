@@ -7,8 +7,10 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class MainFrame extends JFrame implements WindowListener
+public class MainFrame extends JFrame implements WindowListener, MouseWheelListener
 {
+  private static final long serialVersionUID = 1L;
+  
   public MainFrame()
   {	
   	super("Nanoblock Architect v0.1");
@@ -19,6 +21,7 @@ public class MainFrame extends JFrame implements WindowListener
     embed.init();
 
     this.addWindowListener(this);
+    this.addMouseWheelListener(this);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    
     pack();
@@ -42,4 +45,9 @@ public class MainFrame extends JFrame implements WindowListener
   public void windowLostFocus(WindowEvent e) { }
   public void windowOpened(WindowEvent e) { }
   public void windowStateChanged(WindowEvent e) { }
+  
+  public void mouseWheelMoved(MouseWheelEvent e)
+  {
+    Main.sketch.mouseWheelMoved(e.getWheelRotation());
+  }
 }

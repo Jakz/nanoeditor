@@ -37,8 +37,11 @@ public class PieceType
   public final static PieceType P4x2 = new PieceType(4,2,false);
   public final static PieceType P2x4 = new PieceType(2,4,false);
   
+  public final static PieceType P8x2 = new PieceType(8,2,false);
+  public final static PieceType P2x8 = new PieceType(2,8,false);
+  
   public final static PieceType[] pieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P1x2, P2x2, P4x2, P2x4
+    P1x1, P1x1r, P2x1, P1x2, P2x2, P3x1, P1x3, P4x1, P1x4, P4x2, P2x4, P8x2, P2x8
   };
   
   public static int count() { return pieces.length; }
@@ -72,6 +75,9 @@ public class PieceType
     
     mapping.put("4x2", P4x2);
     mapping.put("2x4", P2x4);
+    
+    mapping.put("8x2", P8x2);
+    mapping.put("2x8", P2x8);
     
     for (String s : mapping.keySet())
       mapping2.put(mapping.get(s), s);

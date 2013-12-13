@@ -5,7 +5,6 @@ import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.files.TileSetLoader;
-import pixbits.nanoblock.gui.ui.*;
 
 import java.awt.Color;
 import java.util.*;
@@ -21,7 +20,9 @@ import processing.core.*;
 
 public class Sketch extends PApplet implements ChangeListener
 {
-	final List<Drawable> drawables = new ArrayList<Drawable>();
+  private static final long serialVersionUID = 1L;
+
+  final List<Drawable> drawables = new ArrayList<Drawable>();
   
 	public Model model;
   
@@ -54,15 +55,9 @@ public class Sketch extends PApplet implements ChangeListener
     ColorPaletteView paletteView = new ColorPaletteView(this, 300,700,30,5);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(this, 300,760,100,5);
+    PiecePaletteView pieceView = new PiecePaletteView(this, 300,760,100,7);
     drawables.add(pieceView);
-    
-    /*UIScrollBar scrollBar = new UIScrollBar(320,10,200,20,20);
-    drawables.add(scrollBar);
-    scrollBar = new UIScrollBar(320,300,20,200,20);
-    drawables.add(scrollBar);*/
 
-    
     noLoop();
   }
   
@@ -130,9 +125,10 @@ public class Sketch extends PApplet implements ChangeListener
   {    	
     int x = mouseX;
     int y = mouseY;
-    
+        
     for (Drawable d : drawables)
     {
+      d.draggingReset();
       if (d.isInside(x, y))
       {
         d.mouseReleased(x, y);
@@ -151,6 +147,13 @@ public class Sketch extends PApplet implements ChangeListener
   {
     int x = mouseX;
     int y = mouseY;
+    
+    for (Drawable d : drawables)
+      if (d.draggingLock())
+      {
+        d.mouseDragged(x, y);
+        return;
+      }
     
     for (Drawable d : drawables)
     {
@@ -174,6 +177,11 @@ public class Sketch extends PApplet implements ChangeListener
       else
         d.mouseExited();
     }
+  }
+  
+  public void mouseWheelMoved(int amount)
+  {
+    //System.out.println("mouse wheel: "+amount);
   }
   
   int lx = -1, ly = -1;

@@ -6,11 +6,12 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Dimension;
 
-public class UIScrollBar extends Drawable
+public abstract class UIScrollBar extends Drawable
 {
   final int buttonSize;
   final int width;
   final int height;
+  final boolean smoothScroll = false;
   
   final Point length;
   final Point base;
@@ -22,8 +23,9 @@ public class UIScrollBar extends Drawable
   final boolean horizontal;
   
   float progress = 0.0f;
-  float progressStep = 0.1f;
-  
+  int progressReal = 0;
+  int progressStep = 1;
+    
   public UIScrollBar(Sketch p, int ox, int oy, int width, int height, int buttonSize)
   {
     super(p,ox,oy);
@@ -63,45 +65,94 @@ public class UIScrollBar extends Drawable
     return x >= ox && x < ox + width && y >= oy && y < oy + height;
   }
   
+  public void draggingReset()
+  {
+    /*if (smoothScroll && dragging)
+    {
+      setProgressFromPercent(progress);
+    }*/
+    
+    super.draggingReset();
+  }
+
+  public void setProgressFromPercent(float progress)
+  {
+    float steps = max() - min();
+    float floatStep = 1.0f / steps;
+    
+    progress *= steps;
+    progressReal = Math.round(progress);
+    this.progress = progressReal*floatStep;
+
+    progressChanged(progressReal);
+  }
+
   public void mouseReleased(int x, int y)
   {
     Point p = new Point(x,y);
     
     if (button1.contains(p))
     {
-      progress -= progressStep;
-      if (progress < 0.0f) progress = 0.0f;
+      progressReal -= progressStep;
+      if (progressReal < min()) progressReal = min();
+      
+      progress = progressReal/(float)max();
+      progressChanged(progressReal);
     }
     else if (button2.contains(p))
     {
-      progress += progressStep;
-      if (progress >= 1.0f) progress = 1.0f;
+      progressReal += progressStep;
+      if (progressReal >= max()) progressReal = max();
+      
+      progress = progressReal/(float)max();
+      progressChanged(progressReal);
     }
     else if (scroll.contains(p))
     {
+      float progress;
+      
       if (horizontal)
-        this.progress = (x - ox - button1.width - buttonSize/2) / (float)length.x;
+        progress = (x - ox - button1.width - buttonSize/2) / (float)length.x;
       else
-        this.progress = (y - oy - button1.height - buttonSize/2) / (float)length.y;
+        progress = (y - oy - button1.height - buttonSize/2) / (float)length.y;
+      
+      setProgressFromPercent(progress);
     }
-     
+         
     Main.sketch.redraw();
   }
   
   public void mouseDragged(int x, int y)
   {
+    
+    if (!dragging)
+    {
+      if (scroll.contains(new Point(x,y)))
+        dragging = true;
+      else
+        return;
+    }
+    
+    
     x -= ox + button1.width;
     y -= oy + button1.height;
     
     float progress;
-    
+
     if (horizontal)
       progress = (x - buttonSize/2) / (float)length.x;
     else
       progress = (y - buttonSize/2) / (float)length.y;
     
-    if (progress >= 0.0 && progress <= 1.0)
+    if (progress < 0.0f)
+      progress = 0.0f;
+    else if (progress > 1.0f)
+      progress = 1.0f;
+
+    if (smoothScroll)
       this.progress = progress;
+    else
+      setProgressFromPercent(progress);
     
     Main.sketch.redraw();
   }
@@ -116,8 +167,13 @@ public class UIScrollBar extends Drawable
     
   }
   
+  public abstract int min();
+  public abstract int max();
+  public abstract void progressChanged(int value);
+  
   public void draw()
   {
+    p.strokeWeight(1.0f);
     p.strokeCap(Sketch.PROJECT);
    
     p.fill(80);
