@@ -11,7 +11,7 @@ public class LevelView extends Drawable
 {
   private final int width, height;
   private final float cellSize;
-  private final Level level;
+  private Level level;
   private final Model model;
   
   public int hx = -1, hy = -1;
@@ -173,8 +173,8 @@ public class LevelView extends Drawable
         
       p.rect(ox+piece.x*cellSize+1, oy+piece.y*cellSize+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
       
-      p.fill(0);
-      p.text(""+order++, ox+piece.x*cellSize+1, oy+(piece.y+1)*cellSize+1);
+      //p.fill(0);
+      //p.text(""+order++, ox+piece.x*cellSize+1, oy+(piece.y+1)*cellSize+1);
     }
     
     if (hx != -1)
@@ -184,5 +184,20 @@ public class LevelView extends Drawable
       p.stroke(220,0,0);
       p.rect(ox+hx*cellSize+1, oy+hy*cellSize+1, Brush.type.width*cellSize-2, Brush.type.height*cellSize-2);
     }
+  }
+  
+  void moveToNext()
+  {
+    level = level.next();
+  }
+  
+  void moveToPrev()
+  {
+    level = level.previous();
+  }
+  
+  public void moveToLevel(int index)
+  {
+    level = model.levelAt(index);
   }
 }

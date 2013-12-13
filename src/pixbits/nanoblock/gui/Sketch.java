@@ -3,6 +3,7 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.gui.ui.*;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.files.TileSetLoader;
 
@@ -40,23 +41,26 @@ public class Sketch extends PApplet implements ChangeListener
     if (model == null)
     { 
       model = new Model(20,20);
-      model.allocateLevels(5);
+      model.allocateLevels(12);
     }
     
-    LevelView levelView = new LevelView(this, model, model.levelAt(2),10,10,14);
-    drawables.add(levelView);
+    LevelView[] levelViews = new LevelView[] {
+      new LevelView(this, model, model.levelAt(0),20,600,14),
+      new LevelView(this, model, model.levelAt(1),20,310,14),
+      new LevelView(this, model, model.levelAt(2),20,20,14)
+    };
     
-    levelView = new LevelView(this, model, model.levelAt(1),10,300,14);
-    drawables.add(levelView);
+    for (LevelView lv : levelViews)
+      addDrawable(lv);
     
-    levelView = new LevelView(this, model, model.levelAt(0),10,590,14);
-    drawables.add(levelView);
-    
-    ColorPaletteView paletteView = new ColorPaletteView(this, 300,700,30,5);
+    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,5);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(this, 300,760,100,7);
+    PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,7);
     drawables.add(pieceView);
+    
+    LevelScrollBar levelScrollBar = new LevelScrollBar(this, model, levelViews, 0, 20, 20, 14*20*3 + 10*2, 20);
+    addDrawable(levelScrollBar);
 
     noLoop();
   }
@@ -88,7 +92,7 @@ public class Sketch extends PApplet implements ChangeListener
   }
   
   public int baseX = 800;
-  public int baseY = 200;
+  public int baseY = 260;
   
   public void drawPiece(Piece piece, int x, int y, int l)
   {
