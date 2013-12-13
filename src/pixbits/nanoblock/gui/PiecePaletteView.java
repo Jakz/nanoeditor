@@ -2,6 +2,7 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.gui.ui.*;
 
 import processing.core.*;
 import java.awt.Rectangle;
@@ -9,14 +10,20 @@ import java.awt.Rectangle;
 public class PiecePaletteView extends Drawable
 {
   private final int cellSize, cellCount;
+  private int offset;
   private final PGraphics buffer;
   
-  PiecePaletteView(int ox, int oy, int cellSize, int cellCount)
+  PiecePaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount)
   {
-    super(ox,oy);
+    super(p,ox,oy);
     this.cellSize = cellSize;
     this.cellCount = cellCount;
+    this.offset = 0;
+    
     buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, PGraphics.P2D);
+    
+    PieceScrollBar scrollBar = new PieceScrollBar(p, ox, oy + cellSize, cellSize*cellCount, 20, 20);
+    p.addDrawable(scrollBar);
   }
   
   
@@ -25,7 +32,7 @@ public class PiecePaletteView extends Drawable
     return x >= ox && x < ox+cellSize*cellCount && y >= oy && y < oy+cellSize;
   }
 
-  public void mouseClicked(int x, int y)
+  public void mouseReleased(int x, int y)
   {
     x -= ox;
     y -= oy;
@@ -41,9 +48,12 @@ public class PiecePaletteView extends Drawable
 
   }
   
+  public void mouseDragged(int x, int y) { }
+
+  
   public void mouseExited() { }
 
-  public void draw(Sketch p)
+  public void draw()
   {
     p.stroke(0);
     p.noFill();
@@ -53,9 +63,9 @@ public class PiecePaletteView extends Drawable
     Rectangle rectc = Brush.tileset.rectFor(PieceType.CAP, color);
     int orx = Brush.tileset.spec(PieceType.CAP).ox, ory = Brush.tileset.spec(PieceType.CAP).oy;
     
-    for (int i = 0; i < PieceType.count(); ++i)
+    for (int i = 0; i < cellCount; ++i)
     {
-      PieceType type = PieceType.at(i);
+      PieceType type = PieceType.at(offset+i);
       
       if (type == Brush.type)
       {
@@ -80,8 +90,8 @@ public class PiecePaletteView extends Drawable
       buffer.rect(0,0,cellSize*2,cellSize*2);
       buffer.blend(Brush.tileset.image, rect.x, rect.y, rect.width, rect.height, opx, opy, maxW, maxH, Sketch.BLEND);
       
-      for (int ix = 0; ix < PieceType.at(i).width; ++ix)
-        for (int iy = 0; iy < PieceType.at(i).height; ++iy)
+      for (int ix = 0; ix < type.width; ++ix)
+        for (int iy = 0; iy < type.height; ++iy)
         {
           int rx = opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*ix-Brush.tileset.yOffset*iy;
           int ry = opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.hOffset*(ix+iy-2);

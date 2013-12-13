@@ -17,9 +17,9 @@ public class LevelView extends Drawable
   public int hx = -1, hy = -1;
 
   
-  LevelView(Model model, Level level, int ox, int oy, float cellSize)
+  LevelView(Sketch p, Model model, Level level, int ox, int oy, float cellSize)
   {
-    super(ox, oy);
+    super(p, ox, oy);
     this.width = model.width;
     this.height = model.height;
     this.cellSize = cellSize;
@@ -66,7 +66,9 @@ public class LevelView extends Drawable
     Main.sketch.redraw();
   }
   
-  public void mouseClicked(int x, int y)
+  public void mouseDragged(int x, int y) { }
+  
+  public void mouseReleased(int x, int y)
   {
     x -= ox;
     y -= oy;
@@ -84,7 +86,7 @@ public class LevelView extends Drawable
     Main.sketch.redraw();
   }
   
-  public void draw(Sketch p)
+  public void draw()
   {
     p.strokeWeight(1.0f);
 

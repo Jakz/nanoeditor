@@ -8,9 +8,9 @@ public class ColorPaletteView extends Drawable
   final int cellCount;
   final int cellSize;
   
-  ColorPaletteView(int ox, int oy, int cellSize, int cellCount)
+  ColorPaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount)
   {
-    super(ox,oy);
+    super(p,ox,oy);
     this.cellSize = cellSize;
     this.cellCount = cellCount;
   }
@@ -20,7 +20,7 @@ public class ColorPaletteView extends Drawable
     return x >= ox && x < ox+cellSize*cellCount && y >= oy && y < oy+cellSize;
   }
   
-  public void mouseClicked(int x, int y)
+  public void mouseReleased(int x, int y)
   {
     x -= ox;
     y -= oy;
@@ -31,14 +31,13 @@ public class ColorPaletteView extends Drawable
     Main.sketch.redraw();
   }
   
-  public void mouseMoved(int x, int y)
-  {
-    
-  }
+  public void mouseMoved(int x, int y) { }
+  
+  public void mouseDragged(int x, int y) { }
   
   public void mouseExited() { }
   
-  public void draw(Sketch p)
+  public void draw()
   {
     p.rectMode(Sketch.CORNER);
     

@@ -42,19 +42,19 @@ public class Sketch extends PApplet implements ChangeListener
       model.allocateLevels(5);
     }
     
-    LevelView levelView = new LevelView(model, model.levelAt(2),10,10,14);
+    LevelView levelView = new LevelView(this, model, model.levelAt(2),10,10,14);
     drawables.add(levelView);
     
-    levelView = new LevelView(model, model.levelAt(1),10,300,14);
+    levelView = new LevelView(this, model, model.levelAt(1),10,300,14);
     drawables.add(levelView);
     
-    levelView = new LevelView(model, model.levelAt(0),10,590,14);
+    levelView = new LevelView(this, model, model.levelAt(0),10,590,14);
     drawables.add(levelView);
     
-    ColorPaletteView paletteView = new ColorPaletteView(300,700,30,5);
+    ColorPaletteView paletteView = new ColorPaletteView(this, 300,700,30,5);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(300,760,100,7);
+    PiecePaletteView pieceView = new PiecePaletteView(this, 300,760,100,5);
     drawables.add(pieceView);
     
     /*UIScrollBar scrollBar = new UIScrollBar(320,10,200,20,20);
@@ -64,6 +64,11 @@ public class Sketch extends PApplet implements ChangeListener
 
     
     noLoop();
+  }
+  
+  public void addDrawable(Drawable d)
+  {
+    drawables.add(d);
   }
   
   public void draw()
@@ -84,7 +89,7 @@ public class Sketch extends PApplet implements ChangeListener
   	}
   	
   	for (Drawable d : drawables)
-  	  d.draw(this);
+  	  d.draw();
   }
   
   public int baseX = 800;
@@ -130,7 +135,7 @@ public class Sketch extends PApplet implements ChangeListener
     {
       if (d.isInside(x, y))
       {
-        d.mouseClicked(x, y);
+        d.mouseReleased(x, y);
         return;
       }
     }
@@ -140,6 +145,21 @@ public class Sketch extends PApplet implements ChangeListener
   {    	
 
     
+  }
+  
+  public void mouseDragged()
+  {
+    int x = mouseX;
+    int y = mouseY;
+    
+    for (Drawable d : drawables)
+    {
+      if (d.isInside(x, y))
+      {
+        d.mouseDragged(x, y);
+        return;
+      }
+    }
   }
   
   public void mouseMoved()
@@ -157,13 +177,7 @@ public class Sketch extends PApplet implements ChangeListener
   }
   
   int lx = -1, ly = -1;
-  
-  public void mouseDragged()
-  { 	
 
-    mousePressed();
-  }
-  
   public void stateChanged(ChangeEvent e)
   {
   	
