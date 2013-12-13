@@ -4,6 +4,7 @@
   "hOffset": 11,
   "xOffset": 22,
   "yOffset": 22,
+  "hAdjust": 2,
   "pieces": [
     {
       "name": "cap",
@@ -40,6 +41,18 @@
       "offset": [201, 0],
       "size": [88, 65],
       "pivot": [-44, -33]
+    },
+    {
+      "name": "4x2",
+      "offset": [690, 0],
+      "size": [132, 87],
+      "pivot": [-44, -33]
+    },
+    {
+      "name": "2x4",
+      "offset": [823, 0],
+      "size": [132, 87],
+      "pivot": [-88, -33]
     }
   ],
   "colors": [

@@ -13,13 +13,13 @@ public class Level
   private final Level previous;
   private Level next;
   
-  final int index;
+  //final int index;
   
   Level(int index, int width, int height, Level previous)
   {
     this.width = width;
     this.height = height;
-    this.index = index;
+    //this.index = index;
     this.previous = previous;
     
     pieces = new TreeSet<Piece>(new PieceComparator());
@@ -51,13 +51,7 @@ public class Level
     /* remove caps to next level */
     if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
     {
-      for (int i = piece.x; i < piece.x+piece.type.width; ++i)
-        for (int j = piece.y; j < piece.y+piece.type.height; ++j)
-        {
-          Piece piece2 = next.pieceAt(i,j);
-          if (piece2 != null && piece2.type == PieceType.CAP)
-            next.removePiece(piece2);
-        }
+      next.removeCaps(piece.x, piece.y, piece.type.width, piece.type.height);
     }
   }
   
@@ -77,9 +71,7 @@ public class Level
       }
     }
     
-    pieces.add(piece);
-    System.out.println("Placing piece at "+piece.x+","+piece.y);
-    
+    pieces.add(piece);    
     
     /* add caps to next level */
     if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
@@ -101,12 +93,28 @@ public class Level
   
   public boolean canPlace(PieceType type, int x, int y)
   {
+    if (x+type.width-1 >= width || y+type.height-1 >= height)
+      return false;
+    
     for (int i = x; i < x+type.width; ++i)
       for (int j = y; j < y+type.height; ++j)
         if (!isFreeAt(i,j))
           return false;
     
     return true;
+  }
+  
+  public void removeCaps(int x, int y, int w, int h)
+  {
+    Iterator<Piece> pieces = iterator();
+    while (pieces.hasNext())
+    {
+      Piece piece = pieces.next();
+      if (piece.type == PieceType.CAP && piece.x >= x && piece.x < x+w && piece.y >= y && piece.y < y+h)
+      {
+        pieces.remove();
+      }
+    }
   }
   
   public Piece pieceAt(int x, int y)
@@ -116,9 +124,9 @@ public class Level
     while (pieces.hasNext())
     {
       Piece piece = pieces.next();
+
       if (x >= piece.x && x < piece.x+piece.type.width && y >= piece.y && y < piece.y+piece.type.height)
       {
-        System.out.println("found piece at "+x+","+y);
         return piece;
       }
     }
@@ -134,6 +142,11 @@ public class Level
   public Iterator<Piece> iterator()
   {
     return pieces.iterator();
+  }
+  
+  public void clear()
+  {
+    pieces.clear();
   }
   
   private static class PieceComparator implements Comparator<Piece>

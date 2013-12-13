@@ -38,13 +38,15 @@ public class PieceType
   public final static PieceType P2x4 = new PieceType(2,4,false);
   
   public final static PieceType[] pieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P1x2, P2x2
+    P1x1, P1x1r, P2x1, P1x2, P2x2, P4x2, P2x4
   };
   
   public static int count() { return pieces.length; }
   public static PieceType at(int index) { return pieces[index]; }
   
-  public static final Map<String, PieceType> mapping = new HashMap<String, PieceType>();
+  private static final Map<String, PieceType> mapping = new HashMap<String, PieceType>();
+  private static final Map<PieceType, String> mapping2 = new HashMap<PieceType, String>();
+
   
   public static void initMapping()
   {
@@ -70,7 +72,11 @@ public class PieceType
     
     mapping.put("4x2", P4x2);
     mapping.put("2x4", P2x4);
+    
+    for (String s : mapping.keySet())
+      mapping2.put(mapping.get(s), s);
   }
   
   public static PieceType forName(String name) { return mapping.get(name); }
+  public static String forPiece(PieceType type) { return mapping2.get(type); }
 }

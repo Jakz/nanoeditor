@@ -1,7 +1,7 @@
 package pixbits.nanoblock;
 
+import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
-import pixbits.nanoblock.json.*;
 
 public class Main
 {

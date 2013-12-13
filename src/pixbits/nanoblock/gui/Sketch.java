@@ -3,7 +3,8 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
-import pixbits.nanoblock.json.TileSetLoader;
+import pixbits.nanoblock.files.TileSetLoader;
+import pixbits.nanoblock.gui.ui.*;
 
 import java.awt.Color;
 import java.util.*;
@@ -46,8 +47,14 @@ public class Sketch extends PApplet implements ChangeListener
     ColorPaletteView paletteView = new ColorPaletteView(300,700,30,5);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(300,760,100,5);
+    PiecePaletteView pieceView = new PiecePaletteView(300,760,100,7);
     drawables.add(pieceView);
+    
+    /*UIScrollBar scrollBar = new UIScrollBar(320,10,200,20,20);
+    drawables.add(scrollBar);
+    scrollBar = new UIScrollBar(320,300,20,200,20);
+    drawables.add(scrollBar);*/
+
     
     noLoop();
   }
@@ -79,8 +86,11 @@ public class Sketch extends PApplet implements ChangeListener
   public void drawPiece(Piece piece, int x, int y, int l)
   {
     int fx = baseX+Brush.tileset.xOffset*x-Brush.tileset.yOffset*y;
-    int fy = baseY+Brush.tileset.hOffset*(x+y-l*2)+2*l;
+    int fy = baseY+Brush.tileset.hOffset*(x+y-l*2);
     java.awt.Point c = Brush.tileset.color(piece.color);
+    
+    //if (piece.type != PieceType.CAP)
+      fy += Brush.tileset.hAdjust*l;
     
     Tileset.PieceSpec spec = Brush.tileset.spec(piece.type);
     this.blend(Brush.tileset.image, spec.x + c.x, spec.y + c.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
@@ -89,9 +99,9 @@ public class Sketch extends PApplet implements ChangeListener
  
   public void keyPressed()
   {
-    if (this.key == 't')
+    if (this.key == 'r')
     {
-      
+      model.clear();
     }
     else
     {
@@ -112,7 +122,10 @@ public class Sketch extends PApplet implements ChangeListener
     for (Drawable d : drawables)
     {
       if (d.isInside(x, y))
+      {
         d.mouseClicked(x, y);
+        return;
+      }
     }
   }
   
@@ -124,7 +137,16 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void mouseMoved()
   { 
-  	
+    int x = mouseX;
+    int y = mouseY;
+    
+    for (Drawable d : drawables)
+    {
+      if (d.isInside(x, y))
+        d.mouseMoved(x, y);
+      else
+        d.mouseExited();
+    }
   }
   
   int lx = -1, ly = -1;

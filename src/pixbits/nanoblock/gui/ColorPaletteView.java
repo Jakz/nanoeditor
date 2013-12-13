@@ -36,6 +36,8 @@ public class ColorPaletteView extends Drawable
     
   }
   
+  public void mouseExited() { }
+  
   public void draw(Sketch p)
   {
     p.rectMode(Sketch.CORNER);

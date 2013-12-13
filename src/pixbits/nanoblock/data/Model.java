@@ -27,15 +27,10 @@ public class Model
   
   public void addPiece(Level l, PieceType type, PieceColor color, int x, int y)
   {
-    addPiece(l.index, type, color, x, y);
-  }
-  
-  public void addPiece(int l, PieceType type, PieceColor color, int x, int y)
-  {
     Piece piece = new Piece(type, color, x, y);
-    levelAt(l).addPiece(piece);
+    l.addPiece(piece);
   }
-  
+
   public void allocateLevels(int count)
   {
     Level previous = null;
@@ -57,4 +52,9 @@ public class Model
     l.removePiece(piece);
   }
 
+  public void clear()
+  {
+    for (Level l : levels)
+      l.clear();
+  }
 }

@@ -14,6 +14,9 @@ public class LevelView extends Drawable
   private final Level level;
   private final Model model;
   
+  public int hx = -1, hy = -1;
+
+  
   LevelView(Model model, Level level, int ox, int oy, float cellSize)
   {
     super(ox, oy);
@@ -34,7 +37,33 @@ public class LevelView extends Drawable
   
   public void mouseMoved(int x, int y)
   {
+    x -= ox;
+    y -= oy;
     
+    x /= cellSize;
+    y /= cellSize;
+    
+    if (x != hx || y != hy)
+    {
+      if (x + Brush.type.width <= width && y + Brush.type.height <= height)
+      {
+        hx = x;
+        hy = y;
+      }
+      else
+      {
+        hx = -1;
+        hy = -1;
+      }
+      Main.sketch.redraw();
+    }
+  }
+  
+  public void mouseExited()
+  {
+    hx = -1;
+    hy = -1;
+    Main.sketch.redraw();
   }
   
   public void mouseClicked(int x, int y)
@@ -141,7 +170,13 @@ public class LevelView extends Drawable
         
       p.rect(ox+piece.x*cellSize+1, oy+piece.y*cellSize+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
     }
-
     
+    if (hx != -1)
+    {
+      p.noFill();
+      p.strokeWeight(2.0f);
+      p.stroke(220,0,0);
+      p.rect(ox+hx*cellSize+1, oy+hy*cellSize+1, Brush.type.width*cellSize-2, Brush.type.height*cellSize-2);
+    }
   }
 }
