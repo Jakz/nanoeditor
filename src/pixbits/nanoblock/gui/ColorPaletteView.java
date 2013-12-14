@@ -2,6 +2,7 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.PieceColor;
+import pixbits.nanoblock.data.PieceType;
 import pixbits.nanoblock.gui.ui.ColorScrollBar;
 
 public class ColorPaletteView extends Drawable 
@@ -10,6 +11,8 @@ public class ColorPaletteView extends Drawable
   public final int cellSize;
   
   private int offset;
+  
+  private ColorScrollBar scrollBar;
   
   ColorPaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount)
   {
@@ -20,7 +23,7 @@ public class ColorPaletteView extends Drawable
     
     if (cellCount < PieceColor.count())
     {
-      ColorScrollBar scrollBar = new ColorScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, 20, 20);
+      scrollBar = new ColorScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, 20, 20);
       p.addDrawable(scrollBar);
     }
   }
@@ -46,6 +49,31 @@ public class ColorPaletteView extends Drawable
   public void mouseDragged(int x, int y) { }
   
   public void mouseExited() { }
+
+  public void mouseWheelMoved(int x) 
+  {
+    int i = 0;
+    for (i = 0; i < PieceColor.count(); ++i)
+    {
+      if (Brush.color == PieceColor.at(i))
+        break;
+    }
+    
+    if (x > 0 && i + 1 < PieceColor.count())
+    {
+      Brush.color = PieceColor.at(i+1);
+      if (scrollBar != null && i >= offset + cellCount - 1)
+        scrollBar.downArrow();
+    }
+    else if (x < 0 && i > 0)
+    {
+      Brush.color = PieceColor.at(i-1);
+      if (scrollBar != null && i < offset + 1)
+        scrollBar.upArrow();
+    }
+    
+    Main.sketch.redraw();
+  }
   
   public void draw()
   {

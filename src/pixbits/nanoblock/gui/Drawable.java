@@ -19,6 +19,7 @@ public abstract class Drawable
   public abstract void mouseDragged(int x, int y);
   public abstract void mouseMoved(int x, int y);
   public abstract void mouseExited();
+  public abstract void mouseWheelMoved(int x);
   
   public boolean draggingLock() { return dragging; }
   public void draggingReset() { dragging = false; }

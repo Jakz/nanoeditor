@@ -104,6 +104,16 @@ public abstract class UIScrollBar extends Drawable
     progress = progressReal/(float)max();
     progressChanged(progressReal);
   }
+  
+  public void mouseWheelMoved(int x)
+  {
+    if (x < 0)
+      upArrow();
+    else
+      downArrow();
+    
+    Main.sketch.redraw();
+  }
 
   public void mouseReleased(int x, int y)
   {

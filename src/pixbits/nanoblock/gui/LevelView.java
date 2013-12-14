@@ -97,6 +97,11 @@ public class LevelView extends Drawable
     Main.sketch.redraw();
   }
   
+  public void mouseWheelMoved(int x)
+  { 
+    parent.scrollbar.mouseWheelMoved(x);
+  }
+  
   public void draw()
   {
     p.strokeWeight(1.0f);

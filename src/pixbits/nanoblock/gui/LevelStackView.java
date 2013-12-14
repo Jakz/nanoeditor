@@ -8,7 +8,7 @@ import java.awt.Rectangle;
 public class LevelStackView
 {
   LevelView[] views;
-  LevelScrollBar scrollbar;
+  public LevelScrollBar scrollbar;
   
   private Rectangle hover;
   
@@ -22,8 +22,8 @@ public class LevelStackView
       p.addDrawable(views[i]);
     }
     
-    LevelScrollBar levelScrollBar = new LevelScrollBar(p, model, views, ox+cellSize*model.width, oy, 20, model.height*cellSize*count + margin*(count-1), 20);
-    p.addDrawable(levelScrollBar);
+    scrollbar = new LevelScrollBar(p, model, views, ox+cellSize*model.width, oy, 20, model.height*cellSize*count + margin*(count-1), 20);
+    p.addDrawable(scrollbar);
   }
   
   public Rectangle hover()

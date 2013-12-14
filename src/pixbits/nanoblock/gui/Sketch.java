@@ -26,6 +26,8 @@ public class Sketch extends PApplet implements ChangeListener
   final List<Drawable> drawables = new ArrayList<Drawable>();
   
 	public Model model;
+	
+	public LevelStackView levelStackView;
   
   public void setup()
   {
@@ -44,14 +46,12 @@ public class Sketch extends PApplet implements ChangeListener
       model.allocateLevels(12);
     }
 
-    LevelStackView levelStackView = new LevelStackView(this, 2, 0, 0, 10, 10, model);
+    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 10, model);
     
-    ColorPaletteView paletteView = new ColorPaletteView(this, 0,500,30,5);
-    //ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,5);
+    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,5);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(this, 0,560,100,7);
-    //PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,7);
+    PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,7);
     drawables.add(pieceView);
 
     noLoop();
@@ -177,7 +177,14 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void mouseWheelMoved(int amount)
   {
-    //System.out.println("mouse wheel: "+amount);
+    int x = mouseX;
+    int y = mouseY;
+    
+    for (Drawable d : drawables)
+    {
+      if (d.isInside(x, y))
+        d.mouseWheelMoved(amount);
+    }
   }
   
   int lx = -1, ly = -1;

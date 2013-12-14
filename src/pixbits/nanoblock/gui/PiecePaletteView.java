@@ -13,6 +13,8 @@ public class PiecePaletteView extends Drawable
   private int offset;
   private final PGraphics buffer;
   
+  private PieceScrollBar scrollBar;
+  
   PiecePaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount)
   {
     super(p,ox,oy);
@@ -24,7 +26,7 @@ public class PiecePaletteView extends Drawable
     
     if (cellCount < PieceType.count())
     {
-      PieceScrollBar scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, 20, 20);
+      scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, 20, 20);
       p.addDrawable(scrollBar);
     }
   }
@@ -53,8 +55,32 @@ public class PiecePaletteView extends Drawable
   
   public void mouseDragged(int x, int y) { }
 
-  
   public void mouseExited() { }
+  
+  public void mouseWheelMoved(int x) 
+  {
+    int i = 0;
+    for (i = 0; i < PieceType.count(); ++i)
+    {
+      if (Brush.type == PieceType.at(i))
+        break;
+    }
+    
+    if (x > 0 && i + 1 < PieceType.count())
+    {
+      Brush.type = PieceType.at(i+1);
+      if (scrollBar != null && i >= offset + cellCount - 1)
+        scrollBar.downArrow();
+    }
+    else if (x < 0 && i > 0)
+    {
+      Brush.type = PieceType.at(i-1);
+      if (scrollBar != null && i < offset + 1)
+        scrollBar.upArrow();
+    }
+    
+    Main.sketch.redraw();
+  }
 
   public void draw()
   {
