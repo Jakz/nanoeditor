@@ -86,6 +86,24 @@ public abstract class UIScrollBar extends Drawable
 
     progressChanged(progressReal);
   }
+  
+  public void upArrow()
+  {
+    progressReal -= progressStep;
+    if (progressReal < min()) progressReal = min();
+    
+    progress = progressReal/(float)max();
+    progressChanged(progressReal);
+  }
+  
+  public void downArrow()
+  {
+    progressReal += progressStep;
+    if (progressReal >= max()) progressReal = max();
+    
+    progress = progressReal/(float)max();
+    progressChanged(progressReal);
+  }
 
   public void mouseReleased(int x, int y)
   {
@@ -93,19 +111,11 @@ public abstract class UIScrollBar extends Drawable
     
     if (button1.contains(p))
     {
-      progressReal -= progressStep;
-      if (progressReal < min()) progressReal = min();
-      
-      progress = progressReal/(float)max();
-      progressChanged(progressReal);
+      upArrow();
     }
     else if (button2.contains(p))
     {
-      progressReal += progressStep;
-      if (progressReal >= max()) progressReal = max();
-      
-      progress = progressReal/(float)max();
-      progressChanged(progressReal);
+      downArrow();
     }
     else if (scroll.contains(p))
     {
@@ -174,7 +184,7 @@ public abstract class UIScrollBar extends Drawable
   public void draw()
   {
     p.strokeWeight(1.0f);
-    p.strokeCap(Sketch.PROJECT);
+    p.strokeJoin(Sketch.MITER);
    
     p.fill(80);
     p.stroke(0);

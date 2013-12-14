@@ -1,5 +1,6 @@
 package pixbits.nanoblock.gui;
 
+import java.awt.Rectangle;
 import java.util.Iterator;
 
 import pixbits.nanoblock.Main;
@@ -9,6 +10,8 @@ import processing.core.*;
 
 public class LevelView extends Drawable
 {
+  private final LevelStackView parent;
+  
   private final int width, height;
   private final float cellSize;
   private Level level;
@@ -17,7 +20,7 @@ public class LevelView extends Drawable
   public int hx = -1, hy = -1;
 
   
-  LevelView(Sketch p, Model model, Level level, int ox, int oy, float cellSize)
+  LevelView(LevelStackView parent, Sketch p, Model model, Level level, int ox, int oy, float cellSize)
   {
     super(p, ox, oy);
     this.width = model.width;
@@ -25,6 +28,7 @@ public class LevelView extends Drawable
     this.cellSize = cellSize;
     this.level = level;
     this.model = model;
+    this.parent = parent;
   }
   
   public boolean isInside(int x, int y)
@@ -49,9 +53,11 @@ public class LevelView extends Drawable
       {
         hx = x;
         hy = y;
+        parent.setHover(new Rectangle(hx, hy, Brush.type.width, Brush.type.height));
       }
       else
       {
+        parent.setHover(null);
         hx = -1;
         hy = -1;
       }
@@ -61,8 +67,13 @@ public class LevelView extends Drawable
   
   public void mouseExited()
   {
-    hx = -1;
-    hy = -1;
+    if (hx != -1 || hy != -1)
+    {
+      hx = -1;
+      hy = -1;
+      parent.setHover(null);
+    }
+    
     Main.sketch.redraw();
   }
   
@@ -177,12 +188,13 @@ public class LevelView extends Drawable
       //p.text(""+order++, ox+piece.x*cellSize+1, oy+(piece.y+1)*cellSize+1);
     }
     
-    if (hx != -1)
+    Rectangle h = parent.hover();
+    if (h != null)
     {
       p.noFill();
       p.strokeWeight(2.0f);
       p.stroke(220,0,0);
-      p.rect(ox+hx*cellSize+1, oy+hy*cellSize+1, Brush.type.width*cellSize-2, Brush.type.height*cellSize-2);
+      p.rect(ox+h.x*cellSize+1, oy+h.y*cellSize+1, h.width*cellSize-2, h.height*cellSize-2);
     }
   }
   

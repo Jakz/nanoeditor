@@ -20,7 +20,7 @@ public class PiecePaletteView extends Drawable
     this.cellCount = cellCount;
     this.offset = 0;
     
-    buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, PGraphics.P2D);
+    buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, Sketch.P2D);
     
     if (cellCount < PieceType.count())
     {

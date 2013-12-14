@@ -30,7 +30,7 @@ public class Sketch extends PApplet implements ChangeListener
   public void setup()
   {
     smooth();
-    size(Main.SW, Main.SH, P2D);
+    size(Main.SW, Main.SH, Sketch.P2D);
     
     PieceType.initMapping();
     Brush.tileset = TileSetLoader.loadAndBuild("tileset.json");
@@ -43,24 +43,16 @@ public class Sketch extends PApplet implements ChangeListener
       model = new Model(20,20);
       model.allocateLevels(12);
     }
+
+    LevelStackView levelStackView = new LevelStackView(this, 2, 0, 0, 10, 10, model);
     
-    LevelView[] levelViews = new LevelView[] {
-      new LevelView(this, model, model.levelAt(0),20,600,14),
-      new LevelView(this, model, model.levelAt(1),20,310,14),
-      new LevelView(this, model, model.levelAt(2),20,20,14)
-    };
-    
-    for (LevelView lv : levelViews)
-      addDrawable(lv);
-    
-    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,5);
+    ColorPaletteView paletteView = new ColorPaletteView(this, 0,500,30,5);
+    //ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,5);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,7);
+    PiecePaletteView pieceView = new PiecePaletteView(this, 0,560,100,7);
+    //PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,7);
     drawables.add(pieceView);
-    
-    LevelScrollBar levelScrollBar = new LevelScrollBar(this, model, levelViews, 0, 20, 20, 14*20*3 + 10*2, 20);
-    addDrawable(levelScrollBar);
 
     noLoop();
   }
