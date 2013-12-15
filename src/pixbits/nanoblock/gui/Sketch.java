@@ -28,15 +28,18 @@ public class Sketch extends PApplet implements ChangeListener
 	public Model model;
 	
 	public LevelStackView levelStackView;
+	
+	public PFont font;
   
   public void setup()
   {
-    smooth();
+    //smooth();
     size(Main.SW, Main.SH, Sketch.P2D);
     
     PieceType.initMapping();
     Brush.tileset = TileSetLoader.loadAndBuild("tileset.json");
 
+    font = createFont("Helvetica", 16);
     
     model = ModelLoader.loadModel("model.nblock");
     
@@ -53,6 +56,9 @@ public class Sketch extends PApplet implements ChangeListener
     
     PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,7);
     drawables.add(pieceView);
+    
+    UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
+    addDrawable(checkBox);
 
     noLoop();
   }

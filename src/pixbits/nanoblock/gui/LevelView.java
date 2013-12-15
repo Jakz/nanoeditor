@@ -199,7 +199,7 @@ public class LevelView extends Drawable
       p.noFill();
       p.strokeWeight(2.0f);
       p.stroke(220,0,0);
-      p.rect(ox+h.x*cellSize+1, oy+h.y*cellSize+1, h.width*cellSize-2, h.height*cellSize-2);
+      p.rect(ox+h.x*cellSize+1, oy+h.y*cellSize+1, h.width*cellSize-1, h.height*cellSize-1);
     }
   }
   
