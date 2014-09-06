@@ -33,6 +33,8 @@ public class Level implements Iterable<Piece>
   public Level previous() { return previous; }
   public Level next() { return next; }
   
+  
+  
   void removePiece(Piece piece)
   {    
     pieces.remove(piece);
