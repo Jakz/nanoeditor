@@ -51,14 +51,16 @@ public class Sketch extends PApplet implements ChangeListener
 
     levelStackView = new LevelStackView(this, 3, 0, 0, 14, 10, model);
     
-    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,5);
+    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,6);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,7);
+    PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,10);
     drawables.add(pieceView);
     
     UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
     addDrawable(checkBox);
+    
+    addDrawable(new UIButton(this,500,20,20,20));
 
     noLoop();
   }
@@ -205,12 +207,12 @@ public class Sketch extends PApplet implements ChangeListener
 
   }
   
-  void fill(Color c)
+  public void fill(Color c)
   {
   	fill(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
   }
   
-  void stroke(Color c)
+  public void stroke(Color c)
   {
     stroke(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
   }

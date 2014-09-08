@@ -96,6 +96,7 @@
     {"name": "BLACK", "offset": [0,142]},
     {"name": "PINK", "offset": [0,274]},
     {"name": "GREEN_LIME", "offset": [0,406]},
-    {"name": "YELLOW", "offset": [0,538]}
+    {"name": "YELLOW", "offset": [0,538]},
+    {"name": "ORANGE", "offset": [0, 799]}
   ]
 }
