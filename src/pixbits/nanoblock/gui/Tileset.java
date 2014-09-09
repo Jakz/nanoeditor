@@ -6,6 +6,7 @@ import processing.core.PImage;
 import java.util.*;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Color;
 
 public class Tileset {
   final private PImage image;
@@ -51,6 +52,8 @@ public class Tileset {
       int c = (rc[0] << 16) | (rc[1] << 8) | (rc[2] << 0) | ((rc.length > 3 ? rc[3] : 255) << 24);
       newCols[i] = c;
     }
+    
+    color.setColors(new Color(cols.get(3)[0], cols.get(3)[1], cols.get(3)[2]), new Color(cols.get(0)[0], cols.get(0)[1], cols.get(0)[2]));
     
     PImage tex = Main.sketch.createImage(image.width, image.height, Sketch.ARGB);
 
