@@ -42,19 +42,22 @@ public class Level implements Iterable<Piece>
     /* add caps to current level */
     if (Main.drawCaps && previous != null && piece.type != PieceType.CAP)
     {
-      for (int i = piece.x; i < piece.x+piece.type.width; ++i)
-        for (int j = piece.y; j < piece.y+piece.type.height; ++j)
+      for (int i = piece.x-1; i < piece.x+piece.type.width*2; ++i)
+        for (int j = piece.y-1; j < piece.y+piece.type.height*2; ++j)
         {
-          Piece piece2 = previous.pieceAt(i, j);
-          if (piece2 != null && piece2.type != PieceType.CAP)
-            addPiece(new Piece(PieceType.CAP, piece2.color, i,j));
+          if (i >= 0 && j >= 0)
+          {
+            Piece piece2 = previous.pieceAt(i, j);
+            if (piece2 != null && piece2.type != PieceType.CAP && i%2 == piece2.x%2 && j%2 == piece2.y%2) // TODO: alignment for special piece with single cap 2x1
+              addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
+          }
         }
     }
     
     /* remove caps to next level */
     if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
     {
-      next.removeCaps(piece.x, piece.y, piece.type.width, piece.type.height);
+      next.removeCaps(piece.x, piece.y, piece.type.width*2, piece.type.height*2);
     }
   }
     
@@ -68,21 +71,22 @@ public class Level implements Iterable<Piece>
       {
         Piece piece2 = pieces.next();
         if (piece2.type == PieceType.CAP)
-          if (piece2.x >= piece.x && piece2.x < piece.x+piece.type.width && piece2.y >= piece.y && piece2.y < piece.y+piece.type.height)
+          if (piece2.x >= piece.x-1 && piece2.x < piece.x+piece.type.width*2 && piece2.y >= piece.y-1 && piece2.y < piece.y+piece.type.height*2)
             pieces.remove();
          
       }
     }
     
+    //System.out.println("Add "+piece);
     pieces.add(piece);    
     
     /* add caps to next level */
     if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
     {
-      for (int i = piece.x; i < piece.x+piece.type.width; ++i)
-        for (int j = piece.y; j < piece.y+piece.type.height; ++j)
+      for (int i = 0; i < piece.type.width*2; i += 2)
+        for (int j = 0; j < piece.type.height*2; j += 2)
           if (next.isFreeAt(i,j))
-            next.addPiece(new Piece(PieceType.CAP, piece.color, i,j));
+            next.addPiece(new Piece(PieceType.CAP, piece.color, piece.x+i, piece.y+j));
     }
     
   }
@@ -99,8 +103,8 @@ public class Level implements Iterable<Piece>
     if (x+type.width-1 >= width || y+type.height-1 >= height)
       return false;
     
-    for (int i = x; i < x+type.width; ++i)
-      for (int j = y; j < y+type.height; ++j)
+    for (int i = x; i < x+type.width*2; ++i)
+      for (int j = y; j < y+type.height*2; ++j)
         if (!isFreeAt(i,j))
           return false;
     
@@ -128,7 +132,7 @@ public class Level implements Iterable<Piece>
     {
       Piece piece = pieces.next();
 
-      if (x >= piece.x && x < piece.x+piece.type.width && y >= piece.y && y < piece.y+piece.type.height)
+      if (x >= piece.x && x < piece.x+piece.type.width*2 && y >= piece.y && y < piece.y+piece.type.height*2)
       {
         return piece;
       }

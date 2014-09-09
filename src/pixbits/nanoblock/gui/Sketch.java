@@ -96,8 +96,8 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void drawPiece(Piece piece, int x, int y, int l)
   {
-    int fx = baseX+Brush.tileset.xOffset*x-Brush.tileset.yOffset*y;
-    int fy = baseY+Brush.tileset.hOffset*(x+y-l*2);
+    int fx = (int)(baseX+Brush.tileset.xOffset*x/2.0f-Brush.tileset.yOffset*y/2.0f);
+    int fy = (int)(baseY+Brush.tileset.hOffset*(x/2.0f+y/2.0f-l*2));
     java.awt.Point c = Brush.tileset.color(piece.color);
     
     //if (piece.type != PieceType.CAP)

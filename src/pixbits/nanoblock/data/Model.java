@@ -36,7 +36,7 @@ public class Model implements Iterable<Level>
     Level previous = null;
     for (int i = 0; i < count+1; ++i)
     {
-      Level level = new Level(i, width,height,previous);
+      Level level = new Level(i, width*2,height*2,previous);
       
       if (previous != null)
         previous.setNext(level);

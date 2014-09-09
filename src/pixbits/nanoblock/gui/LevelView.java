@@ -87,11 +87,11 @@ public class LevelView extends Drawable
     x /= cellSize;
     y /= cellSize;
     
-    Piece piece = level.pieceAt(x,y);
+    Piece piece = level.pieceAt(x*2,y*2);
 
-    if (level.canPlace(Brush.type, x, y))
-      model.addPiece(level,Brush.type,Brush.color,x,y);
-    else if (!level.isFreeAt(x,y))
+    if (level.canPlace(Brush.type, x*2, y*2))
+      model.addPiece(level,Brush.type,Brush.color,x*2,y*2);
+    else if (!level.isFreeAt(x*2,y*2))
       model.removePiece(level, piece);
     
     Main.sketch.redraw();
@@ -187,7 +187,7 @@ public class LevelView extends Drawable
 
       }
         
-      p.rect(ox+piece.x*cellSize+1, oy+piece.y*cellSize+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
+      p.rect(ox+piece.x*cellSize/2+1, oy+piece.y*cellSize/2+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
       
       //p.fill(0);
       //p.text(""+order++, ox+piece.x*cellSize+1, oy+(piece.y+1)*cellSize+1);

@@ -50,6 +50,7 @@ public class PieceType
   private static final Map<String, PieceType> mapping = new HashMap<String, PieceType>();
   private static final Map<PieceType, String> mapping2 = new HashMap<PieceType, String>();
 
+  public final String toString() { return ""+width+"x"+height+(rounded?"r":"")+(this == CAP?"c":""); }
   
   public static void initMapping()
   {
