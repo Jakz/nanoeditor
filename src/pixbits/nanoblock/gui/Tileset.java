@@ -8,23 +8,33 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 public class Tileset {
-  final public PImage image;
+  final private PImage image;
   final public int hOffset;
   final public int xOffset;
   final public int yOffset;
   final public int hAdjust;
+  final public int[] baseColors;
   final private Map<PieceType, PieceSpec> specs;
-  final private Map<PieceColor, Point> colors;
+  final private Map<PieceColor, PImage> textures;
   
-  public Tileset(String image, int hOffset, int hAdjust, int xOffset, int yOffset)
+  public Tileset(String image, int hOffset, int hAdjust, int xOffset, int yOffset, ArrayList<Integer[]> baseCols)
   {
     specs = new HashMap<PieceType, PieceSpec>();
-    colors = new HashMap<PieceColor, Point>();
+    textures = new HashMap<PieceColor, PImage>();
     this.image = Main.sketch.loadImage(image);
     this.hOffset = hOffset;
     this.hAdjust = hAdjust;
     this.xOffset = xOffset;
     this.yOffset = yOffset;
+    
+    baseColors = new int[baseCols.size()];
+    
+    for (int i = 0; i < baseCols.size(); ++i)
+    {
+      Integer[] rc = baseCols.get(i);
+      int c = (rc[0] << 16) | (rc[1] << 8) | (rc[2] << 0) | ((rc.length > 3 ? rc[3] : 255) << 24);
+      baseColors[i] = c;
+    }
   }
   
   public void addSpec(PieceType piece, int x, int y, int w, int h, int ox, int oy)
@@ -32,16 +42,50 @@ public class Tileset {
     specs.put(piece, new PieceSpec(x,y,w,h,ox,oy));
   }
   
-  public void addColor(PieceColor color, int ox, int oy)
+  public void addColor(PieceColor color, ArrayList<Integer[]> cols)
   {
-    colors.put(color, new Point(ox,oy));
+    int[] newCols = new int[baseColors.length];
+    for (int i = 0; i < cols.size(); ++i)
+    {
+      Integer[] rc = cols.get(i);
+      int c = (rc[0] << 16) | (rc[1] << 8) | (rc[2] << 0) | ((rc.length > 3 ? rc[3] : 255) << 24);
+      newCols[i] = c;
+    }
+    
+    PImage tex = Main.sketch.createImage(image.width, image.height, Sketch.ARGB);
+
+    tex.loadPixels();
+    image.loadPixels();
+
+    for (int i = 0; i < tex.width*tex.height; ++i)
+    {
+      boolean found = false;
+      
+      for (int j = 0; j < baseColors.length; ++j)
+      {
+        if (image.pixels[i] == baseColors[j])
+        {
+          tex.pixels[i] = newCols[j];
+          found = true;
+        }
+      }
+      
+      if (!found)
+        tex.pixels[i] = image.pixels[i];
+    }
+    
+    tex.updatePixels();
+    image.updatePixels();
+    
+    textures.put(color, tex);
   }
   
-  public Point color(PieceColor color)
+  public PImage imageForColor(PieceColor color)
   {
-    return colors.get(color);
+    //return image;
+    return textures.get(color);
   }
-  
+
   public PieceSpec spec(PieceType type) { return specs.get(type); }
   
   public static class PieceSpec
@@ -63,9 +107,10 @@ public class Tileset {
   
   public Rectangle rectFor(PieceType type, PieceColor color)
   {
-    PieceSpec spec = specs.get(type);
-    Point cspec = colors.get(color);
-    
-    return new Rectangle(spec.x + cspec.x, spec.y + cspec.y, spec.w, spec.h);
+    PieceSpec spec = specs.get(type);    
+    return new Rectangle(spec.x, spec.y, spec.w, spec.h);
   }
+  
+  // WHITE 231 208 172 163
+  // BLACK 
 }

@@ -90,6 +90,7 @@ public class PiecePaletteView extends Drawable
     PieceColor color = Brush.color;
     
     Rectangle rectc = Brush.tileset.rectFor(PieceType.CAP, color);
+    PImage texture = Brush.tileset.imageForColor(color);
     int orx = Brush.tileset.spec(PieceType.CAP).ox, ory = Brush.tileset.spec(PieceType.CAP).oy;
     
     for (int i = 0; i < cellCount; ++i)
@@ -117,16 +118,32 @@ public class PiecePaletteView extends Drawable
       buffer.beginDraw();
       buffer.fill(220);
       buffer.rect(0,0,cellSize*2,cellSize*2);
-      buffer.blend(Brush.tileset.image, rect.x, rect.y, rect.width, rect.height, opx, opy, maxW, maxH, Sketch.BLEND);
+      buffer.blend(texture, rect.x, rect.y, rect.width, rect.height, opx, opy, maxW, maxH, Sketch.BLEND);
       
-      for (int ix = 0; ix < type.width; ++ix)
-        for (int iy = 0; iy < type.height; ++iy)
-        {
-          int rx = opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*ix-Brush.tileset.yOffset*iy;
-          int ry = opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.hOffset*(ix+iy-2);
-          
-          buffer.blend(Brush.tileset.image, rectc.x, rectc.y, rectc.width, rectc.height, rx, ry, rectc.width, rectc.height, Sketch.BLEND);
-        }
+      if (!type.monocap)
+      {
+        for (int ix = 0; ix < type.width; ++ix)
+          for (int iy = 0; iy < type.height; ++iy)
+          {
+            int rx = opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*ix-Brush.tileset.yOffset*iy;
+            int ry = opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.hOffset*(ix+iy-2);
+            
+            buffer.blend(texture, rectc.x, rectc.y, rectc.width, rectc.height, rx, ry, rectc.width, rectc.height, Sketch.BLEND);
+          }
+      }
+      else
+      {
+        float ix = 0.5f - (type.width > type.height ? 0.0f : 1.0f);
+        float iy = 0.0f;
+        
+        
+        int rx = (int) (opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*ix-Brush.tileset.yOffset*iy);
+        int ry = (int) (opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.hOffset*(ix+iy-2));
+        
+        if (type.width < type.height) ry += Brush.tileset.hOffset;
+        
+        buffer.blend(texture, rectc.x, rectc.y, rectc.width, rectc.height, rx, ry, rectc.width, rectc.height, Sketch.BLEND);
+      }
       
       buffer.endDraw();
       

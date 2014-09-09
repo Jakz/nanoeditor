@@ -98,14 +98,13 @@ public class Sketch extends PApplet implements ChangeListener
   {
     int fx = (int)(baseX+Brush.tileset.xOffset*x/2.0f-Brush.tileset.yOffset*y/2.0f);
     int fy = (int)(baseY+Brush.tileset.hOffset*(x/2.0f+y/2.0f-l*2));
-    java.awt.Point c = Brush.tileset.color(piece.color);
     
     //if (piece.type != PieceType.CAP)
       fy += Brush.tileset.hAdjust*l;
     
     Tileset.PieceSpec spec = Brush.tileset.spec(piece.type);
-    this.blend(Brush.tileset.image, spec.x + c.x, spec.y + c.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
-
+    PImage texture = Brush.tileset.imageForColor(piece.color);
+    this.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
   }
 
   public void keyPressed()

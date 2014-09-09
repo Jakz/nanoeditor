@@ -3,6 +3,7 @@ package pixbits.nanoblock.files;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.*;
 
+import java.util.*;
 import java.io.*;
 import com.google.gson.*;
 
@@ -19,7 +20,7 @@ public class TileSetLoader
   private static class JsonColorSpec
   {
     String name;
-    int[] offset;
+    ArrayList<Integer[]> colors;
   }
   
   private static class JsonTilesetSpec
@@ -30,6 +31,7 @@ public class TileSetLoader
     int xOffset;
     int yOffset;
     int hAdjust;
+    ArrayList<Integer[]> baseColors;
     JsonPieceSpec[] pieces;
     JsonColorSpec[] colors;
   }
@@ -66,13 +68,13 @@ public class TileSetLoader
   
   public static Tileset buildTileset(JsonTilesetSpec json)
   {
-    Tileset tileset = new Tileset(json.image, json.hOffset, json.hAdjust, json.xOffset, json.yOffset);
+    Tileset tileset = new Tileset(json.image, json.hOffset, json.hAdjust, json.xOffset, json.yOffset, json.baseColors);
     
     for (JsonPieceSpec piece : json.pieces)
       tileset.addSpec(PieceType.forName(piece.name), piece.offset[0], piece.offset[1], piece.size[0], piece.size[1], piece.pivot[0], piece.pivot[1]);
     
     for (JsonColorSpec color : json.colors)
-      tileset.addColor(PieceColor.forName(color.name), color.offset[0], color.offset[1]);
+      tileset.addColor(PieceColor.forName(color.name), color.colors);
     
     return tileset;
   }
