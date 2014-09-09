@@ -113,9 +113,15 @@ public class Sketch extends PApplet implements ChangeListener
     {
       model.clear();
     }
-    else
+    else if (this.key == CODED)
     {
-
+      switch (this.keyCode)
+      {
+        case UP: if (model.canShift(Direction.NORTH)) { model.shift(Direction.NORTH); redraw(); } break;
+        case DOWN: if (model.canShift(Direction.SOUTH)) { model.shift(Direction.SOUTH); redraw(); } break;
+        case LEFT: if (model.canShift(Direction.EAST)) { model.shift(Direction.EAST); redraw(); } break;
+        case RIGHT: if (model.canShift(Direction.WEST)) { model.shift(Direction.WEST); redraw(); } break;
+      }
     }
 
     

@@ -4,7 +4,7 @@ public class Piece
 {
   public final PieceType type;
   public final PieceColor color;
-  public final int x, y;
+  public int x, y;
   
   public Piece(PieceType type, PieceColor color, int x, int y)
   {
