@@ -10,24 +10,36 @@ public class Level implements Iterable<Piece>
   final int width;
   final int height;
   
-  private final Level previous;
+  private Level previous;
   private Level next;
   
   //final int index;
   
-  Level(int index, int width, int height, Level previous)
+  Level(int width, int height, Level previous)
   {
-    this.width = width;
-    this.height = height;
+    this(width, height);
+    
     //this.index = index;
     this.previous = previous;
     
     pieces = new TreeSet<Piece>(new PieceComparator());
   }
   
+  Level(int width, int height)
+  {
+    this.width = width;
+    this.height = height;
+    pieces = new TreeSet<Piece>(new PieceComparator());
+  }
+  
   void setNext(Level next)
   {
     this.next = next;
+  }
+  
+  void setPrevious(Level previous)
+  {
+    this.previous = previous;
   }
   
   public Level previous() { return previous; }

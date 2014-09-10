@@ -36,7 +36,7 @@ public class Model implements Iterable<Level>
     Level previous = null;
     for (int i = 0; i < count+1; ++i)
     {
-      Level level = new Level(i, width*2,height*2,previous);
+      Level level = new Level(width*2,height*2,previous);
       
       if (previous != null)
         previous.setNext(level);
@@ -85,6 +85,58 @@ public class Model implements Iterable<Level>
         p.x = p.x + dir.x*2;
         p.y = p.y + dir.y*2;
       }
+  }
+  
+  public void insertBelow(Level level)
+  {
+    for (int i = 0; i < levels.size(); ++i)
+    {
+      if (levels.get(i) == level)
+      {
+        Level newLevel = new Level(width*2, height*2);
+        
+        Level oldLevel = levels.get(i);
+        
+        if (oldLevel.previous() != null)
+          oldLevel.previous().setNext(newLevel);
+        
+        newLevel.setNext(oldLevel);
+        newLevel.setPrevious(oldLevel.previous());
+        
+        oldLevel.setPrevious(newLevel);
+        
+        levels.add(i, newLevel);
+        
+        //TODO: move caps
+
+        return;
+      }
+    }
+  }
+  
+  public void insertAbove(Level level)
+  {
+    for (int i = 0; i < levels.size(); ++i)
+    {
+      if (levels.get(i) == level)
+      {
+        Level newLevel = new Level(width*2, height*2);
+        
+        Level oldLevel = levels.get(i);
+        
+        if (oldLevel.next() != null)
+          oldLevel.next().setPrevious(newLevel);
+        
+        newLevel.setPrevious(oldLevel);
+        newLevel.setNext(oldLevel.next());
+        
+        oldLevel.setNext(newLevel);
+        
+        //TODO: move caps
+        
+        levels.add(i+1, newLevel);
+      }
+    }
   }
   
   public void removePiece(Level l, Piece piece)

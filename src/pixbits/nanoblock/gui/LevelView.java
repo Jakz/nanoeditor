@@ -217,4 +217,6 @@ public class LevelView extends Drawable
   {
     level = model.levelAt(index);
   }
+  
+  Level level() { return level; }
 }

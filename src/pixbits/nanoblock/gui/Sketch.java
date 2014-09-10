@@ -106,12 +106,54 @@ public class Sketch extends PApplet implements ChangeListener
     PImage texture = Brush.tileset.imageForColor(piece.color);
     this.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
   }
+  
+  public Level hoveredLevel()
+  {
+    for (Drawable d : drawables)
+    {
+      if (d.isInside(mouseX, mouseY) && d instanceof LevelView)
+      {
+        return ((LevelView)d).level();
+      }
+    }
+    
+    return null;
+  }
 
   public void keyPressed()
   {
     if (this.key == 'r')
     {
       model.clear();
+    }
+    else if (this.key == '-')
+    {
+      Level hovered = hoveredLevel();
+      
+      if (hovered != null)
+        model.insertBelow(hovered);
+      
+      /*boolean wentOver = false;
+      
+      for (LevelView v : levelStackView.views)
+      {
+        if (v.level() == hovered)
+          wentOver = true;
+        else if (wentOver)
+          
+      }*/
+      
+      // TODO: manage refresh of the grid
+      
+    }
+    else if (this.key == '+')
+    {
+      Level hovered = hoveredLevel();
+      
+      if (hovered != null)
+        model.insertAbove(hovered);
+      
+      // TODO: manage refresh of the grid
     }
     else if (this.key == CODED)
     {
@@ -121,12 +163,10 @@ public class Sketch extends PApplet implements ChangeListener
         case DOWN: if (model.canShift(Direction.SOUTH)) { model.shift(Direction.SOUTH); redraw(); } break;
         case LEFT: if (model.canShift(Direction.EAST)) { model.shift(Direction.EAST); redraw(); } break;
         case RIGHT: if (model.canShift(Direction.WEST)) { model.shift(Direction.WEST); redraw(); } break;
+        
       }
     }
 
-    
-    /*for (int j = 0; j < 30; ++j)
-      Dungeon.i.separationStep();*/
     redraw();
   }
 
