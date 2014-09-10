@@ -165,6 +165,29 @@ public class Level implements Iterable<Piece>
     return null;
   }
   
+  public Set<Piece> findAllCaps()
+  {
+    Set<Piece> caps = new HashSet<Piece>();
+    
+    for (Piece p : pieces)
+      if (p.type == PieceType.CAP)
+        caps.add(p);
+    
+    return caps;
+  }
+  
+  public void removePieces(Set<Piece> pieces)
+  {
+    for (Piece p : pieces)
+      removePiece(p);
+  }
+  
+  public void addPieces(Set<Piece> pieces)
+  {
+    for (Piece p : pieces)
+      addPiece(p);
+  }
+  
   public int count()
   {
     return pieces.size();

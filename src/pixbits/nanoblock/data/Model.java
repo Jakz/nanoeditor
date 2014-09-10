@@ -46,7 +46,7 @@ public class Model implements Iterable<Level>
       previous = level;
     }
   }
-  
+    
   public boolean canShift(Direction dir)
   {
     int minX = width*2;
@@ -97,6 +97,10 @@ public class Model implements Iterable<Level>
         
         Level oldLevel = levels.get(i);
         
+        Set<Piece> caps = oldLevel.findAllCaps();
+        oldLevel.removePieces(caps);
+        newLevel.addPieces(caps);
+        
         if (oldLevel.previous() != null)
           oldLevel.previous().setNext(newLevel);
         
@@ -123,9 +127,15 @@ public class Model implements Iterable<Level>
         Level newLevel = new Level(width*2, height*2);
         
         Level oldLevel = levels.get(i);
-        
+                
         if (oldLevel.next() != null)
+        {
+          Set<Piece> caps = oldLevel.next().findAllCaps();
+          oldLevel.next().removePieces(caps);
+          newLevel.addPieces(caps);
+          
           oldLevel.next().setPrevious(newLevel);
+        }
         
         newLevel.setPrevious(oldLevel);
         newLevel.setNext(oldLevel.next());
