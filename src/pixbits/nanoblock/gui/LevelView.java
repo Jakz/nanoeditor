@@ -44,12 +44,17 @@ public class LevelView extends Drawable
     x -= ox;
     y -= oy;
     
-    x /= cellSize;
-    y /= cellSize;
+    float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
+    
+    x /= realCellSize;
+    y /= realCellSize;
+    
+    float realWidth = Settings.values.halfSteps ? width*2.0f : width;
+    float realHeight = Settings.values.halfSteps ? height*2.0f : height;
     
     if (x != hx || y != hy)
     {
-      if (x + Brush.type.width <= width && y + Brush.type.height <= height)
+      if (x + Brush.type.width <= realWidth && y + Brush.type.height <= realHeight)
       {
         hx = x;
         hy = y;
@@ -84,14 +89,16 @@ public class LevelView extends Drawable
     x -= ox;
     y -= oy;
     
-    x /= cellSize;
-    y /= cellSize;
+    float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
     
-    Piece piece = level.pieceAt(x*2,y*2);
+    x /= realCellSize;
+    y /= realCellSize;
+    
+    Piece piece = level.pieceAt(x,y);
 
-    if (level.canPlace(Brush.type, x*2, y*2))
-      model.addPiece(level,Brush.type,Brush.color,x*2,y*2);
-    else if (!level.isFreeAt(x*2,y*2))
+    if (level.canPlace(Brush.type, x, y))
+      model.addPiece(level,Brush.type,Brush.color,x,y);
+    else if (!level.isFreeAt(x,y))
       model.removePiece(level, piece);
     
     Main.sketch.redraw();
@@ -199,7 +206,11 @@ public class LevelView extends Drawable
       p.noFill();
       p.strokeWeight(2.0f);
       p.stroke(220,0,0);
-      p.rect(ox+h.x*cellSize+1, oy+h.y*cellSize+1, h.width*cellSize-1, h.height*cellSize-1);
+      
+      float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
+
+      
+      p.rect(ox+h.x*realCellSize+1, oy+h.y*realCellSize+1, h.width*cellSize-1, h.height*cellSize-1);
     }
   }
   
