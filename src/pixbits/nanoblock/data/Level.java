@@ -54,16 +54,22 @@ public class Level implements Iterable<Piece>
     /* add caps to current level */
     if (Main.drawCaps && previous != null && piece.type != PieceType.CAP)
     {
-      for (int i = piece.x-1; i < piece.x+piece.type.width*2; ++i)
-        for (int j = piece.y-1; j < piece.y+piece.type.height*2; ++j)
+      for (int i = piece.x-1; i <= piece.x+piece.type.width*2; ++i)
+        for (int j = piece.y-1; j <= piece.y+piece.type.height*2; ++j)
         {
           if (i >= 0 && j >= 0)
           {
             Piece piece2 = previous.pieceAt(i, j);
-            if (piece2 != null && piece2.type != PieceType.CAP && 
-                ((!piece.type.monocap && i%2 == piece2.x%2 && j%2 == piece2.y%2) ||
-                 (piece2.type.monocap && i == piece2.x+piece2.type.width/2 && j == piece2.y+piece2.type.height/2)))
-              addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
+            
+            if (piece2 != null)
+            {
+              System.out.println("Check "+i+", "+j+" should be "+(piece2.x+1)+","+(piece2.y+0));
+              
+              if (!piece2.type.monocap && i%2 == piece2.x%2 && j%2 == piece2.y%2)
+                addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
+              else if (piece2.type.monocap && ((i == piece2.x+1 && j == piece2.y && piece2.type.width > piece2.type.height) || (i == piece2.x && j == piece2.y+1 && piece2.type.width < piece2.type.height)))
+                addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
+            }
           }
         }
     }
@@ -77,6 +83,8 @@ public class Level implements Iterable<Piece>
     
   void addPiece(Piece piece)
   {
+    System.out.println("Place at "+piece.x+","+piece.y);
+    
     /* remove caps to current level */
     if (Main.drawCaps)
     {   
