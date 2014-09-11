@@ -52,9 +52,12 @@ public class LevelView extends Drawable
     float realWidth = Settings.values.halfSteps ? width*2.0f : width;
     float realHeight = Settings.values.halfSteps ? height*2.0f : height;
     
+    float realPieceWidth = Settings.values.halfSteps ? Brush.type.width*2.0f : Brush.type.width;
+    float realPieceHeight = Settings.values.halfSteps ? Brush.type.height*2.0f : Brush.type.height;
+    
     if (x != hx || y != hy)
     {
-      if (x + Brush.type.width <= realWidth && y + Brush.type.height <= realHeight)
+      if (x + realPieceWidth <= realWidth && y + realPieceHeight <= realHeight)
       {
         hx = x;
         hy = y;
@@ -86,22 +89,25 @@ public class LevelView extends Drawable
   
   public void mouseReleased(int x, int y)
   {
-    x -= ox;
-    y -= oy;
-    
-    float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
-    
-    x /= realCellSize;
-    y /= realCellSize;
-    
-    Piece piece = level.pieceAt(x,y);
-
-    if (level.canPlace(Brush.type, x, y))
-      model.addPiece(level,Brush.type,Brush.color,x,y);
-    else if (!level.isFreeAt(x,y))
-      model.removePiece(level, piece);
-    
-    Main.sketch.redraw();
+    if (parent.hover() != null)
+    {   
+      x -= ox;
+      y -= oy;
+      
+      float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
+      
+      x /= realCellSize;
+      y /= realCellSize;
+      
+      Piece piece = level.pieceAt(x,y);
+  
+      if (level.canPlace(Brush.type, x, y))
+        model.addPiece(level,Brush.type,Brush.color,x,y);
+      else if (!level.isFreeAt(x,y))
+        model.removePiece(level, piece);
+      
+      Main.sketch.redraw();
+    }
   }
   
   public void mouseWheelMoved(int x)
