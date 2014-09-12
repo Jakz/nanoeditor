@@ -62,9 +62,7 @@ public class Level implements Iterable<Piece>
             Piece piece2 = previous.pieceAt(i, j);
             
             if (piece2 != null)
-            {
-              System.out.println("Check "+i+", "+j+" should be "+(piece2.x+1)+","+(piece2.y+0));
-              
+            {              
               if (!piece2.type.monocap && i%2 == piece2.x%2 && j%2 == piece2.y%2)
                 addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
               else if (piece2.type.monocap && ((i == piece2.x+1 && j == piece2.y && piece2.type.width > piece2.type.height) || (i == piece2.x && j == piece2.y+1 && piece2.type.width < piece2.type.height)))
@@ -107,10 +105,14 @@ public class Level implements Iterable<Piece>
     {
       if (!piece.type.monocap)
       {
+        System.out.println("Check for caps to add");
+        
         for (int i = 0; i < piece.type.width*2; i += 2)
           for (int j = 0; j < piece.type.height*2; j += 2)
-            if (next.isFreeAt(i,j))
+          {
+            if (next.isFreeAt(piece.x+i,piece.y+j))
               next.addPiece(new Piece(PieceType.CAP, piece.color, piece.x+i, piece.y+j));
+          }
       }
       else
       {
