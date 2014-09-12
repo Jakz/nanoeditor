@@ -213,6 +213,18 @@ public class Level implements Iterable<Piece>
     pieces.clear();
   }
   
+  public int indexOfPiece(Piece piece)
+  {
+    int i = 0;
+    for (Piece p : pieces)
+    {
+      if (p.equals(piece)) break;
+      ++i;
+    }
+   
+    return i;
+  }
+  
   private static class PieceComparator implements Comparator<Piece>
   {
     public int compare(Piece p1, Piece p2)
@@ -221,10 +233,10 @@ public class Level implements Iterable<Piece>
         return 0;
       else
       {
-        int sum1x = p1.x + p1.type.width - 1;
-        int sum2x = p2.x + p2.type.width - 1;
-        int sum1y = p1.y + p1.type.height - 1;
-        int sum2y = p2.y + p2.type.height - 1;
+        int sum1x = p1.x + (p1.type.width - 1)*2;
+        int sum2x = p2.x + (p2.type.width - 1)*2;
+        int sum1y = p1.y + (p1.type.height - 1)*2;
+        int sum2y = p2.y + (p2.type.height - 1)*2;
         
         if ((sum1x < p2.x || sum1y < p2.y) && (sum2x < p1.x || sum2y < p1.y))
         {
