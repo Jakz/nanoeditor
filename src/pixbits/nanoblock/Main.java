@@ -12,8 +12,6 @@ public class Main
   public static Sketch sketch;
   public static MainFrame mainFrame;
   
-  public static boolean drawCaps = true;
-  
   public static void main(String[] args)
   {
     TileSetLoader.loadTileset("tileset.json");

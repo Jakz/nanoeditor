@@ -2,11 +2,12 @@ package pixbits.nanoblock.data;
 
 import java.util.*;
 
-import pixbits.nanoblock.Main;
+import pixbits.nanoblock.files.Log;
+import pixbits.nanoblock.gui.Settings;
 
 public class Level implements Iterable<Piece>
 {
-  Set<Piece> pieces;
+  List<Piece> pieces;
   final int width;
   final int height;
   
@@ -22,14 +23,17 @@ public class Level implements Iterable<Piece>
     //this.index = index;
     this.previous = previous;
     
-    pieces = new TreeSet<Piece>(new PieceComparator());
+    pieces = new ArrayList<Piece>();
+    //pieces = new TreeSet<Piece>(new PieceComparator());
   }
   
   Level(int width, int height)
   {
     this.width = width;
     this.height = height;
-    pieces = new TreeSet<Piece>(new PieceComparator());
+    
+    pieces = new ArrayList<Piece>();
+    //pieces = new TreeSet<Piece>(new PieceComparator());
   }
   
   void setNext(Level next)
@@ -52,7 +56,7 @@ public class Level implements Iterable<Piece>
     pieces.remove(piece);
     
     /* add caps to current level */
-    if (Main.drawCaps && previous != null && piece.type != PieceType.CAP)
+    if (Settings.values.drawCaps && previous != null && piece.type != PieceType.CAP)
     {
       for (int i = piece.x-1; i <= piece.x+piece.type.width*2; ++i)
         for (int j = piece.y-1; j <= piece.y+piece.type.height*2; ++j)
@@ -73,18 +77,20 @@ public class Level implements Iterable<Piece>
     }
     
     /* remove caps to next level */
-    if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
+    if (Settings.values.drawCaps && next != null && piece.type != PieceType.CAP)
     {
       next.removeCaps(piece.x, piece.y, piece.type.width*2, piece.type.height*2);
     }
+    
+    resortPieces();
   }
     
   void addPiece(Piece piece)
   {
-    System.out.println("Place at "+piece.x+","+piece.y);
+    System.out.println("Place at "+piece.x+","+piece.y+"   "+piece);
     
     /* remove caps to current level */
-    if (Main.drawCaps)
+    if (Settings.values.drawCaps)
     {   
       Iterator<Piece> pieces = iterator();
       while (pieces.hasNext())
@@ -101,7 +107,7 @@ public class Level implements Iterable<Piece>
     pieces.add(piece);    
     
     /* add caps to next level */
-    if (Main.drawCaps && next != null && piece.type != PieceType.CAP)
+    if (Settings.values.drawCaps && next != null && piece.type != PieceType.CAP)
     {
       if (!piece.type.monocap)
       {
@@ -123,6 +129,7 @@ public class Level implements Iterable<Piece>
       }
     }
     
+    resortPieces();
   }
   
   public boolean isFreeAt(int x, int y)
@@ -225,7 +232,91 @@ public class Level implements Iterable<Piece>
     return i;
   }
   
-  private static class PieceComparator implements Comparator<Piece>
+  public void resortPieces()
+  {
+    Map<Piece, Set<Piece>> deps = new HashMap<Piece, Set<Piece>>();
+    
+    // create the empty dependancy graph
+    for (Piece p : pieces) deps.put(p, new HashSet<Piece>());
+
+    System.out.println("Populate dependency");
+    // populate the dependency graph
+    for (int i = 0; i < pieces.size(); ++i)
+      for (int j = 0; j < pieces.size(); ++j)
+      {
+        if (i != j)
+        {
+          // i is in front of j
+          if (pieces.get(i).overlaps(pieces.get(j)))
+          {
+            deps.get(pieces.get(i)).add(pieces.get(j));
+          }
+  
+          // j is in front of i
+          if (pieces.get(j).overlaps(pieces.get(i)))
+          {
+            deps.get(pieces.get(j)).add(pieces.get(i));
+          }
+        }
+      }
+    
+    for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
+    {
+      System.out.println(e.getKey()+":");
+      for (Piece p : e.getValue())
+        System.out.println("  > "+p);
+    }
+    
+    List<Piece> newPieces = new ArrayList<Piece>();
+    
+    
+    boolean stuck = false;
+    System.out.println("Build topological sort");
+    while (!deps.isEmpty())
+    {
+      Piece toRemove = null;
+      for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
+      {
+        // current piece doesn't depend on anything, we can add it to the list
+        if (e.getValue().isEmpty()) 
+        {
+          toRemove = e.getKey();
+          break;
+        }
+      }
+      
+      if (toRemove != null)
+      {
+        // add new piece to the ordered list of pieces
+        newPieces.add(toRemove);
+        System.out.println("Adding "+toRemove+" still to add "+(deps.size()-1));
+        
+        // remove piece from constraints in the graph
+        for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
+          e.getValue().remove(toRemove);
+        
+        // remove element for the piece from the graph
+          deps.remove(toRemove);
+      }
+      else
+      {
+        if (!stuck)
+        {
+          Log.e("[LAYOUT ERROR] Unable to find topological sort, remaining pieces: ");
+          for (Piece p : deps.keySet())
+            Log.e(" > "+p);
+        }
+        stuck = true;
+      }
+    }
+    
+    
+    pieces = newPieces;
+  }
+  
+  
+  
+  public static class PieceComparator implements Comparator<Piece>
   {
     public int compare(Piece p1, Piece p2)
     {

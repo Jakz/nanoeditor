@@ -10,7 +10,9 @@ import pixbits.nanoblock.files.TileSetLoader;
 import java.awt.Color;
 import java.util.*;
 import java.awt.event.*;
+
 import javax.swing.event.*;
+
 import processing.core.*;
 
 /*
@@ -41,6 +43,21 @@ public class Sketch extends PApplet implements ChangeListener
 
     font = createFont("Helvetica", 16);
     
+    Piece pieces[] = new Piece[] {
+       //new Piece(PieceType.P2x1, PieceColor.WHITE, 2, 0),
+       new Piece(PieceType.P2x1, PieceColor.YELLOW, 6, 0),
+       //new Piece(PieceType.P2x1, PieceColor.GREEN_LIME, 0, 2),
+       //new Piece(PieceType.P2x1, PieceColor.ORANGE, 4, 2),
+       new Piece(PieceType.P2x1, PieceColor.PINK, 2, 4),
+       //new Piece(PieceType.P2x1, PieceColor.WHITE, 6, 4)
+    };
+    
+    Level.PieceComparator p = new Level.PieceComparator();
+    
+    /*System.out.println("Real Test");
+    System.out.println(p.compare(pieces[0], pieces[1])+" "+pieces[0].color+", "+pieces[1].color);
+    System.out.println(p.compare(pieces[1], pieces[0])+" "+pieces[1].color+", "+pieces[0].color);*/
+    
     model = ModelLoader.loadModel("model.nblock");
     
     if (model == null)
@@ -48,7 +65,7 @@ public class Sketch extends PApplet implements ChangeListener
       model = new Model(20,20);
       model.allocateLevels(12);
     }
-
+    
     levelStackView = new LevelStackView(this, 3, 0, 0, 14, 10, model);
     
     ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,6);
@@ -95,9 +112,7 @@ public class Sketch extends PApplet implements ChangeListener
   public int baseY = 260;
   
   public void drawPiece(Piece piece, int x, int y, int l, Level level)
-  {
-    if (piece.type == PieceType.CAP) return;
-    
+  {    
     int fx = (int)(baseX+Brush.tileset.xOffset*x/2.0f-Brush.tileset.yOffset*y/2.0f);
     int fy = (int)(baseY+Brush.tileset.hOffset*(x/2.0f+y/2.0f-l*2));
     

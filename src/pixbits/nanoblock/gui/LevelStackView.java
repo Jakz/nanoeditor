@@ -16,7 +16,7 @@ public class LevelStackView
   {
     views = new LevelView[count];
     
-    for (int i = 0; i < count; ++i)
+    for (int i = 0; i < count && i < model.levelCount(); ++i)
     {
       views[i] = new LevelView(this, p, model, model.levelAt(i), ox, oy+(count-i-1)*(margin+cellSize*model.height), cellSize);
       p.addDrawable(views[i]);
