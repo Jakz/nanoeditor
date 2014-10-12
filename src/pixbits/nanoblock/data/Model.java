@@ -90,8 +90,8 @@ public class Model implements Iterable<Level>
       case NORTH: return minY >= 2;
       case SOUTH: return maxY <= info.height*2 - 2;
       
-      case WEST: return maxX <= info.width*2 - 2;
-      case EAST: return minX >= 2;
+      case EAST: return maxX <= info.width*2 - 2;
+      case WEST: return minX >= 2;
       
       default: return false;
     }

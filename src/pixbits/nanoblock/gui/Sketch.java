@@ -6,8 +6,10 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.ui.*;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
+import pixbits.nanoblock.tasks.Tasks;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.files.TileSetLoader;
+import pixbits.nanoblock.files.Library;
 
 import java.io.*;
 import java.awt.Color;
@@ -29,9 +31,7 @@ public class Sketch extends PApplet implements ChangeListener
   private static final long serialVersionUID = 1L;
 
   final List<Drawable> drawables = new ArrayList<Drawable>();
-  
-	public Model model;
-	
+  	
 	public LevelStackView levelStackView;
 	
 	public PFont font;
@@ -61,15 +61,15 @@ public class Sketch extends PApplet implements ChangeListener
     System.out.println(p.compare(pieces[0], pieces[1])+" "+pieces[0].color+", "+pieces[1].color);
     System.out.println(p.compare(pieces[1], pieces[0])+" "+pieces[1].color+", "+pieces[0].color);*/
     
-    model = ModelLoader.loadModel(new File("model.nblock"));
+    Library.model = ModelLoader.loadModel(new File("model.nblock"));
     
-    if (model == null)
+    if (Library.model == null)
     { 
-      model = new Model(20,20);
-      model.allocateLevels(12);
+      Library.model = new Model(20,20);
+      Library.model.allocateLevels(12);
     }
     
-    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 10, model);
+    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 10, Library.model);
     
     ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,6);
     drawables.add(paletteView);
@@ -94,9 +94,9 @@ public class Sketch extends PApplet implements ChangeListener
   {
   	background(220); 
 
-  	for (int l = 0; l < model.levelCount(); ++l)
+  	for (int l = 0; l < Library.model.levelCount(); ++l)
   	{
-  	  Level level = model.levelAt(l);
+  	  Level level = Library.model.levelAt(l);
   	  Iterator<Piece> pieces = level.iterator();
 
   	  while (pieces.hasNext())
@@ -150,14 +150,14 @@ public class Sketch extends PApplet implements ChangeListener
   {
     if (this.key == 'r')
     {
-      model.clear();
+      Library.model.clear();
     }
     else if (this.key == '-')
     {
       Level hovered = hoveredLevel();
       
       if (hovered != null)
-        model.insertBelow(hovered);
+        Library.model.insertBelow(hovered);
       
       /*boolean wentOver = false;
       
@@ -177,7 +177,7 @@ public class Sketch extends PApplet implements ChangeListener
       Level hovered = hoveredLevel();
       
       if (hovered != null)
-        model.insertAbove(hovered);
+        Library.model.insertAbove(hovered);
       
       // TODO: manage refresh of the grid
     }
@@ -185,11 +185,10 @@ public class Sketch extends PApplet implements ChangeListener
     {
       switch (this.keyCode)
       {
-        case UP: if (model.canShift(Direction.NORTH)) { model.shift(Direction.NORTH); redraw(); } break;
-        case DOWN: if (model.canShift(Direction.SOUTH)) { model.shift(Direction.SOUTH); redraw(); } break;
-        case LEFT: if (model.canShift(Direction.EAST)) { model.shift(Direction.EAST); redraw(); } break;
-        case RIGHT: if (model.canShift(Direction.WEST)) { model.shift(Direction.WEST); redraw(); } break;
-        
+        case UP: Tasks.MODEL_SHIFT_NORTH.execute(Library.model); break;
+        case DOWN: Tasks.MODEL_SHIFT_SOUTH.execute(Library.model); break;
+        case LEFT: Tasks.MODEL_SHIFT_WEST.execute(Library.model); break;
+        case RIGHT: Tasks.MODEL_SHIFT_EAST.execute(Library.model); break;
       }
     }
 

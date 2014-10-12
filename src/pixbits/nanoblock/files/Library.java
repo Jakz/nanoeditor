@@ -8,6 +8,8 @@ import pixbits.nanoblock.misc.Settings;
 
 public class Library
 {
+  public static Model model;
+  
   private final List<LibraryModel> models;
   
   Library()

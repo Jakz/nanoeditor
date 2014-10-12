@@ -28,6 +28,7 @@ public class LibraryFrame extends JFrame
     
     this.setLayout(new BorderLayout());
     this.add(scrollpane, BorderLayout.CENTER);
+    this.add(new LibraryInfoPanel(), BorderLayout.EAST);
     
     setTitle("Library");
     pack();
