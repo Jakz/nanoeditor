@@ -100,6 +100,7 @@ public class Sketch extends PApplet implements ChangeListener
       {
         Piece piece = pieces.next();
 
+        if (piece.type != PieceType.CAP || Settings.values.drawCaps)
         drawPiece(piece, piece.x, piece.y, l, level);
       }
   	}
@@ -123,7 +124,10 @@ public class Sketch extends PApplet implements ChangeListener
     PImage texture = Brush.tileset.imageForColor(piece.color);
     this.fill(0);
     this.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
-    this.text(""+level.indexOfPiece(piece),fx+spec.ox+spec.w/2,fy+spec.oy+spec.h/2);
+    
+    
+    if (Settings.values.showPieceOrder)
+      this.text(""+level.indexOfPiece(piece),fx+spec.ox+spec.w/2,fy+spec.oy+spec.h/2);
   }
   
   public Level hoveredLevel()

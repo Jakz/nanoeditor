@@ -56,7 +56,7 @@ public class Level implements Iterable<Piece>
     pieces.remove(piece);
     
     /* add caps to current level */
-    if (Settings.values.drawCaps && previous != null && piece.type != PieceType.CAP)
+    if (previous != null && piece.type != PieceType.CAP)
     {
       for (int i = piece.x-1; i <= piece.x+piece.type.width*2; ++i)
         for (int j = piece.y-1; j <= piece.y+piece.type.height*2; ++j)
@@ -77,7 +77,7 @@ public class Level implements Iterable<Piece>
     }
     
     /* remove caps to next level */
-    if (Settings.values.drawCaps && next != null && piece.type != PieceType.CAP)
+    if (next != null && piece.type != PieceType.CAP)
     {
       next.removeCaps(piece.x, piece.y, piece.type.width*2, piece.type.height*2);
     }
@@ -87,31 +87,28 @@ public class Level implements Iterable<Piece>
     
   void addPiece(Piece piece)
   {
-    System.out.println("Place at "+piece.x+","+piece.y+"   "+piece);
+    //System.out.println("Place at "+piece.x+","+piece.y+"   "+piece);
     
     /* remove caps to current level */
-    if (Settings.values.drawCaps)
-    {   
-      Iterator<Piece> pieces = iterator();
-      while (pieces.hasNext())
-      {
-        Piece piece2 = pieces.next();
-        if (piece2.type == PieceType.CAP)
-          if (piece2.x >= piece.x-1 && piece2.x < piece.x+piece.type.width*2 && piece2.y >= piece.y-1 && piece2.y < piece.y+piece.type.height*2)
-            pieces.remove();
-         
-      }
+    Iterator<Piece> lpieces = iterator();
+    while (lpieces.hasNext())
+    {
+      Piece piece2 = lpieces.next();
+      if (piece2.type == PieceType.CAP)
+        if (piece2.x >= piece.x-1 && piece2.x < piece.x+piece.type.width*2 && piece2.y >= piece.y-1 && piece2.y < piece.y+piece.type.height*2)
+          lpieces.remove();
+       
     }
     
     //System.out.println("Add "+piece);
     pieces.add(piece);    
     
     /* add caps to next level */
-    if (Settings.values.drawCaps && next != null && piece.type != PieceType.CAP)
+    if (next != null && piece.type != PieceType.CAP)
     {
       if (!piece.type.monocap)
       {
-        System.out.println("Check for caps to add");
+        //System.out.println("Check for caps to add");
         
         for (int i = 0; i < piece.type.width*2; i += 2)
           for (int j = 0; j < piece.type.height*2; j += 2)
@@ -239,7 +236,7 @@ public class Level implements Iterable<Piece>
     // create the empty dependancy graph
     for (Piece p : pieces) deps.put(p, new HashSet<Piece>());
 
-    System.out.println("Populate dependency");
+    //System.out.println("Populate dependency");
     // populate the dependency graph
     for (int i = 0; i < pieces.size(); ++i)
       for (int j = 0; j < pieces.size(); ++j)
@@ -260,18 +257,18 @@ public class Level implements Iterable<Piece>
         }
       }
     
-    for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
+    /*for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
     {
       System.out.println(e.getKey()+":");
       for (Piece p : e.getValue())
         System.out.println("  > "+p);
-    }
+    }*/
     
     List<Piece> newPieces = new ArrayList<Piece>();
     
     
     boolean stuck = false;
-    System.out.println("Build topological sort");
+    //System.out.println("Build topological sort");
     while (!deps.isEmpty())
     {
       Piece toRemove = null;
@@ -289,7 +286,7 @@ public class Level implements Iterable<Piece>
       {
         // add new piece to the ordered list of pieces
         newPieces.add(toRemove);
-        System.out.println("Adding "+toRemove+" still to add "+(deps.size()-1));
+        //System.out.println("Adding "+toRemove+" still to add "+(deps.size()-1));
         
         // remove piece from constraints in the graph
         for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
