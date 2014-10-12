@@ -1,7 +1,8 @@
-package pixbits.nanoblock.gui;
+package pixbits.nanoblock.gui.frames;
 
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.files.ModelLoader;
+import pixbits.nanoblock.gui.Sketch;
 import pixbits.nanoblock.tasks.Tasks;
 
 import java.awt.*;

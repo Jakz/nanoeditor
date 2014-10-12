@@ -1,4 +1,4 @@
-package pixbits.nanoblock.gui;
+package pixbits.nanoblock.gui.frames;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;

@@ -5,7 +5,8 @@ import java.util.Iterator;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
-
+import pixbits.nanoblock.misc.Setting;
+import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
 
 public class LevelView extends Drawable
@@ -42,16 +43,18 @@ public class LevelView extends Drawable
     x -= ox;
     y -= oy;
     
-    float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
+    boolean halfSteps = Settings.values.get(Setting.HALF_STEPS_ENABLED);
+    
+    float realCellSize = halfSteps ? cellSize/2.0f : cellSize;
     
     x /= realCellSize;
     y /= realCellSize;
     
-    float realWidth = Settings.values.halfSteps ? model.getWidth()*2.0f : model.getWidth();
-    float realHeight = Settings.values.halfSteps ? model.getHeight()*2.0f : model.getHeight();
+    float realWidth = halfSteps ? model.getWidth()*2.0f : model.getWidth();
+    float realHeight = halfSteps ? model.getHeight()*2.0f : model.getHeight();
     
-    float realPieceWidth = Settings.values.halfSteps ? Brush.type.width*2.0f : Brush.type.width;
-    float realPieceHeight = Settings.values.halfSteps ? Brush.type.height*2.0f : Brush.type.height;
+    float realPieceWidth = halfSteps ? Brush.type.width*2.0f : Brush.type.width;
+    float realPieceHeight = halfSteps ? Brush.type.height*2.0f : Brush.type.height;
     
     if (x != hx || y != hy)
     {
@@ -92,7 +95,7 @@ public class LevelView extends Drawable
       x -= ox;
       y -= oy;
       
-      float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
+      float realCellSize = Settings.values.get(Setting.HALF_STEPS_ENABLED) ? cellSize/2.0f : cellSize;
       
       x /= realCellSize;
       y /= realCellSize;
@@ -211,7 +214,7 @@ public class LevelView extends Drawable
       p.strokeWeight(2.0f);
       p.stroke(220,0,0);
       
-      float realCellSize = Settings.values.halfSteps ? cellSize/2.0f : cellSize;
+      float realCellSize = Settings.values.get(Setting.HALF_STEPS_ENABLED) ? cellSize/2.0f : cellSize;
 
       
       p.rect(ox+h.x*realCellSize+1, oy+h.y*realCellSize+1, h.width*cellSize-1, h.height*cellSize-1);

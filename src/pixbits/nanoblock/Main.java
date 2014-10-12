@@ -2,6 +2,8 @@ package pixbits.nanoblock;
 
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
+import pixbits.nanoblock.gui.frames.LibraryFrame;
+import pixbits.nanoblock.gui.frames.MainFrame;
 
 public class Main
 {

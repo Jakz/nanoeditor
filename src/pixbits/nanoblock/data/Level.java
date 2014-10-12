@@ -3,7 +3,7 @@ package pixbits.nanoblock.data;
 import java.util.*;
 
 import pixbits.nanoblock.files.Log;
-import pixbits.nanoblock.gui.Settings;
+import pixbits.nanoblock.misc.Settings;
 
 public class Level implements Iterable<Piece>
 {

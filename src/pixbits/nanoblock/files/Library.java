@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.*;
 
 import pixbits.nanoblock.data.*;
-import pixbits.nanoblock.gui.Settings;
+import pixbits.nanoblock.misc.Settings;
 
 public class Library
 {

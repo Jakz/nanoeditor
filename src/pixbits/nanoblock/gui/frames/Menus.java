@@ -1,4 +1,4 @@
-package pixbits.nanoblock.gui;
+package pixbits.nanoblock.gui.frames;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 import pixbits.nanoblock.Main;
+import pixbits.nanoblock.misc.Setting;
+import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.Tasks;
 
 public class Menus
@@ -31,8 +33,10 @@ public class Menus
     FILE_SAVE("Save"),
     FILE_EXIT("Exit"),
     
-    VIEW_HIDE_CAPS("Hide caps", ItemType.CHECKBOX),
-    VIEW_SHOW_PIECE_ORDER("Show piece order", ItemType.CHECKBOX),
+    EDIT_HALF_STEPS("Use half steps", ItemType.CHECKBOX, Setting.HALF_STEPS_ENABLED),
+    
+    VIEW_HIDE_CAPS("Draw caps", ItemType.CHECKBOX, Setting.DRAW_CAPS),
+    VIEW_SHOW_PIECE_ORDER("Show piece order", ItemType.CHECKBOX, Setting.SHOW_PIECE_ORDER),
     
     SEPARATOR(null),
     
@@ -40,14 +44,16 @@ public class Menus
     
     public final String caption;
     public final ItemType type;
+    public final Setting setting;
     
-    Item(String caption, ItemType type) { this.caption = caption; this.type = type; }
-    Item(String caption) { this(caption,ItemType.BUTTON); }
+    Item(String caption, ItemType type, Setting setting) { this.caption = caption; this.type = type; this.setting = setting; }
+    Item(String caption) { this(caption,ItemType.BUTTON,null); }
   }
   
-  private static final String[] menus = {"File", "View"};
+  private static final String[] menus = {"File", "Edit", "View"};
   private static final Item[][] menuItems = new Item[][]{
     new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXIT},
+    new Item[]{Item.EDIT_HALF_STEPS},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
   
@@ -75,7 +81,14 @@ public class Menus
           switch (items[j].type)
           {
             case BUTTON: item = new JMenuItem(items[j].caption); break;
-            case CHECKBOX: item = new JCheckBoxMenuItem(items[j].caption); break;
+            case CHECKBOX:
+            {
+              item = new JCheckBoxMenuItem(items[j].caption); 
+              boolean value = Settings.values.get(items[j].setting);
+              ((JCheckBoxMenuItem)item).setSelected(value);
+              break;
+            }
+             
           }
           
           item.addActionListener(menuListener);
@@ -110,17 +123,12 @@ public class Menus
           break;
         }
       
-        
-        case VIEW_HIDE_CAPS:
-        {
-          Settings.values.drawCaps = !Settings.values.drawCaps;
-          Main.sketch.redraw();
-          break;
-        }
-        
         case VIEW_SHOW_PIECE_ORDER:
+        case VIEW_HIDE_CAPS:
+          
+        case EDIT_HALF_STEPS:
         {
-          Settings.values.showPieceOrder = !Settings.values.showPieceOrder;
+          Settings.values.toggle(item.setting);
           Main.sketch.redraw();
           break;
         }

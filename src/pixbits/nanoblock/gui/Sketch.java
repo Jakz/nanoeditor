@@ -4,6 +4,8 @@ package pixbits.nanoblock.gui;
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.ui.*;
+import pixbits.nanoblock.misc.Setting;
+import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.files.TileSetLoader;
 
@@ -101,7 +103,7 @@ public class Sketch extends PApplet implements ChangeListener
       {
         Piece piece = pieces.next();
 
-        if (piece.type != PieceType.CAP || Settings.values.drawCaps)
+        if (piece.type != PieceType.CAP || Settings.values.get(Setting.DRAW_CAPS))
         drawPiece(piece, piece.x, piece.y, l, level);
       }
   	}
@@ -127,7 +129,7 @@ public class Sketch extends PApplet implements ChangeListener
     this.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
     
     
-    if (Settings.values.showPieceOrder)
+    if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
       this.text(""+level.indexOfPiece(piece),fx+spec.ox+spec.w/2,fy+spec.oy+spec.h/2);
   }
   
