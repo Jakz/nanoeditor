@@ -18,25 +18,18 @@ public class ModelLoader
   
   private static class JsonModel
   {
-    public String name;
-    public int width;
-    public int height;
-    public int levels;
+    public ModelInfo info;
     JsonPiece[][] pieces;
   }
   
-  public static void saveModel(Model model, String filename)
+  public static void saveModel(Model model, File file)
   {
     try
     {
-      File file = new File(filename);
       BufferedWriter wrt = new BufferedWriter(new FileWriter(file));
       
       JsonModel jmodel = new JsonModel();
-      jmodel.name = "";
-      jmodel.width = model.width;
-      jmodel.height = model.height;
-      jmodel.levels = model.levelCount();
+      jmodel.info = model.getInfo();
       
       List<ArrayList<JsonPiece>> pieces = new ArrayList<ArrayList<JsonPiece>>();
       ArrayList<JsonPiece> current = null;
@@ -66,6 +59,7 @@ public class ModelLoader
       }
       
       GsonBuilder builder = new GsonBuilder();
+      builder.setPrettyPrinting();
       Gson gson = builder.create();
       wrt.write(gson.toJson(jmodel, JsonModel.class));
       wrt.close();
@@ -76,12 +70,24 @@ public class ModelLoader
     }
   }
   
-  public static Model loadModel(String filename)
+  public static ModelInfo loadInfo(File file) throws FileNotFoundException, IOException
+  {
+    BufferedReader rdr = new BufferedReader(new FileReader(file));
+    
+    GsonBuilder builder = new GsonBuilder();
+    Gson gson = builder.create();
+    
+    JsonModel jmodel = gson.fromJson(rdr, JsonModel.class);
+    
+    rdr.close();
+    
+    return jmodel.info;
+  }
+  
+  public static Model loadModel(File file)
   {
     try
-    {
-      File file = new File(filename);
-    
+    {    
       if (file.exists())
       {
         BufferedReader rdr = new BufferedReader(new FileReader(file));
@@ -91,8 +97,8 @@ public class ModelLoader
         
         JsonModel jmodel = gson.fromJson(rdr, JsonModel.class);
         
-        Model model = new Model(jmodel.width, jmodel.height);
-        model.allocateLevels(jmodel.levels-1);
+        Model model = new Model(jmodel.info);
+        model.allocateLevels(jmodel.info.levels+1);
         
         JsonPiece[][] pieces = jmodel.pieces;
         

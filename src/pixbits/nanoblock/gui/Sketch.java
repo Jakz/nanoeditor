@@ -7,6 +7,7 @@ import pixbits.nanoblock.gui.ui.*;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.files.TileSetLoader;
 
+import java.io.*;
 import java.awt.Color;
 import java.util.*;
 import java.awt.event.*;
@@ -58,7 +59,7 @@ public class Sketch extends PApplet implements ChangeListener
     System.out.println(p.compare(pieces[0], pieces[1])+" "+pieces[0].color+", "+pieces[1].color);
     System.out.println(p.compare(pieces[1], pieces[0])+" "+pieces[1].color+", "+pieces[0].color);*/
     
-    model = ModelLoader.loadModel("model.nblock");
+    model = ModelLoader.loadModel(new File("model.nblock"));
     
     if (model == null)
     { 

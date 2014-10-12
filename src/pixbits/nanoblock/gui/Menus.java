@@ -107,6 +107,7 @@ public class Menus
         {
           Tasks.saveModel();
           System.exit(0);
+          break;
         }
       
         
@@ -114,12 +115,14 @@ public class Menus
         {
           Settings.values.drawCaps = !Settings.values.drawCaps;
           Main.sketch.redraw();
+          break;
         }
         
         case VIEW_SHOW_PIECE_ORDER:
         {
           Settings.values.showPieceOrder = !Settings.values.showPieceOrder;
           Main.sketch.redraw();
+          break;
         }
       
         default: break;

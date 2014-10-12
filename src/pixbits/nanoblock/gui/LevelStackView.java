@@ -18,11 +18,11 @@ public class LevelStackView
     
     for (int i = 0; i < count && i < model.levelCount(); ++i)
     {
-      views[i] = new LevelView(this, p, model, model.levelAt(i), ox, oy+(count-i-1)*(margin+cellSize*model.height), cellSize);
+      views[i] = new LevelView(this, p, model, model.levelAt(i), ox, oy+(count-i-1)*(margin+cellSize*model.getHeight()), cellSize);
       p.addDrawable(views[i]);
     }
     
-    scrollbar = new LevelScrollBar(p, model, views, ox+cellSize*model.width, oy, 20, model.height*cellSize*count + margin*(count-1), 20);
+    scrollbar = new LevelScrollBar(p, model, views, ox+cellSize*model.getWidth(), oy, 20, model.getHeight()*cellSize*count + margin*(count-1), 20);
     p.addDrawable(scrollbar);
   }
   

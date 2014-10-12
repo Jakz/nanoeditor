@@ -16,6 +16,13 @@ public class Main
   {
     TileSetLoader.loadTileset("tileset.json");
     
+    try {
+    Library.i().scan();
+    } catch (Exception e) { e.printStackTrace(); }
+    LibraryFrame libraryFrame = new LibraryFrame();
+    libraryFrame.getModel().add(Library.i().getModels());
+    libraryFrame.setVisible(true);
+    
     sketch = new Sketch();
     mainFrame = new MainFrame();
     mainFrame.setLocationRelativeTo(null);

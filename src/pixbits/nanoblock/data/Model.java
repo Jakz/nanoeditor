@@ -4,16 +4,29 @@ import java.util.*;
 
 public class Model implements Iterable<Level>
 {
+  private ModelInfo info;
+  
   final private List<Level> levels;
-  public final int width, height;
+  
+  public Model(ModelInfo info)
+  {
+    levels = new ArrayList<Level>();
+    this.info = info;
+  }
   
   public Model(int width, int height)
   {
     levels = new ArrayList<Level>();
-    
-    this.width = width;
-    this.height = height;
+    info = new ModelInfo();
+    info.width = width;
+    info.height = height;
   }
+  
+  public ModelInfo getInfo() { return info; }
+  public void setInfo(ModelInfo info) { this.info = info; }
+  
+  public int getHeight() { return info.height; }
+  public int getWidth() { return info.width; }
   
   public Level levelAt(int index)
   {
@@ -39,9 +52,9 @@ public class Model implements Iterable<Level>
   public void allocateLevels(int count)
   {
     Level previous = null;
-    for (int i = 0; i < count+1; ++i)
+    for (int i = 0; i < count; ++i)
     {
-      Level level = new Level(width*2,height*2,previous);
+      Level level = new Level(this, previous);
       
       if (previous != null)
         previous.setNext(level);
@@ -50,13 +63,15 @@ public class Model implements Iterable<Level>
       
       previous = level;
     }
+    
+    info.levels = count-1;
   }
     
   public boolean canShift(Direction dir)
   {
-    int minX = width*2;
+    int minX = info.width*2;
     int maxX = 0;
-    int minY = height*2;
+    int minY = info.height*2;
     int maxY = 0;
     
     for (Level l : levels)
@@ -73,9 +88,9 @@ public class Model implements Iterable<Level>
     switch (dir)
     {
       case NORTH: return minY >= 2;
-      case SOUTH: return maxY <= height*2 - 2;
+      case SOUTH: return maxY <= info.height*2 - 2;
       
-      case WEST: return maxX <= width*2 - 2;
+      case WEST: return maxX <= info.width*2 - 2;
       case EAST: return minX >= 2;
       
       default: return false;
@@ -98,7 +113,7 @@ public class Model implements Iterable<Level>
     {
       if (levels.get(i) == level)
       {
-        Level newLevel = new Level(width*2, height*2);
+        Level newLevel = new Level(this);
         
         Level oldLevel = levels.get(i);
         
@@ -118,9 +133,11 @@ public class Model implements Iterable<Level>
         
         //TODO: move caps
 
+        ++info.levels;
         return;
       }
     }
+    
   }
   
   public void insertAbove(Level level)
@@ -129,7 +146,7 @@ public class Model implements Iterable<Level>
     {
       if (levels.get(i) == level)
       {
-        Level newLevel = new Level(width*2, height*2);
+        Level newLevel = new Level(this);
         
         Level oldLevel = levels.get(i);
                 
@@ -148,7 +165,7 @@ public class Model implements Iterable<Level>
         oldLevel.setNext(newLevel);
         
         //TODO: move caps
-        
+        ++info.levels;
         levels.add(i+1, newLevel);
       }
     }

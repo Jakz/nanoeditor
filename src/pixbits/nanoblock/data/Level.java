@@ -7,33 +7,27 @@ import pixbits.nanoblock.gui.Settings;
 
 public class Level implements Iterable<Piece>
 {
-  List<Piece> pieces;
-  final int width;
-  final int height;
+  final List<Piece> pieces;
+  /*final int width;
+  final int height;*/
+  
+  private final Model model;
   
   private Level previous;
   private Level next;
   
   //final int index;
   
-  Level(int width, int height, Level previous)
+  Level(Model model, Level previous)
   {
-    this(width, height);
-    
-    //this.index = index;
+    this(model);
     this.previous = previous;
-    
-    pieces = new ArrayList<Piece>();
-    //pieces = new TreeSet<Piece>(new PieceComparator());
   }
   
-  Level(int width, int height)
+  Level(Model model)
   {
-    this.width = width;
-    this.height = height;
-    
+    this.model = model;
     pieces = new ArrayList<Piece>();
-    //pieces = new TreeSet<Piece>(new PieceComparator());
   }
   
   void setNext(Level next)
@@ -138,7 +132,7 @@ public class Level implements Iterable<Piece>
   
   public boolean canPlace(PieceType type, int x, int y)
   {
-    if (x+type.width-1 >= width || y+type.height-1 >= height)
+    if (x+type.width-1 >= model.getWidth() || y+type.height-1 >= model.getHeight())
       return false;
     
     for (int i = x; i < x+type.width*2; ++i)
@@ -307,8 +301,8 @@ public class Level implements Iterable<Piece>
       }
     }
     
-    
-    pieces = newPieces;
+    pieces.clear();
+    pieces.addAll(newPieces);
   }
   
   

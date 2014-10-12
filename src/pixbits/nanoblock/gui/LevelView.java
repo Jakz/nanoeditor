@@ -12,7 +12,7 @@ public class LevelView extends Drawable
 {
   private final LevelStackView parent;
   
-  private final int width, height;
+  //private final int width, height;
   private final float cellSize;
   private Level level;
   private final Model model;
@@ -23,8 +23,6 @@ public class LevelView extends Drawable
   LevelView(LevelStackView parent, Sketch p, Model model, Level level, int ox, int oy, float cellSize)
   {
     super(p, ox, oy);
-    this.width = model.width;
-    this.height = model.height;
     this.cellSize = cellSize;
     this.level = level;
     this.model = model;
@@ -36,7 +34,7 @@ public class LevelView extends Drawable
     int rx = x - ox;
     int ry = y - oy;
     
-    return rx >= 0 && rx < width*cellSize && ry >= 0 && ry < height*cellSize;
+    return rx >= 0 && rx < model.getWidth()*cellSize && ry >= 0 && ry < model.getHeight()*cellSize;
   }
   
   public void mouseMoved(int x, int y)
@@ -49,8 +47,8 @@ public class LevelView extends Drawable
     x /= realCellSize;
     y /= realCellSize;
     
-    float realWidth = Settings.values.halfSteps ? width*2.0f : width;
-    float realHeight = Settings.values.halfSteps ? height*2.0f : height;
+    float realWidth = Settings.values.halfSteps ? model.getWidth()*2.0f : model.getWidth();
+    float realHeight = Settings.values.halfSteps ? model.getHeight()*2.0f : model.getHeight();
     
     float realPieceWidth = Settings.values.halfSteps ? Brush.type.width*2.0f : Brush.type.width;
     float realPieceHeight = Settings.values.halfSteps ? Brush.type.height*2.0f : Brush.type.height;
@@ -120,8 +118,8 @@ public class LevelView extends Drawable
     p.strokeWeight(1.0f);
 
     // draw grid
-    for (int x = 0; x < width*2+1; ++x)
-      for (int y = 0; y < height*2+1; ++y)
+    for (int x = 0; x < model.getWidth()*2+1; ++x)
+      for (int y = 0; y < model.getHeight()*2+1; ++y)
       {
         if (x%2 != 0 && y%2 != 0)
           p.stroke(50.0f);
@@ -132,26 +130,26 @@ public class LevelView extends Drawable
       }
       
 
-    for (int x = 0; x < width+1; ++x)
+    for (int x = 0; x < model.getWidth()+1; ++x)
     {
-      if (x == width/2)
+      if (x == model.getWidth()/2)
         p.strokeWeight(2.0f);
       else
         p.strokeWeight(1.0f);
       
-      p.line(ox+cellSize*x, oy, ox+cellSize*x, oy+height*cellSize);
+      p.line(ox+cellSize*x, oy, ox+cellSize*x, oy+model.getHeight()*cellSize);
       
     }
     
-    for (int y = 0; y < height+1; ++y)
+    for (int y = 0; y < model.getHeight()+1; ++y)
     {
-      if (y == height/2)
+      if (y == model.getHeight()/2)
         p.strokeWeight(2.0f);
       else
         p.strokeWeight(1.0f);
       
       
-      p.line(ox, oy+cellSize*y, ox+width*cellSize, oy+cellSize*y);
+      p.line(ox, oy+cellSize*y, ox+model.getWidth()*cellSize, oy+cellSize*y);
     }
     
     // draw pieces
