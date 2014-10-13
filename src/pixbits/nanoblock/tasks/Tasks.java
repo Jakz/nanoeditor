@@ -35,6 +35,12 @@ public class Tasks
     }
   };
   
+  public static ModelTask MODEL_RESET = new ModelTask() {
+    public void execute(Model model) {
+      Library.model.clear();
+    }
+  };
+  
   
   
   

@@ -279,7 +279,7 @@ public class Sketch extends PApplet implements ChangeListener
   {
     if (this.key == 'r')
     {
-      Library.model.clear();
+      Tasks.MODEL_RESET.execute();
     }
     else if (this.key == '-')
     {

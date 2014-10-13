@@ -42,6 +42,7 @@ public class Menus
     FILE_EXIT("Exit"),
     
     EDIT_HALF_STEPS("Use half steps", ItemType.CHECKBOX, Setting.HALF_STEPS_ENABLED),
+    EDIT_RESET("Reset"),
     
     VIEW_HIDE_CAPS("Draw caps", ItemType.CHECKBOX, Setting.DRAW_CAPS),
     VIEW_SHOW_PIECE_ORDER("Show piece order", ItemType.CHECKBOX, Setting.SHOW_PIECE_ORDER),
@@ -118,7 +119,7 @@ public class Menus
   private static final String[] menus = {"File", "Edit", "Model", "View"};
   private static final Item[][] menuItems = new Item[][]{
     new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
-    new Item[]{Item.EDIT_HALF_STEPS},
+    new Item[]{Item.EDIT_HALF_STEPS, Item.SEPARATOR, Item.EDIT_RESET},
     new Item[]{Item.MODEL_SHIFT_MENU},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_HOVER_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
@@ -231,6 +232,13 @@ public class Menus
         {
           Settings.values.toggle(item.setting);
           Main.sketch.redraw();
+          break;
+        }
+        
+        case EDIT_RESET:
+        {
+          if (Dialogs.drawConfirmDialog("Reset model", "Are you sure you want to reset the model?", Tasks.MODEL_RESET))
+            Main.sketch.redraw();
           break;
         }
         
