@@ -38,6 +38,18 @@ public class Model implements Iterable<Level>
     return levels.size();
   }
   
+  public int indexOfLevel(Level level)
+  {
+    int i = 0;
+    for (Level l : levels)
+    {
+      if (level == l) return i;
+      ++i;
+    }
+    
+    return 0;
+  }
+  
   public void addPiece(Level l, Piece piece)
   {
     l.addPiece(piece);

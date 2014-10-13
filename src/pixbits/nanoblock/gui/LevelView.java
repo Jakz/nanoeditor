@@ -16,18 +16,20 @@ public class LevelView extends Drawable
   //private final int width, height;
   private final float cellSize;
   private Level level;
+  private int index;
   private final Model model;
   
   public int hx = -1, hy = -1;
 
   
-  LevelView(LevelStackView parent, Sketch p, Model model, Level level, int ox, int oy, float cellSize)
+  LevelView(LevelStackView parent, Sketch p, Model model, Level level, int index, int ox, int oy, float cellSize)
   {
     super(p, ox, oy);
     this.cellSize = cellSize;
     this.level = level;
     this.model = model;
     this.parent = parent;
+    this.index = index;
   }
   
   public boolean isInside(int x, int y)
@@ -99,8 +101,8 @@ public class LevelView extends Drawable
       
       x /= realCellSize;
       y /= realCellSize;
-      
       Piece piece = level.pieceAt(x,y);
+      
   
       if (level.canPlace(Brush.type, x, y))
         model.addPiece(level,Brush.type,Brush.color,x,y);
@@ -219,21 +221,30 @@ public class LevelView extends Drawable
       
       p.rect(ox+h.x*realCellSize+1, oy+h.y*realCellSize+1, h.width*cellSize-1, h.height*cellSize-1);
     }
+    
+    p.fill(0);
+    p.textFont(Main.sketch.font);
+    p.text(""+index, ox+5, oy+cellSize*model.getHeight()+15);
   }
   
   void moveToNext()
   {
     level = level.next();
+    this.index = model.indexOfLevel(level);
   }
   
   void moveToPrev()
   {
     level = level.previous();
+    this.index = model.indexOfLevel(level);
+
   }
   
   public void moveToLevel(int index)
   {
     level = model.levelAt(index);
+    this.index = model.indexOfLevel(level);
+
   }
   
   Level level() { return level; }

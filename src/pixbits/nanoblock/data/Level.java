@@ -126,13 +126,13 @@ public class Level implements Iterable<Piece>
   public boolean isFreeAt(int x, int y)
   {
     Piece piece = pieceAt(x,y);
-    
+        
     return piece == null || piece.type == PieceType.CAP;
   }
   
   public boolean canPlace(PieceType type, int x, int y)
-  {
-    if (x+type.width-1 >= model.getWidth() || y+type.height-1 >= model.getHeight())
+  {    
+    if (x+type.width-1 >= model.getWidth()*2 || y+type.height-1 >= model.getHeight()*2)
       return false;
     
     for (int i = x; i < x+type.width*2; ++i)

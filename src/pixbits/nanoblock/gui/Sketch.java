@@ -13,6 +13,7 @@ import pixbits.nanoblock.files.Library;
 
 import java.io.*;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.*;
 import java.awt.event.*;
 
@@ -69,7 +70,7 @@ public class Sketch extends PApplet implements ChangeListener
       Library.model.allocateLevels(12);
     }
     
-    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 10, Library.model);
+    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 20, Library.model);
     
     ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,6);
     drawables.add(paletteView);
@@ -92,13 +93,23 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void draw()
   {
-  	background(220); 
-
+  	background(220);
+  	
+  	Level hovered = hoveredLevel();
+  	int hoveredIndex = -1;
+  	
   	for (int l = 0; l < Library.model.levelCount(); ++l)
   	{
   	  Level level = Library.model.levelAt(l);
   	  Iterator<Piece> pieces = level.iterator();
 
+  	  if (hovered == level)
+  	  {
+  	    hoveredIndex = l;
+  	    drawGrid(l);
+  	  }
+
+  	  
   	  while (pieces.hasNext())
       {
         Piece piece = pieces.next();
@@ -110,10 +121,62 @@ public class Sketch extends PApplet implements ChangeListener
   	
   	for (Drawable d : drawables)
   	  d.draw();
+
+  	if (hoveredIndex != -1)
+  	  drawGridHover(hoveredIndex);
+
   }
   
   public int baseX = 800;
   public int baseY = 260;
+  
+  public void drawGrid(int l)
+  {
+    this.strokeWeight(2.0f);
+    this.stroke(40,40,40,128);
+    
+    int w = Library.model.getWidth(), h = Library.model.getHeight();
+    
+    for (int i = 0; i < Library.model.getWidth()+1; ++i)
+      drawGridLine(0,i*2,h*2,i*2,l);
+    
+    for (int i = 0; i < Library.model.getHeight()+1; ++i)
+      drawGridLine(i*2,0,i*2,w*2,l);
+    
+    
+  }
+  
+  public void drawGridHover(int h)
+  {
+    Rectangle r = levelStackView.hover();
+    
+    if (r != null)
+    {
+      this.strokeWeight(2.0f);
+      this.stroke(180,0,0,220);
+    
+      drawGridLine(r.x, r.y, r.x+r.width*2, r.y, h);
+      drawGridLine(r.x, r.y+r.height*2, r.x+r.width*2, r.y+r.height*2, h);
+      drawGridLine(r.x, r.y, r.x, r.y+r.height*2, h);
+      drawGridLine(r.x+r.width*2, r.y, r.x+r.width*2, r.y+r.height*2, h);
+    }
+  }
+  
+  public void drawGridLine(int x1, int y1, int x2, int y2, int h)
+  {
+    int fx1 = (int)(baseX+Brush.tileset.xOffset*x1/2.0f-Brush.tileset.yOffset*y1/2.0f);
+    int fy1 = (int)(baseY+Brush.tileset.hOffset*(x1/2.0f+y1/2.0f-h*2));
+    int fx2 = (int)(baseX+Brush.tileset.xOffset*x2/2.0f-Brush.tileset.yOffset*y2/2.0f);
+    int fy2 = (int)(baseY+Brush.tileset.hOffset*(x2/2.0f+y2/2.0f-h*2));
+    
+    fy1 += Brush.tileset.hAdjust*h;
+    fy2 += Brush.tileset.hAdjust*h;
+    
+    fy1 -= 13;
+    fy2 -= 13;
+
+    this.line(fx1, fy1, fx2, fy2);
+  }
   
   public void drawPiece(Piece piece, int x, int y, int l, Level level)
   {    
@@ -127,7 +190,6 @@ public class Sketch extends PApplet implements ChangeListener
     PImage texture = Brush.tileset.imageForColor(piece.color);
     this.fill(0);
     this.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
-    
     
     if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
       this.text(""+level.indexOfPiece(piece),fx+spec.ox+spec.w/2,fy+spec.oy+spec.h/2);

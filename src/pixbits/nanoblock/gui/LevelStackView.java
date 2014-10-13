@@ -4,6 +4,7 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.ui.*;
 
 import java.awt.Rectangle;
+import java.awt.Point;
 
 public class LevelStackView
 {
@@ -18,7 +19,7 @@ public class LevelStackView
     
     for (int i = 0; i < count && i < model.levelCount(); ++i)
     {
-      views[i] = new LevelView(this, p, model, model.levelAt(i), ox, oy+(count-i-1)*(margin+cellSize*model.getHeight()), cellSize);
+      views[i] = new LevelView(this, p, model, model.levelAt(i), i, ox, oy+(count-i-1)*(margin+cellSize*model.getHeight()), cellSize);
       p.addDrawable(views[i]);
     }
     
