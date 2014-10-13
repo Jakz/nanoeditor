@@ -49,6 +49,8 @@ public class Level implements Iterable<Piece>
   {    
     pieces.remove(piece);
     
+    Log.i("Removing piece "+piece);
+    
     /* add caps to current level */
     if (previous != null && piece.type != PieceType.CAP)
     {
@@ -59,10 +61,13 @@ public class Level implements Iterable<Piece>
           {
             Piece piece2 = previous.pieceAt(i, j);
             
-            if (piece2 != null)
+            if (piece2 != null && piece2.type != PieceType.CAP)
             {              
-              if (!piece2.type.monocap && i%2 == piece2.x%2 && j%2 == piece2.y%2)
+              if (!piece2.type.monocap && i%2 == piece2.x%2 && j%2 == piece2.y%2 && isReallyFreeAt(i, j))
+              {
+                Log.i("Adding cap for removal at "+i+", "+j+" thanks to "+piece2);
                 addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
+              }
               else if (piece2.type.monocap && ((i == piece2.x+1 && j == piece2.y && piece2.type.width > piece2.type.height) || (i == piece2.x && j == piece2.y+1 && piece2.type.width < piece2.type.height)))
                 addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
             }
@@ -121,6 +126,12 @@ public class Level implements Iterable<Piece>
     }
     
     resortPieces();
+  }
+  
+  public boolean isReallyFreeAt(int x, int y)
+  {
+    Piece piece = pieceAt(x,y);
+    return piece == null;
   }
   
   public boolean isFreeAt(int x, int y)

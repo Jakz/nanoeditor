@@ -56,10 +56,11 @@ public class Menus
     VIEW_HOVER_PIECE_FILL("Front stroke with back fill", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL),
     VIEW_HOVER_PIECE_MENU("Isometric Piece", new Item[] {VIEW_HOVER_PIECE_DISABLE, VIEW_HOVER_PIECE_STROKE_BACK, VIEW_HOVER_PIECE_STROKE_FRONT, VIEW_HOVER_PIECE_FILL}),
     
-    MODEL_SHIFT_NORTH("Shift north", Tasks.MODEL_SHIFT_NORTH),
-    MODEL_SHIFT_SOUTH("Shift south", Tasks.MODEL_SHIFT_SOUTH),
-    MODEL_SHIFT_WEST("Shift west", Tasks.MODEL_SHIFT_WEST),
-    MODEL_SHIFT_EAST("Shift east", Tasks.MODEL_SHIFT_EAST),
+    MODEL_SHIFT_NORTH("North ^", Tasks.MODEL_SHIFT_NORTH),
+    MODEL_SHIFT_SOUTH("South v", Tasks.MODEL_SHIFT_SOUTH),
+    MODEL_SHIFT_WEST("West <-", Tasks.MODEL_SHIFT_WEST),
+    MODEL_SHIFT_EAST("East ->", Tasks.MODEL_SHIFT_EAST),
+    MODEL_SHIFT_MENU("Shift", new Item[] {MODEL_SHIFT_NORTH, MODEL_SHIFT_SOUTH, MODEL_SHIFT_WEST, MODEL_SHIFT_EAST} ),
     
     SEPARATOR(null),
     
@@ -118,7 +119,7 @@ public class Menus
   private static final Item[][] menuItems = new Item[][]{
     new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_HALF_STEPS},
-    new Item[]{Item.MODEL_SHIFT_NORTH, Item.MODEL_SHIFT_SOUTH, Item.MODEL_SHIFT_WEST, Item.MODEL_SHIFT_EAST},
+    new Item[]{Item.MODEL_SHIFT_MENU},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_HOVER_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
   
