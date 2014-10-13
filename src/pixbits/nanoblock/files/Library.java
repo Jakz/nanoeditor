@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.*;
 
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 
 public class Library
@@ -21,7 +22,7 @@ public class Library
   
   public void scan() throws IOException, FileNotFoundException
   {
-    File file = new File(Settings.values.pathLibrary);
+    File file = new File(Settings.values.getPath(Setting.Path.LIBRARY));
     file.mkdirs();
     
     File[] fmodels = file.listFiles(new ModelFileFilter());

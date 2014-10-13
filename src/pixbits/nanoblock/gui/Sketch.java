@@ -97,6 +97,7 @@ public class Sketch extends PApplet implements ChangeListener
   	
   	Level hovered = hoveredLevel();
   	int hoveredIndex = -1;
+  	Rectangle hoverRect = levelStackView.hover();
   	
   	for (int l = 0; l < Library.model.levelCount(); ++l)
   	{
@@ -106,7 +107,25 @@ public class Sketch extends PApplet implements ChangeListener
   	  if (hovered == level)
   	  {
   	    hoveredIndex = l;
-  	    drawGrid(l);
+  	    
+  	    if (Settings.values.get(Setting.VIEW_SHOW_LAYER_GRID))
+  	    {
+  	      if (Settings.values.get(Setting.VIEW_LAYER_GRID_ALPHA))
+  	        drawFilledGrid(l);
+  	      else
+  	        drawGrid(l);
+  	    }
+  	     	    
+  	    if (Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL)
+  	    {
+  	      drawGridHover(hoveredIndex, hoverRect);
+  	      drawGridHoverFill(hoveredIndex, hoverRect);
+  	    }
+  	    else if (Settings.values.getHoverPiece() == Setting.HoverPiece.BACK_STROKE)
+  	    {
+          drawGridHover(hoveredIndex, hoverRect);
+  	    }
+  	    
   	  }
 
   	  
@@ -122,9 +141,11 @@ public class Sketch extends PApplet implements ChangeListener
   	for (Drawable d : drawables)
   	  d.draw();
 
-  	if (hoveredIndex != -1)
-  	  drawGridHover(hoveredIndex);
-
+    if (Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL || Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE)
+    {
+      if (hoveredIndex != -1)
+        drawGridHover(hoveredIndex, hoverRect);
+    }
   }
   
   public int baseX = 800;
@@ -137,22 +158,43 @@ public class Sketch extends PApplet implements ChangeListener
     
     int w = Library.model.getWidth(), h = Library.model.getHeight();
     
-    for (int i = 0; i < Library.model.getWidth()+1; ++i)
+    for (int i = 0; i < w+1; ++i)
       drawGridLine(0,i*2,h*2,i*2,l);
     
-    for (int i = 0; i < Library.model.getHeight()+1; ++i)
+    for (int i = 0; i < h+1; ++i)
       drawGridLine(i*2,0,i*2,w*2,l);
-    
-    
   }
   
-  public void drawGridHover(int h)
+  public void drawFilledGrid(int l)
   {
-    Rectangle r = levelStackView.hover();
+    this.strokeWeight(2.0f);
+    this.fill(220,220,220,150);
+    this.stroke(40,40,40,128);
     
+    int w = Library.model.getWidth(), h = Library.model.getHeight();
+    
+    for (int i = 0; i < w; ++i)
+      for (int j = 0; j < h; ++j)
+      {
+        drawIsoSquare(i*2,j*2, 2, 2, l);
+      }
+  }
+  
+  public void drawGridHoverFill(int h, Rectangle r)
+  {    
     if (r != null)
     {
-      this.strokeWeight(2.0f);
+      this.fill(220,0,0,180);
+      this.drawIsoSquare(r.x, r.y, r.width*2, r.height*2, h);
+    }
+
+  }
+  
+  public void drawGridHover(int h, Rectangle r)
+  {    
+    if (r != null)
+    {
+      this.strokeWeight(4.0f);
       this.stroke(180,0,0,220);
     
       drawGridLine(r.x, r.y, r.x+r.width*2, r.y, h);
@@ -162,6 +204,34 @@ public class Sketch extends PApplet implements ChangeListener
     }
   }
   
+  public void drawIsoSquare(int x, int y, int w, int h, int l)
+  {
+    int fx1 = (int)(baseX+Brush.tileset.xOffset*x/2.0f-Brush.tileset.yOffset*y/2.0f); // UP
+    int fy1 = (int)(baseY+Brush.tileset.hOffset*(x/2.0f+y/2.0f-l*2));
+    
+    int fx2 = (int)(baseX+Brush.tileset.xOffset*(x+w)/2.0f-Brush.tileset.yOffset*(y+h)/2.0f); // DOWN
+    int fy2 = (int)(baseY+Brush.tileset.hOffset*((x+w)/2.0f+(y+h)/2.0f-l*2));
+    
+    int fx3 = (int)(baseX+Brush.tileset.xOffset*(x)/2.0f-Brush.tileset.yOffset*(y+h)/2.0f); // LEFT
+    int fy3 = (int)(baseY+Brush.tileset.hOffset*((x)/2.0f+(y+h)/2.0f-l*2));
+    
+    int fx4 = (int)(baseX+Brush.tileset.xOffset*(x+w)/2.0f-Brush.tileset.yOffset*(y)/2.0f); // RIGHT
+    int fy4 = (int)(baseY+Brush.tileset.hOffset*((x+w)/2.0f+(y)/2.0f-l*2));
+    
+    fy1 += Brush.tileset.hAdjust*l - 13;
+    fy2 += Brush.tileset.hAdjust*l - 13;
+    fy3 += Brush.tileset.hAdjust*l - 13;
+    fy4 += Brush.tileset.hAdjust*l - 13;
+    
+    beginShape();
+    vertex(fx1, fy1);
+    vertex(fx3, fy3);
+    vertex(fx2, fy2);
+    vertex(fx4, fy4);
+    vertex(fx1, fy1);
+    endShape();
+  }
+  
   public void drawGridLine(int x1, int y1, int x2, int y2, int h)
   {
     int fx1 = (int)(baseX+Brush.tileset.xOffset*x1/2.0f-Brush.tileset.yOffset*y1/2.0f);
@@ -169,11 +239,8 @@ public class Sketch extends PApplet implements ChangeListener
     int fx2 = (int)(baseX+Brush.tileset.xOffset*x2/2.0f-Brush.tileset.yOffset*y2/2.0f);
     int fy2 = (int)(baseY+Brush.tileset.hOffset*(x2/2.0f+y2/2.0f-h*2));
     
-    fy1 += Brush.tileset.hAdjust*h;
-    fy2 += Brush.tileset.hAdjust*h;
-    
-    fy1 -= 13;
-    fy2 -= 13;
+    fy1 += Brush.tileset.hAdjust*h - 13;
+    fy2 += Brush.tileset.hAdjust*h - 13;
 
     this.line(fx1, fy1, fx2, fy2);
   }

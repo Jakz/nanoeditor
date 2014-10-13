@@ -1,8 +1,10 @@
 package pixbits.nanoblock.gui.frames;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
 import javax.swing.JFrame;
@@ -23,7 +25,9 @@ public class Menus
   private static enum ItemType
   {
     BUTTON,
-    CHECKBOX
+    CHECKBOX,
+    RADIO,
+    SUBMENU
   }
   
   private static enum Item
@@ -42,6 +46,16 @@ public class Menus
     VIEW_HIDE_CAPS("Draw caps", ItemType.CHECKBOX, Setting.DRAW_CAPS),
     VIEW_SHOW_PIECE_ORDER("Show piece order", ItemType.CHECKBOX, Setting.SHOW_PIECE_ORDER),
     
+    VIEW_SHOW_LAYER_GRID("Enable", ItemType.CHECKBOX, Setting.VIEW_SHOW_LAYER_GRID),
+    VIEW_LAYER_GRID_ALPHA("Use opacity", ItemType.CHECKBOX, Setting.VIEW_LAYER_GRID_ALPHA),
+    VIEW_HOVER_LAYER_MENU("Isometric Layer", new Item[]{ VIEW_SHOW_LAYER_GRID, VIEW_LAYER_GRID_ALPHA} ),
+   
+    VIEW_HOVER_PIECE_DISABLE("Disable", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.DISABLE),
+    VIEW_HOVER_PIECE_STROKE_BACK("Behind stroke", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.BACK_STROKE),
+    VIEW_HOVER_PIECE_STROKE_FRONT("Front stroke", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.FRONT_STROKE),
+    VIEW_HOVER_PIECE_FILL("Front stroke with back fill", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL),
+    VIEW_HOVER_PIECE_MENU("Isometric Piece", new Item[] {VIEW_HOVER_PIECE_DISABLE, VIEW_HOVER_PIECE_STROKE_BACK, VIEW_HOVER_PIECE_STROKE_FRONT, VIEW_HOVER_PIECE_FILL}),
+    
     MODEL_SHIFT_NORTH("Shift north", Tasks.MODEL_SHIFT_NORTH),
     MODEL_SHIFT_SOUTH("Shift south", Tasks.MODEL_SHIFT_SOUTH),
     MODEL_SHIFT_WEST("Shift west", Tasks.MODEL_SHIFT_WEST),
@@ -55,11 +69,49 @@ public class Menus
     public final ItemType type;
     public final Setting setting;
     public final Task task;
+    public final Item[] items;
+    public final Enum radioValue;
+    public final Setting.EnumSetter radioSetter;
+    public final ButtonGroup radioGroup;
     
     Item(String caption, ItemType type, Setting setting) { this(caption, type, setting, null); }
-    Item(String caption, ItemType type, Setting setting, Task task) { this.caption = caption; this.type = type; this.setting = setting; this.task = task; }
-    Item(String caption) { this(caption, null); }
+    Item(String caption, ItemType type, Setting setting, Task task)
+    { 
+      this.caption = caption; 
+      this.type = type; 
+      this.setting = setting; 
+      this.task = task; 
+      this.items = null;
+      this.radioValue = null;
+      this.radioGroup = null;
+      this.radioSetter = null;
+    }
+    Item(String caption) { this(caption, ItemType.BUTTON, null, null); }
     Item(String caption, Task task) { this(caption, ItemType.BUTTON, null, task); }
+    
+    Item(String caption, Item[] items)
+    {
+      this.caption = caption;
+      type = ItemType.SUBMENU;
+      setting = null;
+      task = null;
+      this.items = items;
+      this.radioValue = null;
+      this.radioGroup = null;
+      this.radioSetter = null;
+    }
+    
+    Item(String caption, Setting.EnumSetter setter, ButtonGroup radioGroup, Enum radioValue)
+    {
+      this.caption = caption;
+      type = ItemType.RADIO;
+      setting = null;
+      task = null;
+      this.items = null;
+      this.radioValue = radioValue;
+      this.radioGroup = radioGroup;
+      this.radioSetter = setter;
+    }
   }
   
   private static final String[] menus = {"File", "Edit", "Model", "View"};
@@ -67,11 +119,62 @@ public class Menus
     new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_HALF_STEPS},
     new Item[]{Item.MODEL_SHIFT_NORTH, Item.MODEL_SHIFT_SOUTH, Item.MODEL_SHIFT_WEST, Item.MODEL_SHIFT_EAST},
-    new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
+    new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_HOVER_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
   
   private static final Map<JMenuItem, Item> mapping = new HashMap<JMenuItem, Item>();
   
+  public static JMenu buildMenu(String caption, Item[] items)
+  {
+    JMenu menu = new JMenu(caption);
+    
+    for (int i = 0; i < items.length; ++i)
+    {
+      if (items[i] != Item.SEPARATOR)
+      {
+        JMenuItem item = null; 
+        
+        switch (items[i].type)
+        {
+          case BUTTON: item = new JMenuItem(items[i].caption); break;
+          case CHECKBOX:
+          {
+            item = new JCheckBoxMenuItem(items[i].caption); 
+            boolean value = Settings.values.get(items[i].setting);
+            ((JCheckBoxMenuItem)item).setSelected(value);
+            break;
+          }
+          case RADIO:
+          {
+            item = new JRadioButtonMenuItem(items[i].caption);
+            items[i].radioGroup.add(item);
+            if (items[i].radioSetter.get() == items[i].radioValue)
+              item.setSelected(true);
+            
+            break; 
+          }
+          case SUBMENU:
+          {
+            JMenu smenu = buildMenu(items[i].caption, items[i].items);
+            menu.add(smenu);
+            break;
+          }
+          
+        }
+        
+        if (item != null)
+        {
+          item.addActionListener(menuListener);
+          mapping.put(item, items[i]);
+          menu.add(item);
+        }
+      }
+      else
+        menu.addSeparator();
+    }
+    
+    return menu;
+  }
   
   public static void buildMenu(JFrame frame)
   {
@@ -81,39 +184,8 @@ public class Menus
     
     for (int i = 0; i < menus.length; ++i)
     {
-      JMenu menu = new JMenu(menus[i]);
-      
-      Item[] items = menuItems[i];
-      
-      for (int j = 0; j < items.length; ++j)
-      {
-        if (items[j] != Item.SEPARATOR)
-        {
-          JMenuItem item = null; 
-          
-          switch (items[j].type)
-          {
-            case BUTTON: item = new JMenuItem(items[j].caption); break;
-            case CHECKBOX:
-            {
-              item = new JCheckBoxMenuItem(items[j].caption); 
-              boolean value = Settings.values.get(items[j].setting);
-              ((JCheckBoxMenuItem)item).setSelected(value);
-              break;
-            }
-             
-          }
-          
-          item.addActionListener(menuListener);
-          mapping.put(item, items[j]);
-          menu.add(item);
-        }
-        else
-          menu.addSeparator();
-      }
-      
+      JMenu menu = buildMenu(menus[i], menuItems[i]);
       bar.add(menu);
-        
     }
 
     frame.setJMenuBar(bar);
@@ -135,9 +207,24 @@ public class Menus
           System.exit(0);
           break;
         }
+        
+        case VIEW_HOVER_PIECE_DISABLE:
+        case VIEW_HOVER_PIECE_FILL:
+        case VIEW_HOVER_PIECE_STROKE_BACK:
+        case VIEW_HOVER_PIECE_STROKE_FRONT:
+        {
+          Setting.EnumSetter setter = item.radioSetter;
+          Enum value = item.radioValue;
+          setter.set(value);
+          Main.sketch.redraw();
+          break;
+        }
+        
       
         case VIEW_SHOW_PIECE_ORDER:
         case VIEW_HIDE_CAPS:
+        case VIEW_SHOW_LAYER_GRID:
+        case VIEW_LAYER_GRID_ALPHA:
           
         case EDIT_HALF_STEPS:
         {
