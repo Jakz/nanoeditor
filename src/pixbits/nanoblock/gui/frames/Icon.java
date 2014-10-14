@@ -1,7 +1,7 @@
 package pixbits.nanoblock.gui.frames;
 
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
+import java.io.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -48,4 +48,15 @@ public enum Icon
   
   private final static String ICONS_PATH = "/pixbits/nanoblock/icons/";
 
+  
+  public static ImageIcon loadIcon(File file) throws FileNotFoundException, IOException
+  {
+    if (!file.exists())
+      return null;
+    else
+    {
+      BufferedImage img = ImageIO.read(file);
+      return new ImageIcon(img);
+    }
+  }
 }

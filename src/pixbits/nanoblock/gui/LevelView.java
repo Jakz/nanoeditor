@@ -53,8 +53,6 @@ public class LevelView extends Drawable
     x = Math.round((x - realCellSize/2)/realCellSize);
     y = Math.round((y - realCellSize/2)/realCellSize);
     
-    System.out.println("BEF "+x+","+y);
-
     float realWidth =  model.getWidth()*2.0f;
     float realHeight =  model.getHeight()*2.0f;
     
@@ -66,8 +64,6 @@ public class LevelView extends Drawable
     
     x -= Math.floor(realPieceWidth / 2.0f);
     y -= Math.floor(realPieceHeight / 2.0f);
-    
-    System.out.println("AFT "+x+","+y);
 
     /*x = Math.max(0, x);
     y = Math.max(0, y);
@@ -90,9 +86,6 @@ public class LevelView extends Drawable
       if (y % 2 != 0)
         --y;
     }
-      
-    System.out.println("FXD "+x+","+y);
-
     
     if (x != hx || y != hy)
     {

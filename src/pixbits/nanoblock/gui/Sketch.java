@@ -82,7 +82,7 @@ public class Sketch extends PApplet implements ChangeListener
     addDrawable(checkBox);
     
     addDrawable(new UIButton(this,500,20,20,20));
-
+    
     noLoop();
   }
   
@@ -90,6 +90,10 @@ public class Sketch extends PApplet implements ChangeListener
   {
     drawables.add(d);
   }
+  
+  public int baseX = 800;
+  public int baseY = 260;
+  
   
   public void draw()
   {
@@ -134,7 +138,7 @@ public class Sketch extends PApplet implements ChangeListener
         Piece piece = pieces.next();
 
         if (piece.type != PieceType.CAP || Settings.values.get(Setting.DRAW_CAPS))
-        drawPiece(piece, piece.x, piece.y, l, level);
+        PieceDrawer.drawPiece(this, baseX, baseY, piece, piece.x, piece.y, l, level);
       }
   	}
   	
@@ -147,9 +151,6 @@ public class Sketch extends PApplet implements ChangeListener
         drawGridHover(hoveredIndex, hoverRect);
     }
   }
-  
-  public int baseX = 800;
-  public int baseY = 260;
   
   public void drawGrid(int l)
   {
@@ -244,24 +245,7 @@ public class Sketch extends PApplet implements ChangeListener
 
     this.line(fx1, fy1, fx2, fy2);
   }
-  
-  public void drawPiece(Piece piece, int x, int y, int l, Level level)
-  {    
-    int fx = (int)(baseX+Brush.tileset.xOffset*x/2.0f-Brush.tileset.yOffset*y/2.0f);
-    int fy = (int)(baseY+Brush.tileset.hOffset*(x/2.0f+y/2.0f-l*2));
-    
-    //if (piece.type != PieceType.CAP)
-      fy += Brush.tileset.hAdjust*l;
-    
-    Tileset.PieceSpec spec = Brush.tileset.spec(piece.type);
-    PImage texture = Brush.tileset.imageForColor(piece.color);
-    this.fill(0);
-    this.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, BLEND);
-    
-    if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
-      this.text(""+level.indexOfPiece(piece),fx+spec.ox+spec.w/2,fy+spec.oy+spec.h/2);
-  }
-  
+
   public Level hoveredLevel()
   {
     for (Drawable d : drawables)

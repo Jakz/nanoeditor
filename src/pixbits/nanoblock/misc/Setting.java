@@ -15,7 +15,8 @@ public enum Setting
   
   public static enum Path
   {
-    LIBRARY
+    LIBRARY,
+    CACHE
   };
    
   

@@ -9,6 +9,7 @@ import javax.swing.table.*;
 
 import java.util.*;
 
+import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.ModelInfo;
 import pixbits.nanoblock.files.*;
 
@@ -80,5 +81,13 @@ public class LibraryFrame extends JFrame
     public void add(LibraryModel lm) { data.add(lm); }
     public void clear() { data.clear(); }
     public void refresh() { this.fireTableDataChanged(); }
+  }
+  
+  public void showMe()
+  {
+    this.setLocationRelativeTo(Main.mainFrame);
+    this.toFront();
+    this.setVisible(true);
+    
   }
 }

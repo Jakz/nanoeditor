@@ -38,6 +38,14 @@ public class Library
       models.add(new LibraryModel(info, model));      
     }
   }
+  
+  public void cacheThumbnails()
+  {
+    for (LibraryModel model : models)
+    {
+      model.loadThumbnail();
+    }
+  }
 
   private final static class ModelFileFilter implements FileFilter
   {

@@ -34,17 +34,19 @@ public class Main
     
     
     TileSetLoader.loadTileset("tileset.json");
+
+    sketch = new Sketch();
+    mainFrame = new MainFrame();
+    mainFrame.setLocationRelativeTo(null);
     
     try {
     Library.i().scan();
     } catch (Exception e) { e.printStackTrace(); }
     
+    Library.i().cacheThumbnails();
+    
     LibraryFrame libraryFrame = new LibraryFrame();
     libraryFrame.getModel().add(Library.i().getModels());
-    libraryFrame.setVisible(true);
-    
-    sketch = new Sketch();
-    mainFrame = new MainFrame();
-    mainFrame.setLocationRelativeTo(null);
+    libraryFrame.showMe();
   }
 }

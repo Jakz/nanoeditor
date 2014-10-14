@@ -34,6 +34,7 @@ public class Settings
     Setting.HoverSetter.INSTANCE.set(Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL);
     
     setPath(Setting.Path.LIBRARY, "./library");
+    setPath(Setting.Path.CACHE, "./cache");
   }
   
   
