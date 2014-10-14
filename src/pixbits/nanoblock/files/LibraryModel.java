@@ -26,6 +26,8 @@ public class LibraryModel
       
       if (icon == null)
         icon = Thumbnails.generateThumbnail(this);
+      
+      thumbnail = icon;
     }
     catch (Exception e)
     {

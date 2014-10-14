@@ -55,6 +55,7 @@ public enum Icon
       return null;
     else
     {
+      Log.i("Loading cached thumbnail from "+file);
       BufferedImage img = ImageIO.read(file);
       return new ImageIcon(img);
     }

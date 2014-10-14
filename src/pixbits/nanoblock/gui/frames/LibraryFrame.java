@@ -1,6 +1,8 @@
 package pixbits.nanoblock.gui.frames;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.*;
 import java.awt.Dimension;
 
@@ -15,16 +17,18 @@ import pixbits.nanoblock.files.*;
 
 public class LibraryFrame extends JFrame
 {
-  private final JTable table;
+  private final JList list;
   private final LibraryTableModel model;
   private final JScrollPane scrollpane;
   
   public LibraryFrame()
   {
     model = new LibraryTableModel();
-    table = new JTable(model);
-    table.setAutoCreateRowSorter(true);
-    scrollpane = new JScrollPane(table);
+    list = new JList(model);
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    list.setCellRenderer(new LibraryModelRenderer());
+    //table.setAutoCreateRowSorter(true);
+    scrollpane = new JScrollPane(list);
     scrollpane.setPreferredSize(new Dimension(800,600));
     
     this.setLayout(new BorderLayout());
@@ -38,7 +42,45 @@ public class LibraryFrame extends JFrame
   public LibraryTableModel getModel() { return model; }
   
   
-  public static class LibraryTableModel extends AbstractTableModel
+  private class LibraryModelRenderer extends DefaultListCellRenderer/*JLabel implements ListCellRenderer*/
+  {
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+    {
+      super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      
+      
+      LibraryModel model = (LibraryModel)value;
+      this.setFont(new Font(this.getFont().getName(), this.getFont().getStyle(), 32));
+      setIcon(model.thumbnail);
+      setText(model.info.name);
+      
+      return this;
+    }
+  };
+  
+  public class LibraryTableModel extends AbstractListModel
+  {
+    final List<LibraryModel> data;
+    
+    LibraryTableModel()
+    {
+      data = new ArrayList<LibraryModel>();
+    }
+    
+    @Override
+    public Object getElementAt(int i) { return data.get(i); }
+    
+    @Override
+    public int getSize() { return data.size(); }
+    
+    public void add(Collection<? extends LibraryModel> models) { data.addAll(models); }
+    public void add(LibraryModel model) { data.add(model); }
+    public void clear() { data.clear(); }
+    
+    public void refresh() { this.fireContentsChanged(this, 0, data.size()-1); }
+  }
+  
+  /*public static class LibraryTableModel extends AbstractTableModel
   {
     final List<LibraryModel> data;
     
@@ -81,7 +123,7 @@ public class LibraryFrame extends JFrame
     public void add(LibraryModel lm) { data.add(lm); }
     public void clear() { data.clear(); }
     public void refresh() { this.fireTableDataChanged(); }
-  }
+  }*/
   
   public void showMe()
   {

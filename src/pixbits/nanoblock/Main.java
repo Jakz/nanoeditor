@@ -47,6 +47,7 @@ public class Main
     
     LibraryFrame libraryFrame = new LibraryFrame();
     libraryFrame.getModel().add(Library.i().getModels());
+    libraryFrame.getModel().refresh();
     libraryFrame.showMe();
   }
 }
