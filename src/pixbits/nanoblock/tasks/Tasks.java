@@ -35,6 +35,18 @@ public class Tasks
     }
   };
   
+  public static ModelTask MODEL_ROTATE_WEST = new ModelTask() {
+    public void execute(Model model) {
+      model.rotate(Direction.WEST); Main.sketch.redraw();
+    }
+  };
+  
+  public static ModelTask MODEL_ROTATE_EAST = new ModelTask() {
+    public void execute(Model model) {
+      model.rotate(Direction.EAST); Main.sketch.redraw();
+    }
+  };
+  
   public static ModelTask MODEL_RESET = new ModelTask() {
     public void execute(Model model) {
       Library.model.clear();

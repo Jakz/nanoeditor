@@ -63,6 +63,10 @@ public class Menus
     MODEL_SHIFT_EAST("East ->", Tasks.MODEL_SHIFT_EAST),
     MODEL_SHIFT_MENU("Shift", new Item[] {MODEL_SHIFT_NORTH, MODEL_SHIFT_SOUTH, MODEL_SHIFT_WEST, MODEL_SHIFT_EAST} ),
     
+    MODEL_ROTATE_LEFT("Left", Tasks.MODEL_ROTATE_WEST),
+    MODEL_ROTATE_RIGHT("Right", Tasks.MODEL_ROTATE_EAST),
+    MODEL_ROTATE_MENU("Rotate", new Item[] { MODEL_ROTATE_LEFT, MODEL_ROTATE_RIGHT }),
+    
     SEPARATOR(null),
     
     ;
@@ -120,7 +124,7 @@ public class Menus
   private static final Item[][] menuItems = new Item[][]{
     new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_HALF_STEPS, Item.SEPARATOR, Item.EDIT_RESET},
-    new Item[]{Item.MODEL_SHIFT_MENU},
+    new Item[]{Item.MODEL_SHIFT_MENU, Item.MODEL_ROTATE_MENU},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_HOVER_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
   
@@ -246,6 +250,8 @@ public class Menus
         case MODEL_SHIFT_SOUTH:
         case MODEL_SHIFT_EAST:
         case MODEL_SHIFT_WEST:
+        case MODEL_ROTATE_LEFT:
+        case MODEL_ROTATE_RIGHT:
         {
           ModelTask mtask = (ModelTask)item.task;
           mtask.execute(Library.model);

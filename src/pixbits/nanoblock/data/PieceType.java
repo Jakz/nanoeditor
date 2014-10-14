@@ -54,8 +54,20 @@ public class PieceType
   
   private static final Map<String, PieceType> mapping = new HashMap<String, PieceType>();
   private static final Map<PieceType, String> mapping2 = new HashMap<PieceType, String>();
+  private static final Map<PieceType, PieceType> rotations = new HashMap<PieceType, PieceType>();
 
   public final String toString() { return ""+width+"x"+height+(rounded?"r":"")+(this == CAP?"c":""); }
+  
+  public static PieceType getRotation(PieceType piece)
+  { 
+    PieceType pt = rotations.get(piece);
+    return pt != null ? pt : piece;
+  }
+  private static void addRotation(PieceType p1, PieceType p2)
+  {
+    rotations.put(p1, p2);
+    rotations.put(p2, p1);
+  }
   
   public static void initMapping()
   {
@@ -66,27 +78,35 @@ public class PieceType
     
     mapping.put("2x1", P2x1);
     mapping.put("1x2", P1x2);
+    addRotation(P2x1, P1x2);
     
     mapping.put("2x1c", P2x1c);
     mapping.put("1x2c", P1x2c);
+    addRotation(P2x1c, P1x2c);
     
     mapping.put("3x1", P3x1);
     mapping.put("1x3", P1x3);
     mapping.put("3x1r", P3x1r);
     mapping.put("1x3r", P1x3r);
+    addRotation(P3x1r, P1x3r);
+    addRotation(P3x1, P1x3);
     
     mapping.put("4x1", P4x1);
     mapping.put("1x4", P1x4);
     mapping.put("4x1r", P4x1r);
     mapping.put("1x4r", P1x4r);
+    addRotation(P4x1r, P1x4r);
+    addRotation(P4x1, P1x4);
     
     mapping.put("2x2", P2x2);
     
     mapping.put("4x2", P4x2);
     mapping.put("2x4", P2x4);
+    addRotation(P4x2, P2x4);
     
     mapping.put("8x2", P8x2);
     mapping.put("2x8", P2x8);
+    addRotation(P8x2, P2x8);
     
     for (String s : mapping.keySet())
       mapping2.put(mapping.get(s), s);

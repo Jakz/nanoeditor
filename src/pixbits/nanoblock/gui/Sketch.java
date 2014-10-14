@@ -311,14 +311,28 @@ public class Sketch extends PApplet implements ChangeListener
       // TODO: manage refresh of the grid
     }
     else if (this.key == CODED)
-    {
+    {      
       switch (this.keyCode)
       {
         case UP: Tasks.MODEL_SHIFT_NORTH.execute(Library.model); break;
         case DOWN: Tasks.MODEL_SHIFT_SOUTH.execute(Library.model); break;
-        case LEFT: Tasks.MODEL_SHIFT_WEST.execute(Library.model); break;
-        case RIGHT: Tasks.MODEL_SHIFT_EAST.execute(Library.model); break;
-      }
+        case LEFT:
+        {
+          if ((keyEvent.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
+            Tasks.MODEL_ROTATE_WEST.execute();
+          else
+            Tasks.MODEL_SHIFT_WEST.execute();
+          break;
+        }
+        case RIGHT: 
+        {
+          if ((keyEvent.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
+            Tasks.MODEL_ROTATE_EAST.execute();
+          else
+            Tasks.MODEL_SHIFT_EAST.execute();
+          break;
+        }
+      }     
     }
 
     redraw();

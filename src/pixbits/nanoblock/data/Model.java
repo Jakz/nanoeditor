@@ -119,6 +119,48 @@ public class Model implements Iterable<Level>
       }
   }
   
+  public void rotate(Direction dir)
+  {
+    if (dir == Direction.EAST)
+    {
+      for (Level l : levels)
+      {
+        for (Piece p : l.pieces)
+        {
+          System.out.println("Rotate "+p);
+          System.out.println("> "+p.x+","+p.y);
+          int oldY = p.y;
+          p.y = p.x;
+          p.x = getHeight()*2 - oldY- 1; // height pre swap
+          System.out.println("> "+p.x+","+p.y);
+          p.type = PieceType.getRotation(p.type);
+          p.x -= p.type.width*2 - 1;
+          System.out.println("> "+p.x+","+p.y);
+        }
+        
+        l.resortPieces();
+      }
+    }
+    else if (dir == Direction.WEST)
+    {
+      for (Level l : levels)
+      {
+        for (Piece p : l.pieces)
+        {
+          int oldX = p.x;
+          p.x = p.y;
+          p.y = getWidth()*2 - oldX - 1; // height pre swap
+          p.type = PieceType.getRotation(p.type);
+          p.y -= p.type.height*2 - 1;
+        }
+        
+        l.resortPieces();
+      }
+    }
+    
+    //TODO: manage swapping model width/height
+  }
+  
   public void insertBelow(Level level)
   {
     for (int i = 0; i < levels.size(); ++i)

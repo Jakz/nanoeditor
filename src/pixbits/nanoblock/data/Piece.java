@@ -2,7 +2,7 @@ package pixbits.nanoblock.data;
 
 public class Piece
 {
-  public final PieceType type;
+  public PieceType type;
   public final PieceColor color;
   public int x, y;
   
