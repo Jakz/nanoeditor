@@ -2,9 +2,7 @@ package pixbits.nanoblock.gui;
 
 import java.util.Iterator;
 
-import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
-import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
@@ -41,7 +39,7 @@ public class PieceDrawer
     gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, PApplet.BLEND);
   }
   
-  public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model)
+  public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model, boolean showCaps)
   {
     for (int l = 0; l < model.levelCount(); ++l)
     {
@@ -52,16 +50,9 @@ public class PieceDrawer
       {
         Piece piece = pieces.next();
 
-        if (piece.type != PieceType.CAP || Settings.values.get(Setting.DRAW_CAPS))
+        if (piece.type != PieceType.CAP || showCaps)
         PieceDrawer.drawPiece(gfx, baseX, baseY, piece, piece.x, piece.y, l, level);
       }
     }
-  }
-  
-  public static PImage scaleImage(PImage src, float factor)
-  {
-    PImage dst = Main.sketch.createImage((int)(src.width*factor), (int)(src.height*factor), PApplet.ARGB);
-    dst.blend(src, 0, 0, src.width, src.height, 0, 0, dst.width, dst.height, PApplet.BLEND);
-    return dst;
   }
 }

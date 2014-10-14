@@ -1,6 +1,9 @@
 package pixbits.nanoblock.files;
 
-import java.io.File;
+import java.awt.Image;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.io.*;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.Model;
@@ -9,22 +12,33 @@ import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 public class Thumbnails
 {
-  public static ImageIcon generateThumbnail(LibraryModel lmodel)
+  public static ImageIcon generateThumbnail(LibraryModel lmodel) throws IOException
   {
     Log.i("Generating thumbnail for "+lmodel.info.name+" ("+lmodel.info.author+")");
     
     Model model = ModelLoader.loadModel(lmodel.file);
     
     PImage image = Main.sketch.createImage(1024, 768, PApplet.ARGB);
-    PieceDrawer.drawModelOnImage(image, 512, 768/2, model);
-    PImage output = PieceDrawer.scaleImage(image, 0.25f);
+    PieceDrawer.drawModelOnImage(image, 512, 768/2, model, false);
+    BufferedImage output = scaleImage((BufferedImage)image.getImage(), 0.25f);
     
-    output.save(Settings.values.getPath(Setting.Path.CACHE)+File.separator+lmodel.thumbnailName());
-    
-    return new ImageIcon(output.getImage());
+    ImageIO.write(output, "PNG", new File(Settings.values.getPath(Setting.Path.CACHE)+File.separator+lmodel.thumbnailName()));
+
+    return new ImageIcon(output);
+  }
+
+  public static BufferedImage scaleImage(BufferedImage src, float factor)
+  {
+    BufferedImage dst = new BufferedImage((int)(src.getWidth(null)*factor), (int)(src.getHeight(null)*factor), BufferedImage.TYPE_INT_ARGB);
+    AffineTransform at = new AffineTransform();
+    at.scale(factor, factor);
+    AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+    dst = scaleOp.filter(src, dst);
+    return dst;
   }
 }
