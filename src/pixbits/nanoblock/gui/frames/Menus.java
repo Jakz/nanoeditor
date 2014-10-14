@@ -130,7 +130,7 @@ public class Menus
   
   private static final Map<JMenuItem, Item> mapping = new HashMap<JMenuItem, Item>();
   
-  public static JMenu buildMenu(String caption, Item[] items)
+  private static JMenu buildMenu(String caption, Item[] items)
   {
     JMenu menu = new JMenu(caption);
     
@@ -182,7 +182,7 @@ public class Menus
     return menu;
   }
   
-  public static void buildMenu(JFrame frame)
+  public static JMenuBar buildMenu()
   {
     JMenuBar bar = new JMenuBar();
     
@@ -194,10 +194,10 @@ public class Menus
       bar.add(menu);
     }
 
-    frame.setJMenuBar(bar);
+    return bar;
   }
   
-  private static ActionListener menuListener = new ActionListener() {
+  private static final ActionListener menuListener = new ActionListener() {
     public void actionPerformed(ActionEvent e)
     {
       JMenuItem src = (JMenuItem)e.getSource();

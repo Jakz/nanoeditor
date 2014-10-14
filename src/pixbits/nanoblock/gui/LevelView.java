@@ -20,6 +20,7 @@ public class LevelView extends Drawable
   private final Model model;
   
   public int hx = -1, hy = -1;
+  public int rhx = -1, rhy = -1;
 
   
   LevelView(LevelStackView parent, Sketch p, Model model, Level level, int index, int ox, int oy, float cellSize)
@@ -47,16 +48,51 @@ public class LevelView extends Drawable
     
     boolean halfSteps = Settings.values.get(Setting.HALF_STEPS_ENABLED);
     
-    float realCellSize = halfSteps ? cellSize/2.0f : cellSize;
+    float realCellSize = cellSize/2.0f;
     
-    x /= realCellSize;
-    y /= realCellSize;
+    x = Math.round((x - realCellSize/2)/realCellSize);
+    y = Math.round((y - realCellSize/2)/realCellSize);
     
-    float realWidth = halfSteps ? model.getWidth()*2.0f : model.getWidth();
-    float realHeight = halfSteps ? model.getHeight()*2.0f : model.getHeight();
+    System.out.println("BEF "+x+","+y);
+
+    float realWidth =  model.getWidth()*2.0f;
+    float realHeight =  model.getHeight()*2.0f;
     
-    float realPieceWidth = halfSteps ? Brush.type.width*2.0f : Brush.type.width;
-    float realPieceHeight = halfSteps ? Brush.type.height*2.0f : Brush.type.height;
+    float realPieceWidth =  Brush.type.width*2.0f;
+    float realPieceHeight =  Brush.type.height*2.0f;
+    
+    int rx = x;
+    int ry = y;
+    
+    x -= Math.floor(realPieceWidth / 2.0f);
+    y -= Math.floor(realPieceHeight / 2.0f);
+    
+    System.out.println("AFT "+x+","+y);
+
+    /*x = Math.max(0, x);
+    y = Math.max(0, y);
+    
+    x = Math.min(x, halfSteps ? model.getWidth()*2)*/
+    
+    if (x < 0) x = 0;
+    else if (x > realWidth - realPieceWidth)
+      x = (int)(realWidth - realPieceWidth);
+    
+    if (y < 0) y = 0;
+    else if (y > realHeight - realPieceHeight)
+      y = (int)(realHeight - realPieceHeight);
+    
+    
+    if (!halfSteps)
+    {
+      if (x % 2 != 0)
+        --x;
+      if (y % 2 != 0)
+        --y;
+    }
+      
+    System.out.println("FXD "+x+","+y);
+
     
     if (x != hx || y != hy)
     {
@@ -64,6 +100,8 @@ public class LevelView extends Drawable
       {
         hx = x;
         hy = y;
+        rhx = rx;
+        rhy = ry;
         parent.setHover(new Rectangle(hx, hy, Brush.type.width, Brush.type.height));
       }
       else
@@ -71,6 +109,8 @@ public class LevelView extends Drawable
         parent.setHover(null);
         hx = -1;
         hy = -1;
+        rhx = -1;
+        rhy = -1;
       }
       Main.sketch.redraw();
     }
@@ -82,6 +122,8 @@ public class LevelView extends Drawable
     {
       hx = -1;
       hy = -1;
+      rhx = -1;
+      rhy = -1;
       parent.setHover(null);
     }
     
@@ -94,20 +136,12 @@ public class LevelView extends Drawable
   {
     if (parent.hover() != null)
     {   
-      x -= ox;
-      y -= oy;
-      
-      float realCellSize = Settings.values.get(Setting.HALF_STEPS_ENABLED) ? cellSize/2.0f : cellSize;
-      
-      x /= realCellSize;
-      y /= realCellSize;
-      Piece piece = level.pieceAt(x,y);
-      
+      Piece piece = level.pieceAt(rhx,rhy);
   
-      if (level.canPlace(Brush.type, x, y))
-        model.addPiece(level,Brush.type,Brush.color,x,y);
-      else if (!level.isFreeAt(x,y))
+      if (!level.isFreeAt(rhx, rhy))
         model.removePiece(level, piece);
+      else if (level.canPlace(Brush.type, hx, hy))
+        model.addPiece(level,Brush.type,Brush.color,hx,hy);
       
       Main.sketch.redraw();
     }
@@ -216,7 +250,7 @@ public class LevelView extends Drawable
       p.strokeWeight(2.0f);
       p.stroke(220,0,0);
       
-      float realCellSize = Settings.values.get(Setting.HALF_STEPS_ENABLED) ? cellSize/2.0f : cellSize;
+      float realCellSize = cellSize/2.0f;
 
       
       p.rect(ox+h.x*realCellSize+1, oy+h.y*realCellSize+1, h.width*cellSize-1, h.height*cellSize-1);

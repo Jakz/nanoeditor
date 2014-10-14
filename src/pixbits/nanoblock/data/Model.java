@@ -2,6 +2,8 @@ package pixbits.nanoblock.data;
 
 import java.util.*;
 
+import pixbits.nanoblock.files.Log;
+
 public class Model implements Iterable<Level>
 {
   private ModelInfo info;
@@ -123,19 +125,16 @@ public class Model implements Iterable<Level>
   {
     if (dir == Direction.EAST)
     {
+      Log.i("Rotating model right");
       for (Level l : levels)
       {
         for (Piece p : l.pieces)
         {
-          System.out.println("Rotate "+p);
-          System.out.println("> "+p.x+","+p.y);
           int oldY = p.y;
           p.y = p.x;
           p.x = getHeight()*2 - oldY- 1; // height pre swap
-          System.out.println("> "+p.x+","+p.y);
           p.type = PieceType.getRotation(p.type);
           p.x -= p.type.width*2 - 1;
-          System.out.println("> "+p.x+","+p.y);
         }
         
         l.resortPieces();
@@ -143,6 +142,7 @@ public class Model implements Iterable<Level>
     }
     else if (dir == Direction.WEST)
     {
+      Log.i("Rotating model left");
       for (Level l : levels)
       {
         for (Piece p : l.pieces)
