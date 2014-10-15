@@ -6,6 +6,7 @@ import javax.swing.table.*;
 
 import java.awt.*;
 
+import pixbits.nanoblock.Main;
 import pixbits.nanoblock.files.LibraryModel;
 
 
@@ -18,8 +19,12 @@ public class LibraryInfoPanel extends JPanel
   private final JTable infoTable;
   private final InfoTableModel tableModel;
   
+  private LibraryModel lmodel;
+  
   LibraryInfoPanel()
   {
+    lmodel = null;
+    
     this.setPreferredSize(new Dimension(300,600));
     
     thumbnail = new JLabel();
@@ -53,13 +58,13 @@ public class LibraryInfoPanel extends JPanel
   
   void update(LibraryModel model)
   {
+    lmodel = model;
     thumbnail.setIcon(model.thumbnail);
     modelName.setText(model.info.name);
-    tableModel.update(model);
     tableModel.refresh();
   }
   
-  private static class InfoTableModel extends AbstractTableModel
+  private class InfoTableModel extends AbstractTableModel
   {
     private final String[] columnNames = {"Info", "Value"};
     
@@ -72,30 +77,33 @@ public class LibraryInfoPanel extends JPanel
       "Piece Count",
       "Total Colors"
     };
-    
-    private final String[] values;
-    
+        
     InfoTableModel()
     {
-      values = new String[rowNames.length];
-      for (int i = 0; i < values.length; ++i)
-        values[i] = "N/A";
+
     }
-    
-    public void update(LibraryModel model)
-    {
-      values[0] = model.info.name;
-      values[1] = model.info.author;
-      values[2] = model.info.source;
-      values[3] = model.info.width + "x" + model.info.height;
-      values[4] = "" + model.info.levels;
-      values[5] = "" + model.pieceCount;
-      values[6] = "" + model.colorCount;
-    }
-    
+
     public void refresh()
     {
       this.fireTableDataChanged();
+    }
+    
+    @Override
+    public boolean isCellEditable(int r, int c) { return lmodel != null && r <= 2 && c == 1; }
+    
+    @Override
+    public void setValueAt(Object o, int r, int c)
+    {
+      if (r == 0)
+        lmodel.info.name = (String)o;
+      else if (r == 1)
+        lmodel.info.author = (String)o;
+      else if (r == 2)
+        lmodel.info.source = (String)o;
+      
+      Main.libraryFrame.getModel().refresh();
+      lmodel.writeBack();
+      refresh();
     }
     
     @Override
@@ -110,7 +118,25 @@ public class LibraryInfoPanel extends JPanel
     @Override
     public Object getValueAt(int r, int c) {
       if (c == 0) return rowNames[r];
-      else return values[r];
+      else
+      {   
+        if (lmodel != null)
+        {
+          switch (r)
+          {
+            case 0: return lmodel.info.name;
+            case 1: return lmodel.info.author;
+            case 2: return lmodel.info.source;
+            case 3: return lmodel.info.width + "x" + lmodel.info.height;
+            case 4: return "" + lmodel.info.levels;
+            case 5: return "" + lmodel.pieceCount;
+            case 6: return "" + lmodel.colorCount;
+            default: return null;
+          }
+        }
+        else
+          return "N/A";
+      }
     }
   }
 }

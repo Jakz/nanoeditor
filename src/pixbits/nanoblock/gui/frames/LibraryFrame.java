@@ -108,6 +108,7 @@ public class LibraryFrame extends JFrame
     public LibraryModel get(int index) { return data.get(index); }
     
     public void refresh() { this.fireContentsChanged(this, 0, data.size()-1); }
+    public void refresh(int index) { this.fireContentsChanged(this, index, index); }
   }
   
   /*public static class LibraryTableModel extends AbstractTableModel

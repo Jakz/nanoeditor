@@ -18,6 +18,7 @@ public class Main
   
   public static Sketch sketch;
   public static MainFrame mainFrame;
+  public static LibraryFrame libraryFrame;
   
   public static void main(String[] args)
   {
@@ -47,7 +48,7 @@ public class Main
     
     Library.i().cacheThumbnails();
     
-    LibraryFrame libraryFrame = new LibraryFrame();
+    libraryFrame = new LibraryFrame();
     libraryFrame.getModel().add(Library.i().getModels());
     libraryFrame.getModel().refresh();
     libraryFrame.showMe();
