@@ -1,6 +1,11 @@
 package pixbits.nanoblock.misc;
 
+import com.google.gson.*;
+
 import java.util.*;
+import java.io.*;
+
+import pixbits.nanoblock.files.FileUtils;
 
 public class Settings
 {
@@ -21,8 +26,8 @@ public class Settings
   public Setting.HoverPiece getHoverPiece() { return hoverPiece; }
 
   Settings()
-  {
-    Settings.values = this;
+  {    
+    Settings.values = this; //TODO: ugly but required for static initializer of Setting$HoverSetter
     
     set(Setting.DRAW_CAPS, true);
     set(Setting.HALF_STEPS_ENABLED, true);
@@ -38,5 +43,25 @@ public class Settings
   }
   
   
-  public static Settings values = new Settings();
+  
+  
+  
+  
+  public static Settings values;
+  
+  public static final String SETTINGS_PATH = "./settings/settings.json";
+  
+  public static void loadSettings() throws FileNotFoundException, IOException
+  {
+    if (new File(SETTINGS_PATH).exists())
+      Settings.values = FileUtils.readJson(SETTINGS_PATH, Settings.class);
+    else
+      Settings.values = new Settings();
+  }
+  
+  public static void saveSettings() throws IOException
+  {
+    FileUtils.writeJson(SETTINGS_PATH, Settings.class, Settings.values);
+  }
+
 }

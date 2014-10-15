@@ -1,6 +1,6 @@
 package pixbits.nanoblock.files;
 
-import java.awt.Image;
+import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import java.io.*;
@@ -23,8 +23,9 @@ public class Thumbnails
     
     Model model = ModelLoader.loadModel(lmodel.file);
     
-    PImage image = Main.sketch.createImage(1024, 768, PApplet.ARGB);
-    PieceDrawer.drawModelOnImage(image, 512, 768/2, model, false);
+    Rectangle bound = PieceDrawer.computeBoundsForModel(model);
+    PImage image = Main.sketch.createImage(bound.width, bound.height, PApplet.ARGB);
+    PieceDrawer.drawModelOnImage(image, bound.x, bound.y, model, false);
     BufferedImage output = scaleImage((BufferedImage)image.getImage(), 0.25f);
     
     ImageIO.write(output, "PNG", new File(Settings.values.getPath(Setting.Path.CACHE)+File.separator+lmodel.thumbnailName()));

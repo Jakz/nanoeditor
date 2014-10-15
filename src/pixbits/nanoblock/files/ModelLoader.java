@@ -58,11 +58,7 @@ public class ModelLoader
         pieces.get(i).toArray(jmodel.pieces[i]);
       }
       
-      GsonBuilder builder = new GsonBuilder();
-      builder.setPrettyPrinting();
-      Gson gson = builder.create();
-      wrt.write(gson.toJson(jmodel, JsonModel.class));
-      wrt.close();
+      FileUtils.writeJson(file, JsonModel.class, jmodel, true);
     }
     catch (Exception e)
     {
@@ -72,15 +68,7 @@ public class ModelLoader
   
   public static ModelInfo loadInfo(File file) throws FileNotFoundException, IOException
   {
-    BufferedReader rdr = new BufferedReader(new FileReader(file));
-    
-    GsonBuilder builder = new GsonBuilder();
-    Gson gson = builder.create();
-    
-    JsonModel jmodel = gson.fromJson(rdr, JsonModel.class);
-    
-    rdr.close();
-    
+    JsonModel jmodel = FileUtils.readJson(file, JsonModel.class);
     return jmodel.info;
   }
   
@@ -90,12 +78,7 @@ public class ModelLoader
     {    
       if (file.exists())
       {
-        BufferedReader rdr = new BufferedReader(new FileReader(file));
-        
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        
-        JsonModel jmodel = gson.fromJson(rdr, JsonModel.class);
+        JsonModel jmodel = FileUtils.readJson(file, JsonModel.class);
         
         Model model = new Model(jmodel.info);
         model.allocateLevels(jmodel.info.levels+1);
@@ -111,8 +94,6 @@ public class ModelLoader
             model.addPiece(model.levelAt(i), PieceType.forName(piece.type), PieceColor.forName(piece.color), piece.x, piece.y);
           }
         }
-        
-        rdr.close();
         
         return model;
       }

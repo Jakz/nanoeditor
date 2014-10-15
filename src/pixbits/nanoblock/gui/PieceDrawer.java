@@ -1,5 +1,6 @@
 package pixbits.nanoblock.gui;
 
+import java.awt.Rectangle;
 import java.util.Iterator;
 
 import pixbits.nanoblock.data.*;
@@ -54,5 +55,13 @@ public class PieceDrawer
         PieceDrawer.drawPiece(gfx, baseX, baseY, piece, piece.x, piece.y, l, level);
       }
     }
+  }
+  
+  public static Rectangle computeBoundsForModel(Model model)
+  {
+    int x = 0;
+    int y = 0;
+    
+    return new Rectangle(512,384,1024,768);
   }
 }

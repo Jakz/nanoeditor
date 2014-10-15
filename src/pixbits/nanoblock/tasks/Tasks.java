@@ -8,6 +8,7 @@ import pixbits.nanoblock.Main;
 import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.ModelLoader;
+import pixbits.nanoblock.misc.Settings;
 
 public class Tasks
 {
@@ -60,6 +61,26 @@ public class Tasks
   {
     Log.i("Saving model.");
     ModelLoader.saveModel(Library.model, new File("model.nblock"));
-
+  }
+  
+  public static void saveSettings()
+  {
+    try {
+      Log.i("Saving settings.");
+      Settings.saveSettings();
+    } catch (Exception e) {
+      Log.e(e);
+    }
+  }
+  
+  
+  public static void loadSettings()
+  {
+    try {
+      Log.i("Loading settings.");
+      Settings.loadSettings();
+    } catch (Exception e) {
+      Log.e(e);
+    }
   }
 }

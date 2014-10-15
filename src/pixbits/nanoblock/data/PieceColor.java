@@ -8,7 +8,7 @@ public enum PieceColor {
   GREEN_LIME,
   YELLOW,
   ORANGE,
-  PINK
+  PINK,
   ;
   
   public Color fillColor;

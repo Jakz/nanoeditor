@@ -34,13 +34,13 @@ public enum Setting
   
   public static interface EnumSetter
   {
-    void set(Enum value);
-    Enum get();
+    void set(Enum<?> value);
+    Enum<?> get();
   }
   
   
   public static class HoverSetter implements EnumSetter {
-    public void set(Enum piece) { Settings.values.hoverPiece = (HoverPiece)piece; }
+    public void set(Enum<?> piece) { Settings.values.hoverPiece = (HoverPiece)piece; }
     public HoverPiece get() { return (HoverPiece)Settings.values.hoverPiece; }
     public final static HoverSetter INSTANCE = new HoverSetter();
   }

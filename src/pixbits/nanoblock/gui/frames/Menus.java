@@ -76,7 +76,7 @@ public class Menus
     public final Setting setting;
     public final Task task;
     public final Item[] items;
-    public final Enum radioValue;
+    public final Enum<?> radioValue;
     public final Setting.EnumSetter radioSetter;
     public final ButtonGroup radioGroup;
     
@@ -107,7 +107,7 @@ public class Menus
       this.radioSetter = null;
     }
     
-    Item(String caption, Setting.EnumSetter setter, ButtonGroup radioGroup, Enum radioValue)
+    Item(String caption, Setting.EnumSetter setter, ButtonGroup radioGroup, Enum<?> radioValue)
     {
       this.caption = caption;
       type = ItemType.RADIO;
@@ -220,7 +220,7 @@ public class Menus
         case VIEW_HOVER_PIECE_STROKE_FRONT:
         {
           Setting.EnumSetter setter = item.radioSetter;
-          Enum value = item.radioValue;
+          Enum<?> value = item.radioValue;
           setter.set(value);
           Main.sketch.redraw();
           break;

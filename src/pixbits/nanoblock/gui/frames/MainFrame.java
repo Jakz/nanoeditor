@@ -41,6 +41,7 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
   public void windowClosing(WindowEvent e)
   { 
     Tasks.saveModel();
+    Tasks.saveSettings();
   }
   
   

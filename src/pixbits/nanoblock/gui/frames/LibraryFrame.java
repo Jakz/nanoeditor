@@ -17,6 +17,7 @@ import pixbits.nanoblock.files.*;
 
 public class LibraryFrame extends JFrame
 {
+  private static final long serialVersionUID = 1L;
   private final JList list;
   private final LibraryTableModel model;
   private final JScrollPane scrollpane;
@@ -44,6 +45,8 @@ public class LibraryFrame extends JFrame
   
   private class LibraryModelRenderer extends DefaultListCellRenderer/*JLabel implements ListCellRenderer*/
   {
+    private static final long serialVersionUID = 1L;
+    
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
     {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -60,6 +63,8 @@ public class LibraryFrame extends JFrame
   
   public class LibraryTableModel extends AbstractListModel
   {
+    private static final long serialVersionUID = 1L;
+    
     final List<LibraryModel> data;
     
     LibraryTableModel()

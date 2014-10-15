@@ -7,6 +7,8 @@ import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
 import pixbits.nanoblock.gui.frames.LibraryFrame;
 import pixbits.nanoblock.gui.frames.MainFrame;
+import pixbits.nanoblock.misc.Settings;
+import pixbits.nanoblock.tasks.Tasks;
 
 public class Main
 {
@@ -31,7 +33,7 @@ public class Main
         // If Nimbus is not available, you can set the GUI to another look and feel.
     }*/
     
-    
+    Tasks.loadSettings();
     
     TileSetLoader.loadTileset("tileset.json");
 
