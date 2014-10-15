@@ -13,13 +13,18 @@ public class Toolbar
   private static enum Item
   {
     MODEL_ROTATE_LEFT(Icon.ROTATE_LEFT, Tasks.MODEL_ROTATE_WEST, "Rotate Left"),
-    MODEL_ROTATE_RIGHT(Icon.ROTATE_RIGHT, Tasks.MODEL_ROTATE_EAST, "Rotate Right")
+    MODEL_ROTATE_RIGHT(Icon.ROTATE_RIGHT, Tasks.MODEL_ROTATE_EAST, "Rotate Right"),
 
+    LIBRARY_MODEL_NEW(Icon.MODEL_NEW, null, "New Model"),
+    LIBRARY_MODEL_DUPLICATE(Icon.MODEL_DUPLICATE, null, "Duplicate Model"),
+    LIBRARY_MODEL_DELETE(Icon.MODEL_DELETE, null, "Delete Model"),
+    
+    SEPARATOR(null, null, null)
     ;
     
     Item(Icon icon, Task task, String tooltip)
     {
-      this.icon = icon.icon();
+      this.icon = icon != null ? icon.icon() : null;
       this.task = task;
       this.tooltip = tooltip;
     }
@@ -30,20 +35,34 @@ public class Toolbar
     public final Task task;
   }
   
-  private final static Item[] items = {
+  private final static Item[] EDITOR_ITEMS = {
     Item.MODEL_ROTATE_LEFT,
     Item.MODEL_ROTATE_RIGHT
   };
   
+  private final static Item[] LIBRARY_ITEMS = {
+    Item.LIBRARY_MODEL_NEW,
+    Item.LIBRARY_MODEL_DUPLICATE,
+    Item.SEPARATOR,
+    Item.LIBRARY_MODEL_DELETE
+    
+  };
+  
   private final static Map<JButton, Item> mapping = new HashMap<JButton, Item>();
   
-  public static JToolBar buildToolbar()
+  public static JToolBar buildEditorToolbar() { return buildToolbar(EDITOR_ITEMS); }
+  public static JToolBar buildLibraryToolbar() { return buildToolbar(LIBRARY_ITEMS); }
+
+  
+  private static JToolBar buildToolbar(Item[] items)
   {
     JToolBar bar = new JToolBar();
     
     for (Item item : items)
     {
-      if (item.icon != null)
+      if (item == Item.SEPARATOR)
+        bar.add(new JToolBar.Separator());
+      else if (item.icon != null)
       {
         JButton button = new JButton(item.icon);
         

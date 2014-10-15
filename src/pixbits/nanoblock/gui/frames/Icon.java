@@ -11,8 +11,11 @@ import pixbits.nanoblock.files.Log;
 public enum Icon
 {
   ROTATE_LEFT("rotate_left"),
-  ROTATE_RIGHT("rotate_right")
+  ROTATE_RIGHT("rotate_right"),
   
+  MODEL_DUPLICATE("duplicate_model"),
+  MODEL_NEW("new_model"),
+  MODEL_DELETE("delete_model")
   
   ;
   

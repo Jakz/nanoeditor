@@ -21,7 +21,7 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
     setLayout(new BorderLayout());
     Sketch embed = Main.sketch;
     add(embed, BorderLayout.CENTER);
-    add(Toolbar.buildToolbar(), BorderLayout.NORTH);
+    add(Toolbar.buildEditorToolbar(), BorderLayout.NORTH);
     embed.init();
 
     this.addWindowListener(this);
