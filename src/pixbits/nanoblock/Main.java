@@ -46,6 +46,8 @@ public class Main
     Library.i().scan();
     } catch (Exception e) { e.printStackTrace(); }
     
+    Library.i().computeMissingHashes();
+    Library.i().fixModelFileNames();
     Library.i().cacheThumbnails();
     
     libraryFrame = new LibraryFrame();

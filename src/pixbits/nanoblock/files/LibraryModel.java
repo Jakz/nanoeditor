@@ -12,7 +12,7 @@ import pixbits.nanoblock.misc.*;
 public class LibraryModel
 {
   public final ModelInfo info;
-  public final File file;
+  public File file;
   public ImageIcon thumbnail;
   
   public int pieceCount;
@@ -20,7 +20,7 @@ public class LibraryModel
   
   LibraryModel(ModelInfo info, File file) { this.info = info; this.file = file; thumbnail = null; }
   
-  public String thumbnailName() { return (info.name+"-"+info.author+".png").toLowerCase(); }
+  public String thumbnailName() { return info.hashCode + ".png"; }
   
   public void writeBack()
   {

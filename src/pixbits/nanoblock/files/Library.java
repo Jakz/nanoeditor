@@ -73,6 +73,30 @@ public class Library
     return colors.size();
   }
   
+  public void fixModelFileNames()
+  {
+    for (LibraryModel model : models)
+    {
+      if (!model.file.getName().equals(model.info.hashCode+".block"))
+      {
+        File newFile = new File(Settings.values.getPath(Setting.Path.LIBRARY)+File.separator+model.info.hashCode+".nblock");
+        model.file.renameTo(newFile);
+        model.file = newFile;
+      }
+      
+    }
+  }
+  
+  public void computeMissingHashes()
+  {
+    for (LibraryModel model : models)
+      if (model.info.hashCode == null)
+      {
+        model.info.generateRandomHash();
+        model.writeBack();
+      }
+  }
+  
   public void cacheThumbnails()
   {
     for (LibraryModel model : models)
