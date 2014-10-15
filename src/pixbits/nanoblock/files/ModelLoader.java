@@ -25,9 +25,7 @@ public class ModelLoader
   public static void saveModel(Model model, File file)
   {
     try
-    {
-      BufferedWriter wrt = new BufferedWriter(new FileWriter(file));
-      
+    {      
       JsonModel jmodel = new JsonModel();
       jmodel.info = model.getInfo();
       

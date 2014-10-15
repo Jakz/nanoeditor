@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.awt.Dimension;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 
 import java.util.*;
@@ -22,19 +23,24 @@ public class LibraryFrame extends JFrame
   private final LibraryTableModel model;
   private final JScrollPane scrollpane;
   
+  private final LibraryInfoPanel infoPanel;
+  
   public LibraryFrame()
   {
     model = new LibraryTableModel();
     list = new JList(model);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setCellRenderer(new LibraryModelRenderer());
+    list.addListSelectionListener(new LibraryModelListener());
     //table.setAutoCreateRowSorter(true);
     scrollpane = new JScrollPane(list);
     scrollpane.setPreferredSize(new Dimension(800,600));
     
+    infoPanel = new LibraryInfoPanel();
+    
     this.setLayout(new BorderLayout());
     this.add(scrollpane, BorderLayout.CENTER);
-    this.add(new LibraryInfoPanel(), BorderLayout.EAST);
+    this.add(infoPanel, BorderLayout.EAST);
     
     setTitle("Library");
     pack();
@@ -47,6 +53,7 @@ public class LibraryFrame extends JFrame
   {
     private static final long serialVersionUID = 1L;
     
+    @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
     {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -60,6 +67,23 @@ public class LibraryFrame extends JFrame
       return this;
     }
   };
+  
+  private class LibraryModelListener implements ListSelectionListener
+  {
+    @Override
+    public void valueChanged(ListSelectionEvent e)
+    {
+      if (!e.getValueIsAdjusting())
+      {
+        int index = list.getSelectedIndex();
+        
+        if (index == -1)
+          infoPanel.clear();
+        else
+          infoPanel.update(model.get(index));
+      }
+    }
+  }
   
   public class LibraryTableModel extends AbstractListModel
   {
@@ -81,6 +105,7 @@ public class LibraryFrame extends JFrame
     public void add(Collection<? extends LibraryModel> models) { data.addAll(models); }
     public void add(LibraryModel model) { data.add(model); }
     public void clear() { data.clear(); }
+    public LibraryModel get(int index) { return data.get(index); }
     
     public void refresh() { this.fireContentsChanged(this, 0, data.size()-1); }
   }

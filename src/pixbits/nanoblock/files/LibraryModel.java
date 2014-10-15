@@ -14,6 +14,9 @@ public class LibraryModel
   public final File file;
   public ImageIcon thumbnail;
   
+  public int pieceCount;
+  public int colorCount;
+  
   LibraryModel(ModelInfo info, File file) { this.info = info; this.file = file; thumbnail = null; }
   
   public String thumbnailName() { return (info.name+"-"+info.author+".png").toLowerCase(); }

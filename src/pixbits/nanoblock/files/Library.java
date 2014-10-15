@@ -31,12 +31,46 @@ public class Library
     
     for (File model : fmodels)
     {
-      ModelInfo info = ModelLoader.loadInfo(model);
+      Model rmodel = ModelLoader.loadModel(model);
       
-      Log.i("Loaded "+info.name+" from "+info.author);
+      Log.i("Loaded "+rmodel.getInfo().name+" from "+rmodel.getInfo().author);
       
-      models.add(new LibraryModel(info, model));      
+      LibraryModel lmodel = new LibraryModel(rmodel.getInfo(), model);
+      
+      lmodel.pieceCount = countPieces(rmodel);
+      lmodel.colorCount = countColors(rmodel);
+      
+      models.add(lmodel);      
     }
+  }
+  
+  public static int countPieces(Model model)
+  {
+    int total = 0;
+    
+    for (int i = 0; i < model.levelCount(); ++i)
+    {
+      Level l = model.levelAt(i); 
+      for (Piece p : l)
+        if (p.type != PieceType.CAP)
+          ++total;
+    }
+    
+    return total;
+  }
+  
+  public static int countColors(Model model)
+  {
+    Set<PieceColor> colors = new HashSet<PieceColor>();
+    
+    for (int i = 0; i < model.levelCount(); ++i)
+    {
+      Level l = model.levelAt(i); 
+      for (Piece p : l)
+        colors.add(p.color);
+    }
+    
+    return colors.size();
   }
   
   public void cacheThumbnails()
