@@ -18,11 +18,27 @@ public class LibraryModel
   public int pieceCount;
   public int colorCount;
   
+  public LibraryModel(int w, int h, int l)
+  {
+    this.info = new ModelInfo();
+    this.info.initialize(w, h, l);
+    this.pieceCount = 0;
+    this.colorCount = 0;
+    this.file = new File(Settings.values.getPath(Setting.Path.LIBRARY)+File.separator+info.hashCode+".nblock");
+    
+    Model m = new Model(w,h);
+    m.allocateLevels(l+1);
+    m.setInfo(this.info);
+    
+    ModelLoader.saveModel(m, file);
+    
+    this.loadThumbnail();
+  }
+  
   public LibraryModel(LibraryModel lmodel)
   {
     this.info = lmodel.info.dupe();
     this.file = null;
-    this.thumbnail = null;
     this.pieceCount = lmodel.pieceCount;
     this.colorCount = lmodel.colorCount;
   }

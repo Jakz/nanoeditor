@@ -49,6 +49,7 @@ public class Main
     Library.i().computeMissingHashes();
     Library.i().fixModelFileNames();
     Library.i().cacheThumbnails();
+    Library.i().deleteUselessThumbnails();
     
     libraryFrame = new LibraryFrame();
     libraryFrame.getModel().add(Library.i().getModels());

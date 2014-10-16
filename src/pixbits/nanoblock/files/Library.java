@@ -50,6 +50,10 @@ public class Library
     }
   }
   
+  public boolean isHashUnique(String hash) {
+    return true;
+  }
+  
   public void insertModel(LibraryModel model)
   {
     // TODO: manage specific ordering of the list, maybe with apposite method to keep it always sorted
@@ -119,6 +123,36 @@ public class Library
     for (LibraryModel model : models)
     {
       model.loadThumbnail();
+    }
+  }
+  
+  public void deleteUselessThumbnails()
+  {
+    File[] files = new File(Settings.values.getPath(Setting.Path.CACHE)).listFiles();
+    
+    for (File file : files)
+    {
+      //TODO: use file filter?
+      if (file.getName().endsWith(".png") && !file.isDirectory())
+      {
+        String hashCode = file.getName().substring(0, file.getName().length()-4);
+        boolean found = false;
+        
+        for (LibraryModel model : models)
+        {
+          if (hashCode.equals(model.info.hashCode))
+          {
+            found = true;
+            break;
+          }
+        }
+        
+        if (!found)
+        {
+          Log.i("Deleting thumbnail "+file.getName()+" not paired with any model.");
+          file.delete();
+        }
+      }
     }
   }
 

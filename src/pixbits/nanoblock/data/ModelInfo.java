@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Random;
 
+import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.Log;
 
 public class ModelInfo
@@ -34,6 +35,19 @@ public class ModelInfo
     mi.levels = levels;
     mi.generateRandomHash();
     return mi;
+  }
+  
+  public void initialize(int w, int h, int l)
+  {
+    name = "Name";
+    author = "Author";
+    source = "";
+    width = w;
+    height = h;
+    levels = l;
+    
+    while (hashCode == null || !Library.i().isHashUnique(hashCode))
+      generateRandomHash();
   }
   
   public void generateRandomHash()

@@ -62,7 +62,16 @@ public class Tasks
   
   
   
-  
+  public static Task LIBRARY_NEW_MODEL = new Task() {
+    public void execute() {
+      Log.i("Creating new empty model");
+      LibraryModel nmodel = new LibraryModel(20,20,15);
+      
+      Library.i().insertModel(nmodel);
+      Main.libraryFrame.addModel(nmodel);
+      
+    }
+  };
   
   public static LibraryModelTask LIBRARY_CLONE_MODEL = new LibraryModelTask() {
     public void execute(LibraryModel model) {
