@@ -241,7 +241,7 @@ public class Menus
         
         case EDIT_RESET:
         {
-          if (Dialogs.drawConfirmDialog("Reset model", "Are you sure you want to reset the model?", Tasks.MODEL_RESET))
+          if (Dialogs.showConfirmDialog(Main.mainFrame, "Reset model", "Are you sure you want to reset the model?", Tasks.MODEL_RESET))
             Main.sketch.redraw();
           break;
         }

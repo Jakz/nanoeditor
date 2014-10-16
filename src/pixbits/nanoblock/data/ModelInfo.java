@@ -16,6 +16,26 @@ public class ModelInfo
   public int levels;
   public String hashCode;
   
+  public ModelInfo dupe()
+  {
+    ModelInfo mi = new ModelInfo();
+    
+    if (author != null)
+      mi.author = new String(author);
+    
+    if (name != null)
+      mi.name = new String(name);
+    
+    if (source != null)
+      mi.source = new String(source);
+    
+    mi.width = width;
+    mi.height = height;
+    mi.levels = levels;
+    mi.generateRandomHash();
+    return mi;
+  }
+  
   public void generateRandomHash()
   {
     try

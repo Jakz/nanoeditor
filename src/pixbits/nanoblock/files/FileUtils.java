@@ -47,4 +47,15 @@ public class FileUtils
     wrt.write(gson.toJson(object, clazz));
     wrt.close();
   }
+  
+  public static boolean deleteFile(File file)
+  {
+    if (file.exists())
+    {
+      file.delete();
+      return true;
+    }
+    else
+      return false;
+  }
 }

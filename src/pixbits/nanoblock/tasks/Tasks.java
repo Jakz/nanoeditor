@@ -1,14 +1,20 @@
 package pixbits.nanoblock.tasks;
 
+import java.awt.image.RenderedImage;
 import java.io.*;
+
+import javax.imageio.ImageIO;
 
 import pixbits.nanoblock.data.Direction;
 import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.Main;
+import pixbits.nanoblock.files.FileUtils;
 import pixbits.nanoblock.files.Library;
+import pixbits.nanoblock.files.LibraryModel;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.ModelLoader;
-import pixbits.nanoblock.misc.Settings;
+import pixbits.nanoblock.gui.frames.Dialogs;
+import pixbits.nanoblock.misc.*;
 
 public class Tasks
 {
@@ -51,6 +57,75 @@ public class Tasks
   public static ModelTask MODEL_RESET = new ModelTask() {
     public void execute(Model model) {
       Library.model.clear();
+    }
+  };
+  
+  
+  
+  
+  
+  public static LibraryModelTask LIBRARY_CLONE_MODEL = new LibraryModelTask() {
+    public void execute(LibraryModel model) {
+      if (model == null)
+        Dialogs.showErrorDialog(Main.libraryFrame, "Error", "You must select a model first");
+      else
+      {
+        try
+        {
+          Log.i("Duplicating model "+model.info.name+".");
+          
+          LibraryModel nmodel = new LibraryModel(model);
+          
+          // TODO: check unicity of hash before going on
+          
+          if (model.thumbnail != null)
+            ImageIO.write((RenderedImage)model.thumbnail.getImage(), "PNG", new File(nmodel.thumbnailName()));
+          
+          Model rmodel = ModelLoader.loadModel(model.file);
+          
+          nmodel.thumbnail = model.thumbnail;
+          nmodel.file = new File(Settings.values.getPath(Setting.Path.LIBRARY)+File.separator+nmodel.info.hashCode+".nblock");
+          
+          rmodel.setInfo(nmodel.info);
+          ModelLoader.saveModel(rmodel, nmodel.file);
+          
+          Library.i().insertModel(nmodel);
+          Main.libraryFrame.addModel(nmodel);
+        }
+        catch (Exception e)
+        {
+          Log.e(e);
+        }
+      }
+    }
+  };
+  
+  public static LibraryModelTask LIBRARY_DELETE_MODEL = new LibraryModelTask() {
+    public void execute(LibraryModel model) {
+      if (model == null)
+        Dialogs.showErrorDialog(Main.libraryFrame, "Error", "You must select a model first");
+      else
+      {
+        if (Dialogs.showConfirmDialog(Main.libraryFrame, "Delete Model", "Are you sure you want to delete the model?", null))
+        {
+          Log.i("Deleting model "+model.info.name+".");
+          
+          if (model.file != null && model.file.exists())
+            FileUtils.deleteFile(model.file);
+          
+          if (model.info.hashCode != null)
+          {
+            File file = new File(model.thumbnailName());
+            if (file.exists())
+              FileUtils.deleteFile(file);
+          }
+          
+          Library.i().deleteModel(model);
+          Main.libraryFrame.removeModel(model);
+          
+          //TODO: if it can happen that current opened model is the one just deleted we must make something
+        }
+      }
     }
   };
   

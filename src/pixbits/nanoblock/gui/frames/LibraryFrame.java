@@ -80,11 +80,41 @@ public class LibraryFrame extends JFrame
         int index = list.getSelectedIndex();
         
         if (index == -1)
+        {
+          Library.i().setLibraryModel(null);
           infoPanel.clear();
+          
+        }
         else
-          infoPanel.update(model.get(index));
+        {
+          //System.out.println("VALUE CHANGEDDDD!!!!");
+          LibraryModel lmodel = model.get(index);
+          Library.i().setLibraryModel(lmodel);
+          infoPanel.update(lmodel);
+        }
       }
     }
+  }
+  
+  public void addModel(LibraryModel lmodel)
+  {
+    model.add(lmodel);
+    model.refresh();
+  }
+  
+  // TODO: maybe don't remove from library view, just refresh it fetching the whole library again
+  public void removeModel(LibraryModel lmodel)
+  {
+    int index = model.indexOf(lmodel);
+    boolean isLast = index == model.getSize() - 1;
+    boolean willBeEmpty = model.getSize() == 1;
+
+    model.remove(lmodel);
+    model.refresh();
+    
+    if (isLast) list.setSelectedIndex(index - 1);
+    else if (willBeEmpty) list.setSelectedIndex(-1);
+    else list.setSelectedIndex(index);
   }
   
   public class LibraryTableModel extends AbstractListModel
@@ -104,12 +134,14 @@ public class LibraryFrame extends JFrame
     @Override
     public int getSize() { return data.size(); }
     
+    public int indexOf(LibraryModel model) { return data.indexOf(model); }
+    public void remove(LibraryModel model) { data.remove(model); }
     public void add(Collection<? extends LibraryModel> models) { data.addAll(models); }
     public void add(LibraryModel model) { data.add(model); }
     public void clear() { data.clear(); }
     public LibraryModel get(int index) { return data.get(index); }
     
-    public void refresh() { this.fireContentsChanged(this, 0, data.size()-1); }
+    public void refresh() { this.fireContentsChanged(this, 0, data.size()); }
     public void refresh(int index) { this.fireContentsChanged(this, index, index); }
   }
   

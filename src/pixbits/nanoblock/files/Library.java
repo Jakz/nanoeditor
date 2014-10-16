@@ -13,12 +13,18 @@ public class Library
   
   private final List<LibraryModel> models;
   
+  private LibraryModel libraryModel;
+  
   Library()
   {
     models = new ArrayList<LibraryModel>();
+    libraryModel = null;
   }
   
   public List<LibraryModel> getModels() { return Collections.unmodifiableList(models); }
+  
+  public void setLibraryModel(LibraryModel model) { this.libraryModel = model; }
+  public LibraryModel getLibraryModel() { return libraryModel; }
   
   public void scan() throws IOException, FileNotFoundException
   {
@@ -42,6 +48,17 @@ public class Library
       
       models.add(lmodel);      
     }
+  }
+  
+  public void insertModel(LibraryModel model)
+  {
+    // TODO: manage specific ordering of the list, maybe with apposite method to keep it always sorted
+    models.add(model);
+  }
+  
+  public void deleteModel(LibraryModel model)
+  {
+    models.remove(model);
   }
   
   public static int countPieces(Model model)

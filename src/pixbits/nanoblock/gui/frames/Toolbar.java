@@ -16,8 +16,8 @@ public class Toolbar
     MODEL_ROTATE_RIGHT(Icon.ROTATE_RIGHT, Tasks.MODEL_ROTATE_EAST, "Rotate Right"),
 
     LIBRARY_MODEL_NEW(Icon.MODEL_NEW, null, "New Model"),
-    LIBRARY_MODEL_DUPLICATE(Icon.MODEL_DUPLICATE, null, "Duplicate Model"),
-    LIBRARY_MODEL_DELETE(Icon.MODEL_DELETE, null, "Delete Model"),
+    LIBRARY_MODEL_DUPLICATE(Icon.MODEL_DUPLICATE, Tasks.LIBRARY_CLONE_MODEL, "Duplicate Model"),
+    LIBRARY_MODEL_DELETE(Icon.MODEL_DELETE, Tasks.LIBRARY_DELETE_MODEL, "Delete Model"),
     
     SEPARATOR(null, null, null)
     ;

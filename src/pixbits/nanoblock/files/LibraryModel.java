@@ -18,9 +18,18 @@ public class LibraryModel
   public int pieceCount;
   public int colorCount;
   
+  public LibraryModel(LibraryModel lmodel)
+  {
+    this.info = lmodel.info.dupe();
+    this.file = null;
+    this.thumbnail = null;
+    this.pieceCount = lmodel.pieceCount;
+    this.colorCount = lmodel.colorCount;
+  }
+  
   LibraryModel(ModelInfo info, File file) { this.info = info; this.file = file; thumbnail = null; }
   
-  public String thumbnailName() { return info.hashCode + ".png"; }
+  public String thumbnailName() { return Settings.values.getPath(Setting.Path.CACHE)+File.separator+info.hashCode + ".png"; }
   
   public void writeBack()
   {
@@ -34,7 +43,7 @@ public class LibraryModel
   {
     try
     {
-      ImageIcon icon = Icon.loadIcon(new File(Settings.values.getPath(Setting.Path.CACHE)+File.separator+thumbnailName()));
+      ImageIcon icon = Icon.loadIcon(new File(thumbnailName()));
       
       if (icon == null)
         icon = Thumbnails.generateThumbnail(this);

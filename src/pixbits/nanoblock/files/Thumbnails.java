@@ -28,7 +28,7 @@ public class Thumbnails
     PieceDrawer.drawModelOnImage(image, bound.x, bound.y, model, false);
     BufferedImage output = scaleImage((BufferedImage)image.getImage(), 0.25f);
     
-    ImageIO.write(output, "PNG", new File(Settings.values.getPath(Setting.Path.CACHE)+File.separator+lmodel.thumbnailName()));
+    ImageIO.write(output, "PNG", new File(lmodel.thumbnailName()));
 
     return new ImageIcon(output);
   }
