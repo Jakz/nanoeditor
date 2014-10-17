@@ -48,6 +48,13 @@ public class Library
       
       models.add(lmodel);      
     }
+    
+    sort();
+  }
+  
+  public void sort()
+  {
+    Collections.sort(models);
   }
   
   public boolean isHashUnique(String hash) {

@@ -68,7 +68,8 @@ public class Tasks
       LibraryModel nmodel = new LibraryModel(20,20,15);
       
       Library.i().insertModel(nmodel);
-      Main.libraryFrame.addModel(nmodel);
+      Library.i().sort();
+      Main.libraryFrame.refreshLibrary();
       
     }
   };
@@ -99,7 +100,8 @@ public class Tasks
           ModelLoader.saveModel(rmodel, nmodel.file);
           
           Library.i().insertModel(nmodel);
-          Main.libraryFrame.addModel(nmodel);
+          Library.i().sort();
+          Main.libraryFrame.refreshLibrary();
         }
         catch (Exception e)
         {
@@ -130,7 +132,8 @@ public class Tasks
           }
           
           Library.i().deleteModel(model);
-          Main.libraryFrame.removeModel(model);
+          Library.i().sort();
+          Main.libraryFrame.refreshLibrary();
           
           //TODO: if it can happen that current opened model is the one just deleted we must make something
         }

@@ -117,6 +117,13 @@ public class LibraryFrame extends JFrame
     else list.setSelectedIndex(index);
   }
   
+  public void refreshLibrary()
+  {
+    model.clear();
+    model.add(Library.i().getModels());
+    model.refresh();
+  }
+  
   public class LibraryTableModel extends AbstractListModel
   {
     private static final long serialVersionUID = 1L;

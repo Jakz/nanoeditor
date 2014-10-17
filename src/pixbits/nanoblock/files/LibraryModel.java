@@ -9,7 +9,7 @@ import pixbits.nanoblock.data.ModelInfo;
 import pixbits.nanoblock.gui.frames.Icon;
 import pixbits.nanoblock.misc.*;
 
-public class LibraryModel
+public class LibraryModel implements Comparable<LibraryModel>
 {
   public final ModelInfo info;
   public File file;
@@ -70,5 +70,17 @@ public class LibraryModel
     {
       Log.e(e);
     }
+  }
+  
+  public int compareTo(LibraryModel o)
+  {
+    if (o.info.name == null && info.name == null)
+      return 0;
+    else if (o.info.name == null)
+      return 1;
+    else if (info.name == null)
+      return -1;
+    else
+      return info.name.compareTo(o.info.name);
   }
 }

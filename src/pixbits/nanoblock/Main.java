@@ -5,8 +5,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
-import pixbits.nanoblock.gui.frames.LibraryFrame;
-import pixbits.nanoblock.gui.frames.MainFrame;
+import pixbits.nanoblock.gui.frames.*;
 import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.Tasks;
 
@@ -19,6 +18,7 @@ public class Main
   public static Sketch sketch;
   public static MainFrame mainFrame;
   public static LibraryFrame libraryFrame;
+  public static ResizeModelFrame resizeModelFrame;
   
   public static void main(String[] args)
   {
@@ -55,5 +55,8 @@ public class Main
     libraryFrame.getModel().add(Library.i().getModels());
     libraryFrame.getModel().refresh();
     libraryFrame.showMe();
+    
+    resizeModelFrame = new ResizeModelFrame();
+    resizeModelFrame.setVisible(true);
   }
 }
