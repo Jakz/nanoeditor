@@ -36,6 +36,9 @@ public class Settings
     set(Setting.VIEW_SHOW_LAYER_GRID, true);
     set(Setting.VIEW_LAYER_GRID_ALPHA, true);
     
+    set(Setting.VIEW_SHOW_GRID_LINES, true);
+    set(Setting.VIEW_SHOW_HALF_GRID_POINTS, true);
+    
     Setting.HoverSetter.INSTANCE.set(Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL);
     
     setPath(Setting.Path.LIBRARY, "./library");

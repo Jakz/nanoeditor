@@ -11,6 +11,11 @@ public class LevelStackView
   LevelView[] views;
   public LevelScrollBar scrollbar;
   
+  private Level locked;
+  
+  void setLocked(Level level) { this.locked = level; }
+  Level getLocked() { return locked; }
+  
   private Rectangle hover;
   
   LevelStackView(Sketch p, int count, int ox, int oy, int cellSize, int margin, Model model)
@@ -25,6 +30,8 @@ public class LevelStackView
     
     scrollbar = new LevelScrollBar(p, model, views, ox+cellSize*model.getWidth(), oy, 20, model.getHeight()*cellSize*count + margin*(count-1), 20);
     p.addDrawable(scrollbar);
+    
+    locked = null;
   }
   
   public Rectangle hover()

@@ -21,7 +21,7 @@ public class UICheckBox extends Drawable
     return x >= ox && x < ox + boxSize && y >= oy && y < oy + boxSize;
   }
   
-  public void mouseReleased(int x, int y)
+  public void mouseReleased(int x, int y, int b)
   { 
     selected = !selected;
     p.redraw();

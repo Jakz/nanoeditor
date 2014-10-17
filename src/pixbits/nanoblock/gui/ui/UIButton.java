@@ -21,7 +21,7 @@ public class UIButton extends Drawable
   
   public boolean isInside(int x, int y) { return x >= this.ox && x < this.ox+this.w && y >= this.oy && y < this.oy+this.h; }
   
-  public void mouseReleased(int x, int y) { }
+  public void mouseReleased(int x, int y, int b) { }
   public void mouseDragged(int x, int y) { }
   public void mouseMoved(int x, int y) { hover = true; }
   public void mouseExited() { hover = false;}

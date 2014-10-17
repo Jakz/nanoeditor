@@ -52,6 +52,9 @@ public class Menus
     VIEW_SHOW_LAYER_GRID("Enable", ItemType.CHECKBOX, Setting.VIEW_SHOW_LAYER_GRID),
     VIEW_LAYER_GRID_ALPHA("Use opacity", ItemType.CHECKBOX, Setting.VIEW_LAYER_GRID_ALPHA),
     VIEW_HOVER_LAYER_MENU("Isometric Layer", new Item[]{ VIEW_SHOW_LAYER_GRID, VIEW_LAYER_GRID_ALPHA} ),
+    VIEW_SHOW_GRID_POINTS("Enable half grid points", ItemType.CHECKBOX, Setting.VIEW_SHOW_HALF_GRID_POINTS),
+    VIEW_SHOW_GRID("Enable grid", ItemType.CHECKBOX, Setting.VIEW_SHOW_GRID_LINES),
+    VIEW_GRID_LAYER_MENU("Layer Grid", new Item[] {VIEW_SHOW_GRID, VIEW_SHOW_GRID_POINTS} ),
    
     VIEW_HOVER_PIECE_DISABLE("Disable", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.DISABLE),
     VIEW_HOVER_PIECE_STROKE_BACK("Behind stroke", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.BACK_STROKE),
@@ -127,7 +130,7 @@ public class Menus
     new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_HALF_STEPS, Item.SEPARATOR, Item.EDIT_RESET, Item.SEPARATOR, Item.EDIT_RESIZE},
     new Item[]{Item.MODEL_SHIFT_MENU, Item.MODEL_ROTATE_MENU},
-    new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_HOVER_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
+    new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_GRID_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.VIEW_HOVER_LAYER_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
   
   private static final Map<JMenuItem, Item> mapping = new HashMap<JMenuItem, Item>();
@@ -233,6 +236,9 @@ public class Menus
         case VIEW_HIDE_CAPS:
         case VIEW_SHOW_LAYER_GRID:
         case VIEW_LAYER_GRID_ALPHA:
+          
+        case VIEW_SHOW_GRID:
+        case VIEW_SHOW_GRID_POINTS:
           
         case EDIT_HALF_STEPS:
         {

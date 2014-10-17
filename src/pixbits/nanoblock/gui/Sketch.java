@@ -103,6 +103,9 @@ public class Sketch extends PApplet implements ChangeListener
   	int hoveredIndex = -1;
   	Rectangle hoverRect = levelStackView.hover();
   	
+  	if (levelStackView.getLocked() != null)
+  	  hovered = levelStackView.getLocked();
+  	
   	for (int l = 0; l < Library.model.levelCount(); ++l)
   	{
   	  Level level = Library.model.levelAt(l);
@@ -332,7 +335,7 @@ public class Sketch extends PApplet implements ChangeListener
       d.draggingReset();
       if (d.isInside(x, y))
       {
-        d.mouseReleased(x, y);
+        d.mouseReleased(x, y, mouseButton);
         return;
       }
     }

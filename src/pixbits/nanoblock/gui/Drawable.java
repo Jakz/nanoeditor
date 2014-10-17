@@ -15,7 +15,7 @@ public abstract class Drawable
   }
   
   public abstract boolean isInside(int x, int y);
-  public abstract void mouseReleased(int x, int y);
+  public abstract void mouseReleased(int x, int y, int b);
   public abstract void mouseDragged(int x, int y);
   public abstract void mouseMoved(int x, int y);
   public abstract void mouseExited();

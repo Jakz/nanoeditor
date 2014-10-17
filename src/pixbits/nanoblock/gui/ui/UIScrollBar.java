@@ -115,7 +115,7 @@ public abstract class UIScrollBar extends Drawable
     Main.sketch.redraw();
   }
 
-  public void mouseReleased(int x, int y)
+  public void mouseReleased(int x, int y, int b)
   {
     Point p = new Point(x,y);
     

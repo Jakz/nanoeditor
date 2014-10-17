@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
@@ -125,16 +126,30 @@ public class LevelView extends Drawable
   
   public void mouseDragged(int x, int y) { }
   
-  public void mouseReleased(int x, int y)
+  public void mouseReleased(int x, int y, int b)
   {
-    if (parent.hover() != null)
-    {   
-      Piece piece = level.pieceAt(rhx,rhy);
-  
-      if (!level.isFreeAt(rhx, rhy))
-        model.removePiece(level, piece);
-      else if (level.canPlace(Brush.type, hx, hy))
-        model.addPiece(level,Brush.type,Brush.color,hx,hy);
+    if (b == PApplet.LEFT)
+    {
+      if (parent.hover() != null)
+      {   
+        Piece piece = level.pieceAt(rhx,rhy);
+    
+        if (!level.isFreeAt(rhx, rhy))
+          model.removePiece(level, piece);
+        else if (level.canPlace(Brush.type, hx, hy))
+          model.addPiece(level,Brush.type,Brush.color,hx,hy);
+        
+        Main.sketch.redraw();
+      }
+    }
+    else if (b == PApplet.RIGHT)
+    {
+      Level locked = parent.getLocked();
+      
+      if (locked == null || locked != level)
+        parent.setLocked(level);
+      else if (locked == level)
+        parent.setLocked(null);
       
       Main.sketch.redraw();
     }
@@ -148,44 +163,71 @@ public class LevelView extends Drawable
   public void draw()
   {
     p.strokeWeight(1.0f);
+    p.stroke(0);
 
     // draw grid
-    for (int x = 0; x < model.getWidth()*2+1; ++x)
-      for (int y = 0; y < model.getHeight()*2+1; ++y)
-      {
-        if (x%2 != 0 && y%2 != 0)
-          p.stroke(50.0f);
-        else
-          p.stroke(0.0f);
-          
-        p.point(ox+cellSize/2*x, oy+cellSize/2*y);
-      }
-      
-
-    for (int x = 0; x < model.getWidth()+1; ++x)
+    if (Settings.values.get(Setting.VIEW_SHOW_HALF_GRID_POINTS))
     {
-      if (x == model.getWidth()/2)
-        p.strokeWeight(2.0f);
-      else
-        p.strokeWeight(1.0f);
+      for (int x = 0; x < model.getWidth()*2+1; ++x)
+        for (int y = 0; y < model.getHeight()*2+1; ++y)
+        {
+          p.point(ox+cellSize/2*x, oy+cellSize/2*y);
+        }
+    }
       
+    if (Settings.values.get(Setting.VIEW_SHOW_GRID_LINES))
+    {
+      for (int x = 0; x < model.getWidth()+1; ++x)
+      {
+        if (x == model.getWidth()/2)
+          p.strokeWeight(2.0f);
+        else
+          p.strokeWeight(1.0f);
+        
+        p.line(ox+cellSize*x, oy, ox+cellSize*x, oy+model.getHeight()*cellSize);
+        
+      }
+    }
+    else
+    {
+      int x = model.getWidth()/2;
       p.line(ox+cellSize*x, oy, ox+cellSize*x, oy+model.getHeight()*cellSize);
-      
+    }
+
+    if (Settings.values.get(Setting.VIEW_SHOW_GRID_LINES))
+    {
+      for (int y = 0; y < model.getHeight()+1; ++y)
+      {
+        if (y == model.getHeight()/2)
+          p.strokeWeight(2.0f);
+        else
+          p.strokeWeight(1.0f);
+        
+        
+        p.line(ox, oy+cellSize*y, ox+model.getWidth()*cellSize, oy+cellSize*y);
+    }
+    }
+    else
+    {
+      int y = model.getHeight()/2;
+      p.line(ox, oy+cellSize*y, ox+model.getWidth()*cellSize, oy+cellSize*y);
     }
     
-    for (int y = 0; y < model.getHeight()+1; ++y)
+    Level locked = parent.getLocked();
+    
+    if (locked == level)
     {
-      if (y == model.getHeight()/2)
-        p.strokeWeight(2.0f);
-      else
-        p.strokeWeight(1.0f);
-      
-      
-      p.line(ox, oy+cellSize*y, ox+model.getWidth()*cellSize, oy+cellSize*y);
+      p.strokeWeight(3.0f);
+      p.stroke(220,0,0);
+      p.line(ox, oy+cellSize*0, ox+model.getWidth()*cellSize, oy+cellSize*0);
+      p.line(ox, oy+cellSize*model.getHeight(), ox+model.getWidth()*cellSize, oy+cellSize*model.getHeight());
+      p.line(ox+cellSize*0, oy, ox+cellSize*0, oy+model.getHeight()*cellSize);
+      p.line(ox+cellSize*model.getWidth(), oy, ox+cellSize*model.getWidth(), oy+model.getHeight()*cellSize);
     }
     
     // draw pieces
     p.noStroke();
+    p.strokeWeight(2.0f);
     p.fill(255.0f,0f,0f);
     p.rectMode(PApplet.CORNER);
     p.ellipseMode(PApplet.CENTER);
@@ -210,7 +252,6 @@ public class LevelView extends Drawable
       }
     }*/
     
-    int order = 0;
     Iterator<Piece> pieces = level.iterator();
     while (pieces.hasNext())
     {
@@ -225,12 +266,12 @@ public class LevelView extends Drawable
       {
         java.awt.Color f = piece.color.fillColor, s = piece.color.strokeColor;
         
-        p.fill(f.getRed(),f.getGreen(),f.getBlue(),128);
-        p.stroke(s.getRed(),s.getGreen(),s.getBlue(),128);
+        p.fill(f.getRed(),f.getGreen(),f.getBlue(),80);
+        p.stroke(s.getRed(),s.getGreen(),s.getBlue(),80);
 
       }
         
-      p.rect(ox+piece.x*cellSize/2+1, oy+piece.y*cellSize/2+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
+      p.rect(ox+piece.x*cellSize/2+2, oy+piece.y*cellSize/2+2, piece.type.width*cellSize-3, piece.type.height*cellSize-3);
       
       //p.fill(0);
       //p.text(""+order++, ox+piece.x*cellSize+1, oy+(piece.y+1)*cellSize+1);

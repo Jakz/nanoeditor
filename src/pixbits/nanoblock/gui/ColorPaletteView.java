@@ -33,7 +33,7 @@ public class ColorPaletteView extends Drawable
     return x >= ox && x < ox+cellSize*cellCount && y >= oy && y < oy+cellSize;
   }
   
-  public void mouseReleased(int x, int y)
+  public void mouseReleased(int x, int y, int b)
   {
     x -= ox;
     y -= oy;

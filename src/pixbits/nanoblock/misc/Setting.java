@@ -10,6 +10,8 @@ public enum Setting
   
   VIEW_SHOW_LAYER_GRID,
   VIEW_LAYER_GRID_ALPHA,
+  VIEW_SHOW_HALF_GRID_POINTS,
+  VIEW_SHOW_GRID_LINES,
   
   ;
   
