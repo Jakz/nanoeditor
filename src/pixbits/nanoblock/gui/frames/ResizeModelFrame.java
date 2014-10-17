@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.HorAttach;
 import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.data.VerAttach;
@@ -47,8 +48,11 @@ public class ResizeModelFrame extends JFrame
     bounds = model.computeBound();
     fieldSize.setText(model.getWidth()+"x"+model.getHeight());
     fieldBounds.setText((bounds.width-bounds.x)+"x"+(bounds.height-bounds.y));
+    width.setText(""+model.getWidth());
+    height.setText(""+model.getHeight());
     this.model = model;
     
+    setLocationRelativeTo(Main.mainFrame);
     setVisible(true);
   }
   
@@ -187,7 +191,10 @@ public class ResizeModelFrame extends JFrame
           if (!model.resize(bounds, nw, nh, va, ha, keepCentered.isSelected()))
             Dialogs.showErrorDialog(ResizeModelFrame.this, "Error", "Final size must be at least equal to model bounds!");
           else
+          {
+            Main.sketch.redraw();
             ResizeModelFrame.this.setVisible(false);
+          }
         }
       }
       else if (e.getSource() instanceof JCheckBox)

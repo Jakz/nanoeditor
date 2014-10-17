@@ -274,85 +274,48 @@ public class Model implements Iterable<Level>
     
     if (w < bwidth || h < bheight) return false;
     
-    if (w < width) enlargeX = true;
-    if (w > width) shrinkX = true;
-    if (h < height) enlargeY = true;
-    if (h > height) shrinkY = true;
+    if (w > width) enlargeX = true;
+    else if (w < width) shrinkX = true;
     
-    if (enlargeX)
+    if (h > height) enlargeY = true;
+    else if (h < height) shrinkY = true;
+    
+    Log.i("Resizing model");
+    Log.i("Bounds X: "+minX+", "+maxX+"   Y: "+minY+", "+maxY);
+    
+    if (ha == HorAttach.LEFT) deltaX = -minX;
+    else if (ha == HorAttach.RIGHT) deltaX = w - bwidth - minX;
+    else if (ha == HorAttach.NONE)
     {
-      if (ha == HorAttach.LEFT) deltaX = -minX;
-      else if (ha == HorAttach.RIGHT) deltaX = w - bwidth - deltaX;
-      else if (ha == HorAttach.NONE)
+      int dw = w - bwidth;
+      
+      if (keepCentered && dw % 2 == 1)
       {
-        int dw = w - bwidth;
-        
-        if (keepCentered && dw % 2 == 1)
-        {
-          ++w;
-          ++dw;
-        }
-        
-        dw /= 2;   
-        deltaX = dw;
+        ++w;
+        ++dw;
       }
-    }
-    else if (shrinkX)
-    {
-      if (ha == HorAttach.LEFT) deltaX = -minX;
-      else if (ha == HorAttach.RIGHT) deltaX = w - bwidth - deltaX;
-      else if (ha == HorAttach.NONE)
-      {
-        int dw = w - bwidth;
-        
-        if (keepCentered && dw % 2 == 1)
-        {
-          ++w;
-          ++dw;
-        }
-        
-        dw /= 2;   
-        deltaX = dw;
-      }
+      
+      dw /= 2;   
+      deltaX = dw - minX;
     }
     
-    
-    if (enlargeY)
+    if (va == VerAttach.TOP) deltaY = -minY;
+    else if (va == VerAttach.BOTTOM) deltaY = h - bheight - minY;
+    else if (va == VerAttach.NONE)
     {
-      if (ha == HorAttach.LEFT) deltaY = -minY;
-      else if (ha == HorAttach.RIGHT) deltaY = h - bheight - deltaY;
-      else if (ha == HorAttach.NONE)
+      int dh = h - bheight;
+      
+      if (keepCentered && dh % 2 == 1)
       {
-        int dh = h - bheight;
-        
-        if (keepCentered && dh % 2 == 1)
-        {
-          ++h;
-          ++dh;
-        }
-        
-        dh /= 2;   
-        deltaX = dh;
+        ++h;
+        ++dh;
       }
+      
+      dh /= 2;   
+      deltaY = dh - minY;
     }
-    else if (shrinkY)
-    {
-      if (ha == HorAttach.LEFT) deltaY = -minY;
-      else if (ha == HorAttach.RIGHT) deltaY = h - bheight - deltaY;
-      else if (ha == HorAttach.NONE)
-      {
-        int dh = h - bheight;
-        
-        if (keepCentered && dh % 2 == 1)
-        {
-          ++h;
-          ++dh;
-        }
-        
-        dh /= 2;   
-        deltaX = dh;
-      }
-    }
+  
+    Log.i("Delta "+deltaX+", "+deltaY);
    
     this.info.width = w;
     this.info.height = h;
@@ -360,8 +323,8 @@ public class Model implements Iterable<Level>
     for (Level l : levels)
       for (Piece p : l)
       {
-        p.x += deltaX;
-        p.y += deltaY;
+        p.x += deltaX*2;
+        p.y += deltaY*2;
       }
     
     return true;

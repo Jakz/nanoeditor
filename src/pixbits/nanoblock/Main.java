@@ -54,7 +54,7 @@ public class Main
     libraryFrame = new LibraryFrame();
     libraryFrame.getModel().add(Library.i().getModels());
     libraryFrame.getModel().refresh();
-    libraryFrame.showMe();
+    //libraryFrame.showMe();
     
     resizeModelFrame = new ResizeModelFrame();
   }
