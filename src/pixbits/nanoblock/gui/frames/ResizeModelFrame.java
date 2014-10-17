@@ -2,13 +2,15 @@ package pixbits.nanoblock.gui.frames;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
+
+import pixbits.nanoblock.data.HorAttach;
+import pixbits.nanoblock.data.Model;
+import pixbits.nanoblock.data.VerAttach;
 
 public class ResizeModelFrame extends JFrame
 {
-  public static enum HorAttach { LEFT, NONE, RIGHT }
-  public static enum VerAttach { TOP, NONE, BOTTOM }
-  
   private static class AttachSide
   {
     public final HorAttach hor;
@@ -37,8 +39,18 @@ public class ResizeModelFrame extends JFrame
   private final JCheckBox cropToBounds;
   private final JCheckBox keepCentered;
   
-  private Dimension size = new Dimension(20,20);
-  private Dimension bounds = new Dimension(14,12);
+  private Model model;
+  private Rectangle bounds = null;
+  
+  public void show(Model model)
+  {
+    bounds = model.computeBound();
+    fieldSize.setText(model.getWidth()+"x"+model.getHeight());
+    fieldBounds.setText((bounds.width-bounds.x)+"x"+(bounds.height-bounds.y));
+    this.model = model;
+    
+    setVisible(true);
+  }
   
   public ResizeModelFrame()
   {
@@ -87,11 +99,11 @@ public class ResizeModelFrame extends JFrame
     labelSize = new JLabel("Model Size");
     labelBounds = new JLabel("Model Bounds");
     
-    fieldSize = new JTextField(size.width+"x"+size.height);
+    fieldSize = new JTextField("1x1");
     fieldSize.setHorizontalAlignment(JTextField.CENTER);
     fieldSize.setEditable(false);
     
-    fieldBounds = new JTextField(bounds.width+"x"+bounds.height);
+    fieldBounds = new JTextField("1x1");
     fieldBounds.setHorizontalAlignment(JTextField.CENTER);
     fieldBounds.setEditable(false);
     
@@ -146,6 +158,37 @@ public class ResizeModelFrame extends JFrame
           ResizeModelFrame.this.setVisible(false);
           buttons[1][1].button.setSelected(true);
         }
+        else if (src == execute)
+        {
+          int nw = 0, nh = 0;
+          
+          try
+          {
+            nw = Integer.parseInt(width.getText());
+            nh = Integer.parseInt(height.getText());
+          }
+          catch (NumberFormatException ee)
+          {
+            Dialogs.showErrorDialog(ResizeModelFrame.this, "Error", "Please insert a valid number!");
+            return;
+          }
+          
+          VerAttach va = VerAttach.NONE;
+          HorAttach ha = HorAttach.NONE;
+          
+          for (int y = 0; y < 3; ++y)
+            for (int x = 0; x < 3; ++x)
+              if (buttons[y][x].button.isSelected())
+              {
+                va = buttons[y][x].ver;
+                ha = buttons[y][x].hor;
+              }
+          
+          if (!model.resize(bounds, nw, nh, va, ha, keepCentered.isSelected()))
+            Dialogs.showErrorDialog(ResizeModelFrame.this, "Error", "Final size must be at least equal to model bounds!");
+          else
+            ResizeModelFrame.this.setVisible(false);
+        }
       }
       else if (e.getSource() instanceof JCheckBox)
       {
@@ -155,8 +198,8 @@ public class ResizeModelFrame extends JFrame
         {
           if (box.isSelected())
           {
-            width.setText(""+bounds.width);
-            height.setText(""+bounds.height);
+            width.setText(""+(bounds.width-bounds.x));
+            height.setText(""+(bounds.height-bounds.y));
             width.setEditable(false);
             height.setEditable(false);
             keepCentered.setEnabled(false);

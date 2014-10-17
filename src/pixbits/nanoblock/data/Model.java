@@ -1,5 +1,7 @@
 package pixbits.nanoblock.data;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.*;
 
 import pixbits.nanoblock.files.Log;
@@ -234,6 +236,135 @@ public class Model implements Iterable<Level>
   {
     for (Level l : levels)
       l.clear();
+  }
+  
+  public Rectangle computeBound()
+  {
+    int minX = Integer.MAX_VALUE, maxX = 0;
+    int minY = Integer.MAX_VALUE, maxY = 0;
+    
+    for (Level l : levels)
+    {
+      for (Piece p : l)
+      {
+        minX = Math.min(p.x, minX);
+        minY = Math.min(p.y, minY);
+        
+        maxX = Math.max(p.x + p.type.width*2, maxX);
+        maxY = Math.max(p.y + p.type.height*2, maxY);
+      }
+    }
+    
+    if (minX % 2 == 1) --minX;
+    if (minY % 2 == 1) --minY;
+    if (maxX % 2 == 1) ++maxX;
+    if (maxY % 2 == 1) ++maxY;
+    
+    return new Rectangle(minX/2, minY/2, maxX/2, maxY/2);
+  }
+  
+  public boolean resize(Rectangle bounds, int w, int h, VerAttach va, HorAttach ha, boolean keepCentered)
+  {
+    int minX = bounds.x, minY = bounds.y;
+    int maxX = bounds.width, maxY = bounds.height;
+    int bwidth = maxX - minX, bheight = maxY - minY;
+    int width = this.getWidth(), height = this.getHeight();
+    boolean shrinkX = false, enlargeX = false, shrinkY = false, enlargeY = false;
+    int deltaX = 0, deltaY = 0;
+    
+    if (w < bwidth || h < bheight) return false;
+    
+    if (w < width) enlargeX = true;
+    if (w > width) shrinkX = true;
+    if (h < height) enlargeY = true;
+    if (h > height) shrinkY = true;
+    
+    if (enlargeX)
+    {
+      if (ha == HorAttach.LEFT) deltaX = -minX;
+      else if (ha == HorAttach.RIGHT) deltaX = w - bwidth - deltaX;
+      else if (ha == HorAttach.NONE)
+      {
+        int dw = w - bwidth;
+        
+        if (keepCentered && dw % 2 == 1)
+        {
+          ++w;
+          ++dw;
+        }
+        
+        dw /= 2;   
+        deltaX = dw;
+      }
+    }
+    else if (shrinkX)
+    {
+      if (ha == HorAttach.LEFT) deltaX = -minX;
+      else if (ha == HorAttach.RIGHT) deltaX = w - bwidth - deltaX;
+      else if (ha == HorAttach.NONE)
+      {
+        int dw = w - bwidth;
+        
+        if (keepCentered && dw % 2 == 1)
+        {
+          ++w;
+          ++dw;
+        }
+        
+        dw /= 2;   
+        deltaX = dw;
+      }
+    }
+    
+    
+    if (enlargeY)
+    {
+      if (ha == HorAttach.LEFT) deltaY = -minY;
+      else if (ha == HorAttach.RIGHT) deltaY = h - bheight - deltaY;
+      else if (ha == HorAttach.NONE)
+      {
+        int dh = h - bheight;
+        
+        if (keepCentered && dh % 2 == 1)
+        {
+          ++h;
+          ++dh;
+        }
+        
+        dh /= 2;   
+        deltaX = dh;
+      }
+    }
+    else if (shrinkY)
+    {
+      if (ha == HorAttach.LEFT) deltaY = -minY;
+      else if (ha == HorAttach.RIGHT) deltaY = h - bheight - deltaY;
+      else if (ha == HorAttach.NONE)
+      {
+        int dh = h - bheight;
+        
+        if (keepCentered && dh % 2 == 1)
+        {
+          ++h;
+          ++dh;
+        }
+        
+        dh /= 2;   
+        deltaX = dh;
+      }
+    }
+   
+    this.info.width = w;
+    this.info.height = h;
+    
+    for (Level l : levels)
+      for (Piece p : l)
+      {
+        p.x += deltaX;
+        p.y += deltaY;
+      }
+    
+    return true;
   }
   
   public Iterator<Level> iterator() { return levels.iterator(); }

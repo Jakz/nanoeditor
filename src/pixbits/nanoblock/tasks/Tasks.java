@@ -60,6 +60,13 @@ public class Tasks
     }
   };
   
+  public static ModelTask MODEL_RESIZE = new ModelTask() {
+    public void execute(Model model)
+    {
+      Main.resizeModelFrame.show(model);
+    }
+  };
+  
   
   
   public static Task LIBRARY_NEW_MODEL = new Task() {

@@ -57,6 +57,5 @@ public class Main
     libraryFrame.showMe();
     
     resizeModelFrame = new ResizeModelFrame();
-    resizeModelFrame.setVisible(true);
   }
 }

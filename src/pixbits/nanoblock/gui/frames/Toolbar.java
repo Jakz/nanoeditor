@@ -14,6 +14,7 @@ public class Toolbar
   {
     MODEL_ROTATE_LEFT(Icon.ROTATE_LEFT, Tasks.MODEL_ROTATE_WEST, "Rotate Left"),
     MODEL_ROTATE_RIGHT(Icon.ROTATE_RIGHT, Tasks.MODEL_ROTATE_EAST, "Rotate Right"),
+    MODEL_RESIZE(Icon.ROTATE_RIGHT, Tasks.MODEL_RESIZE, "Resize"),
 
     LIBRARY_MODEL_NEW(Icon.MODEL_NEW, Tasks.LIBRARY_NEW_MODEL, "New Model"),
     LIBRARY_MODEL_DUPLICATE(Icon.MODEL_DUPLICATE, Tasks.LIBRARY_CLONE_MODEL, "Duplicate Model"),
@@ -37,7 +38,9 @@ public class Toolbar
   
   private final static Item[] EDITOR_ITEMS = {
     Item.MODEL_ROTATE_LEFT,
-    Item.MODEL_ROTATE_RIGHT
+    Item.MODEL_ROTATE_RIGHT,
+    Item.SEPARATOR,
+    Item.MODEL_RESIZE
   };
   
   private final static Item[] LIBRARY_ITEMS = {
