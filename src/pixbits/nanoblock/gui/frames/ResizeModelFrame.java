@@ -26,6 +26,12 @@ public class ResizeModelFrame extends JFrame
     }
   }
   
+  private final Icon icons[][] = {
+      { Icon.ARROW_UP_LEFT, Icon.ARROW_UP, Icon.ARROW_UP_RIGHT},
+      { Icon.ARROW_LEFT, null, Icon.ARROW_RIGHT},
+      { Icon.ARROW_DOWN_LEFT, Icon.ARROW_DOWN, Icon.ARROW_DOWN_RIGHT}
+  };
+  
   private final ButtonGroup group;
   private final AttachSide[][] buttons;
   private final JButton cancel, execute;
@@ -79,6 +85,7 @@ public class ResizeModelFrame extends JFrame
       for (int x = 0; x < 3; ++x)
       {
         JToggleButton button = new JToggleButton();
+        if (icons[y][x] != null) button.setIcon(icons[y][x].icon());
         button.setPreferredSize(new Dimension(40,40));
         button.addActionListener(listener);
         

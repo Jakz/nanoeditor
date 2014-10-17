@@ -12,11 +12,20 @@ public enum Icon
 {
   ROTATE_LEFT("rotate_left"),
   ROTATE_RIGHT("rotate_right"),
+  MODEL_RESIZE("resize_model"),
   
   MODEL_DUPLICATE("duplicate_model"),
   MODEL_NEW("new_model"),
-  MODEL_DELETE("delete_model")
+  MODEL_DELETE("delete_model"),
   
+  ARROW_UP("arrow_up"),
+  ARROW_DOWN("arrow_down"),
+  ARROW_LEFT("arrow_left"),
+  ARROW_RIGHT("arrow_right"),
+  ARROW_UP_LEFT("arrow_up_left"),
+  ARROW_UP_RIGHT("arrow_up_right"),
+  ARROW_DOWN_LEFT("arrow_down_left"),
+  ARROW_DOWN_RIGHT("arrow_down_right")
   ;
   
   private final String filename;
