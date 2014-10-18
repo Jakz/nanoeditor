@@ -39,6 +39,8 @@ public class Settings
     set(Setting.VIEW_SHOW_GRID_LINES, true);
     set(Setting.VIEW_SHOW_HALF_GRID_POINTS, true);
     
+    set(Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER, true);
+    
     Setting.HoverSetter.INSTANCE.set(Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL);
     
     setPath(Setting.Path.LIBRARY, "./library");

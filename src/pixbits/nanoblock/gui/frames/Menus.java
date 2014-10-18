@@ -32,6 +32,8 @@ public class Menus
   
   private static enum Item
   {
+    SEPARATOR(null),
+    
     FILE_NEW("New.."),
     FILE_OPEN("Open.."),
     FILE_SAVE_AS("Save as.."),
@@ -54,7 +56,8 @@ public class Menus
     VIEW_HOVER_LAYER_MENU("Isometric Layer", new Item[]{ VIEW_SHOW_LAYER_GRID, VIEW_LAYER_GRID_ALPHA} ),
     VIEW_SHOW_GRID_POINTS("Enable half grid points", ItemType.CHECKBOX, Setting.VIEW_SHOW_HALF_GRID_POINTS),
     VIEW_SHOW_GRID("Enable grid", ItemType.CHECKBOX, Setting.VIEW_SHOW_GRID_LINES),
-    VIEW_GRID_LAYER_MENU("Layer Grid", new Item[] {VIEW_SHOW_GRID, VIEW_SHOW_GRID_POINTS} ),
+    VIEW_MARK_DELETED_PIECE_ON_LAYER("Mark deletable piece", ItemType.CHECKBOX, Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER),
+    VIEW_GRID_LAYER_MENU("Layer Grid", new Item[] {VIEW_SHOW_GRID, VIEW_SHOW_GRID_POINTS, SEPARATOR, VIEW_MARK_DELETED_PIECE_ON_LAYER} ),
    
     VIEW_HOVER_PIECE_DISABLE("Disable", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.DISABLE),
     VIEW_HOVER_PIECE_STROKE_BACK("Behind stroke", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.BACK_STROKE),
@@ -71,9 +74,6 @@ public class Menus
     MODEL_ROTATE_LEFT("Left", Tasks.MODEL_ROTATE_WEST),
     MODEL_ROTATE_RIGHT("Right", Tasks.MODEL_ROTATE_EAST),
     MODEL_ROTATE_MENU("Rotate", new Item[] { MODEL_ROTATE_LEFT, MODEL_ROTATE_RIGHT }),
-    
-    SEPARATOR(null),
-    
     ;
     
     public final String caption;
@@ -239,6 +239,7 @@ public class Menus
           
         case VIEW_SHOW_GRID:
         case VIEW_SHOW_GRID_POINTS:
+        case VIEW_MARK_DELETED_PIECE_ON_LAYER:
           
         case EDIT_HALF_STEPS:
         {

@@ -22,6 +22,8 @@ public class LevelView extends Drawable
   
   public int hx = -1, hy = -1;
   public int rhx = -1, rhy = -1;
+  
+  Piece wouldBeRemovedPiece;
 
   
   LevelView(LevelStackView parent, Sketch p, Model model, Level level, int index, int ox, int oy, float cellSize)
@@ -32,6 +34,8 @@ public class LevelView extends Drawable
     this.model = model;
     this.parent = parent;
     this.index = index;
+    
+    this.wouldBeRemovedPiece = null;
   }
   
   public boolean isInside(int x, int y)
@@ -104,6 +108,9 @@ public class LevelView extends Drawable
         rhy = -1;
       }
       
+      if (Settings.values.get(Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER))
+        wouldBeRemovedPiece = level.pieceAt(rx, ry);
+      
       Main.sketch.redraw();
     }
   }
@@ -118,6 +125,7 @@ public class LevelView extends Drawable
       rhy = -1;
       parent.setHover(null);
       parent.setHoveredLevel(null);
+      wouldBeRemovedPiece = null;
     }
     
     Main.sketch.redraw();
@@ -134,7 +142,10 @@ public class LevelView extends Drawable
         Piece piece = level.pieceAt(rhx,rhy);
     
         if (!level.isFreeAt(rhx, rhy))
+        {
           model.removePiece(level, piece);
+          wouldBeRemovedPiece = null;
+        }
         else if (level.canPlace(Brush.type, hx, hy))
           model.addPiece(level,Brush.type,Brush.color,hx,hy);
         
@@ -231,7 +242,7 @@ public class LevelView extends Drawable
     p.rectMode(PApplet.CORNER);
     p.ellipseMode(PApplet.CENTER);
     
-    /*evel prev = level.previous();
+    Level prev = level.previous();
     
     if (prev != null)
     {
@@ -242,14 +253,16 @@ public class LevelView extends Drawable
         
         if (piece.type != PieceType.CAP)
         {
-          p.fill(piece.color.fillColor);
-          p.stroke(piece.color.strokeColor);
+          java.awt.Color f = piece.color.fillColor, s = piece.color.strokeColor;
           
-          p.rect(ox+piece.x*cellSize+1, oy+piece.y*cellSize+1, piece.type.width*cellSize-2, piece.type.height*cellSize-2);
+          p.fill(f.getRed(),f.getGreen(),f.getBlue(),100);
+          p.stroke(s.getRed(),s.getGreen(),s.getBlue(),150);
+          
+          p.rect(ox+piece.x*cellSize/2+2, oy+piece.y*cellSize/2+2, piece.type.width*cellSize-3, piece.type.height*cellSize-3);
           
         }
       }
-    }*/
+    }
     
     Iterator<Piece> pieces = level.iterator();
     while (pieces.hasNext())
@@ -263,21 +276,20 @@ public class LevelView extends Drawable
       }
       else
       {
-        java.awt.Color f = piece.color.fillColor, s = piece.color.strokeColor;
+        continue;
+        
+        /*java.awt.Color f = piece.color.fillColor, s = piece.color.strokeColor;
         
         p.fill(f.getRed(),f.getGreen(),f.getBlue(),80);
-        p.stroke(s.getRed(),s.getGreen(),s.getBlue(),80);
-
+        p.stroke(s.getRed(),s.getGreen(),s.getBlue(),80);*/
       }
         
       p.rect(ox+piece.x*cellSize/2+2, oy+piece.y*cellSize/2+2, piece.type.width*cellSize-3, piece.type.height*cellSize-3);
-      
-      //p.fill(0);
-      //p.text(""+order++, ox+piece.x*cellSize+1, oy+(piece.y+1)*cellSize+1);
     }
     
+    
     Rectangle h = parent.hover();
-    if (h != null)
+    if (wouldBeRemovedPiece == null && h != null)
     {
       p.noFill();
       p.strokeWeight(2.0f);
@@ -287,6 +299,25 @@ public class LevelView extends Drawable
 
       
       p.rect(ox+h.x*realCellSize+1, oy+h.y*realCellSize+1, h.width*cellSize-1, h.height*cellSize-1);
+    }
+    else if (wouldBeRemovedPiece != null)
+    {
+      int rx = wouldBeRemovedPiece.x;
+      int ry = wouldBeRemovedPiece.y;
+      int rw = wouldBeRemovedPiece.type.width;
+      int rh = wouldBeRemovedPiece.type.height;
+      
+      p.noFill();
+      p.strokeWeight(2.0f);
+      p.stroke(220,0,0);
+
+      float realCellSize = cellSize/2.0f;
+      p.rect(ox+rx*realCellSize+1, oy+ry*realCellSize+1, rw*cellSize-1, rh*cellSize-1);
+      
+      p.line(ox+rx*realCellSize+1, oy+ry*realCellSize+1, ox+rx*realCellSize+1 + rw*cellSize-1, oy+ry*realCellSize+1 + rh*cellSize-1);
+      p.line(ox+rx*realCellSize+1 + rw*cellSize-1, oy+ry*realCellSize+1, ox+rx*realCellSize+1, oy+ry*realCellSize+1 + rh*cellSize-1);
+
+
     }
     
     p.fill(0);

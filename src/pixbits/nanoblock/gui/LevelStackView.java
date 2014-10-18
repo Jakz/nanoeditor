@@ -18,7 +18,7 @@ public class LevelStackView
   
   private Rectangle hover;
   private Level hoverLayer;
-  
+    
   LevelStackView(Sketch p, int count, int ox, int oy, int cellSize, int margin, Model model)
   {
     views = new LevelView[count];
@@ -33,6 +33,7 @@ public class LevelStackView
     p.addDrawable(scrollbar);
     
     locked = null;
+    
   }
   
   public Rectangle hover()
@@ -43,6 +44,12 @@ public class LevelStackView
   public void setHover(Rectangle r)
   {
     hover = r;
+  }
+  
+  public void clearToBeDeleted()
+  {
+    for (LevelView v : views)
+      v.wouldBeRemovedPiece = null;
   }
   
   public Level getHoveredLevel() { return hoverLayer; }

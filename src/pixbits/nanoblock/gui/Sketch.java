@@ -349,6 +349,28 @@ public class Sketch extends PApplet implements ChangeListener
         return;
       }
     }
+    
+    Level locked = levelStackView.getLocked();
+    if (locked != null)
+    {
+      Rectangle bounds = layerBounds(hoveredIndex);
+      Rectangle hover = levelStackView.hover();
+
+      if (x >= bounds.x && x < bounds.x+bounds.width && y >= bounds.y && y < bounds.y+bounds.height && hover != null)
+      {
+        Piece piece = locked.pieceAt(hover.x,hover.y);
+        
+        if (!locked.isFreeAt(hover.x, hover.y))
+        {
+          Library.model.removePiece(locked, piece);
+          levelStackView.clearToBeDeleted();
+        }
+        else if (locked.canPlace(Brush.type, hover.x, hover.y))
+          Library.model.addPiece(locked,Brush.type,Brush.color,hover.x,hover.y);
+        
+        Main.sketch.redraw();
+      }
+    }
   }
   
   public void mousePressed()
