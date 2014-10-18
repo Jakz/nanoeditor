@@ -72,6 +72,7 @@ public class LibraryInfoPanel extends JPanel
       "Model Name",
       "Author",
       "Source",
+      "Model Number",
       "Size",
       "Levels",
       "Piece Count",
@@ -89,7 +90,7 @@ public class LibraryInfoPanel extends JPanel
     }
     
     @Override
-    public boolean isCellEditable(int r, int c) { return lmodel != null && r <= 2 && c == 1; }
+    public boolean isCellEditable(int r, int c) { return lmodel != null && r <= 3 && c == 1; }
     
     @Override
     public void setValueAt(Object o, int r, int c)
@@ -100,6 +101,8 @@ public class LibraryInfoPanel extends JPanel
         lmodel.info.author = (String)o;
       else if (r == 2)
         lmodel.info.source = (String)o;
+      else if (r == 3)
+        lmodel.info.modelNumber = (String)o;
       
       Main.libraryFrame.getModel().refresh();
       lmodel.writeBack();
@@ -127,10 +130,11 @@ public class LibraryInfoPanel extends JPanel
             case 0: return lmodel.info.name;
             case 1: return lmodel.info.author;
             case 2: return lmodel.info.source;
-            case 3: return lmodel.info.width + "x" + lmodel.info.height;
-            case 4: return "" + lmodel.info.levels;
-            case 5: return "" + lmodel.pieceCount;
-            case 6: return "" + lmodel.colorCount;
+            case 3: return lmodel.info.modelNumber;
+            case 4: return lmodel.info.width + "x" + lmodel.info.height;
+            case 5: return "" + lmodel.info.levels;
+            case 6: return "" + lmodel.pieceCount;
+            case 7: return "" + lmodel.colorCount;
             default: return null;
           }
         }

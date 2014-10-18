@@ -125,8 +125,9 @@ public class PiecePaletteView extends Drawable
         for (int ix = 0; ix < type.width; ++ix)
           for (int iy = 0; iy < type.height; ++iy)
           {
-            int rx = opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*ix-Brush.tileset.yOffset*iy;
-            int ry = opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.hOffset*(ix+iy-2);
+            int rx = opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*(ix-iy);
+            int ry = opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.yOffset*(ix+iy) - Brush.tileset.hOffset;
+            
             
             buffer.blend(texture, rectc.x, rectc.y, rectc.width, rectc.height, rx, ry, rectc.width, rectc.height, Sketch.BLEND);
           }
@@ -137,10 +138,10 @@ public class PiecePaletteView extends Drawable
         float iy = 0.0f;
         
         
-        int rx = (int) (opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*ix-Brush.tileset.yOffset*iy);
-        int ry = (int) (opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.hOffset*(ix+iy-2));
+        int rx = (int) (opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*(ix-iy));
+        int ry = (int) (opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.yOffset*(ix+iy)) - Brush.tileset.hOffset;
         
-        if (type.width < type.height) ry += Brush.tileset.hOffset;
+        if (type.width < type.height) ry += Brush.tileset.yOffset;
         
         buffer.blend(texture, rectc.x, rectc.y, rectc.width, rectc.height, rx, ry, rectc.width, rectc.height, Sketch.BLEND);
       }

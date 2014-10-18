@@ -12,6 +12,7 @@ public class ModelInfo
   public String author;
   public String name;
   public String source;
+  public String modelNumber;
   public int width;
   public int height;
   public int levels;
@@ -30,6 +31,9 @@ public class ModelInfo
     if (source != null)
       mi.source = new String(source);
     
+    if (modelNumber != null)
+      mi.modelNumber = new String(modelNumber);
+    
     mi.width = width;
     mi.height = height;
     mi.levels = levels;
@@ -42,6 +46,7 @@ public class ModelInfo
     name = "Name";
     author = "Author";
     source = "";
+    modelNumber = "";
     width = w;
     height = h;
     levels = l;

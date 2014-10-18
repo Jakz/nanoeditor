@@ -17,6 +17,7 @@ public class LevelStackView
   Level getLocked() { return locked; }
   
   private Rectangle hover;
+  private Level hoverLayer;
   
   LevelStackView(Sketch p, int count, int ox, int oy, int cellSize, int margin, Model model)
   {
@@ -43,4 +44,7 @@ public class LevelStackView
   {
     hover = r;
   }
+  
+  public Level getHoveredLevel() { return hoverLayer; }
+  public void setHoveredLevel(Level level) { this.hoverLayer = level; }
 }

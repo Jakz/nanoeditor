@@ -68,7 +68,7 @@ public class TileSetLoader
   
   public static Tileset buildTileset(JsonTilesetSpec json)
   {
-    Tileset tileset = new Tileset(json.image, json.hOffset, json.hAdjust, json.xOffset, json.yOffset, json.baseColors);
+    Tileset tileset = new Tileset(json.image, json.hOffset, json.xOffset, json.yOffset, json.baseColors);
     
     for (JsonPieceSpec piece : json.pieces)
       tileset.addSpec(PieceType.forName(piece.name), piece.offset[0], piece.offset[1], piece.size[0], piece.size[1], piece.pivot[0], piece.pivot[1]);

@@ -13,20 +13,18 @@ public class Tileset {
   final public int hOffset;
   final public int xOffset;
   final public int yOffset;
-  final public int hAdjust;
   final public int[] baseColors;
   final private Map<PieceType, PieceSpec> specs;
   final private Map<PieceColor, PImage> textures;
   
-  public Tileset(String image, int hOffset, int hAdjust, int xOffset, int yOffset, ArrayList<Integer[]> baseCols)
+  public Tileset(String image, int hOffset,int xOffset, int yOffset, ArrayList<Integer[]> baseCols)
   {
     specs = new HashMap<PieceType, PieceSpec>();
     textures = new HashMap<PieceColor, PImage>();
     this.image = Main.sketch.loadImage(image);
-    this.hOffset = hOffset;
-    this.hAdjust = hAdjust;
     this.xOffset = xOffset;
     this.yOffset = yOffset;
+    this.hOffset = hOffset;
     
     baseColors = new int[baseCols.size()];
     

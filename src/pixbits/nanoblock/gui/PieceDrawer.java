@@ -12,14 +12,15 @@ public class PieceDrawer
 {
   public static void drawPiece(PApplet gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
   {    
-    int fx = (int)(baseX+Brush.tileset.xOffset*x/2.0f-Brush.tileset.yOffset*y/2.0f);
-    int fy = (int)(baseY+Brush.tileset.hOffset*(x/2.0f+y/2.0f-l*2));
+    Tileset ts = Brush.tileset;
     
-    //if (piece.type != PieceType.CAP)
-      fy += Brush.tileset.hAdjust*l;
+    int fx = (int) (baseX + (x - y)/2.0f * ts.xOffset);
+    int fy = (int) (baseY + (x + y)/2.0f * ts.yOffset);
     
-    Tileset.PieceSpec spec = Brush.tileset.spec(piece.type);
-    PImage texture = Brush.tileset.imageForColor(piece.color);
+    fy -= ts.hOffset * l;
+    
+    Tileset.PieceSpec spec = ts.spec(piece.type);
+    PImage texture = ts.imageForColor(piece.color);
     gfx.fill(0);
     gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, PApplet.BLEND);
     
@@ -29,14 +30,15 @@ public class PieceDrawer
   
   public static void drawPiece(PImage gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
   {    
-    int fx = (int)(baseX+Brush.tileset.xOffset*x/2.0f-Brush.tileset.yOffset*y/2.0f);
-    int fy = (int)(baseY+Brush.tileset.hOffset*(x/2.0f+y/2.0f-l*2));
+    Tileset ts = Brush.tileset;
     
-    //if (piece.type != PieceType.CAP)
-      fy += Brush.tileset.hAdjust*l;
+    int fx = (int) (baseX + (x - y)/2.0f * ts.xOffset);
+    int fy = (int) (baseY + (x + y)/2.0f * ts.yOffset);
     
-    Tileset.PieceSpec spec = Brush.tileset.spec(piece.type);
-    PImage texture = Brush.tileset.imageForColor(piece.color);
+    fy -= ts.hOffset * l;
+    
+    Tileset.PieceSpec spec = ts.spec(piece.type);
+    PImage texture = ts.imageForColor(piece.color);
     gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, PApplet.BLEND);
   }
   

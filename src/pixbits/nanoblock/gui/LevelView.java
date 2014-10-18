@@ -66,11 +66,6 @@ public class LevelView extends Drawable
     x -= Math.floor(realPieceWidth / 2.0f);
     y -= Math.floor(realPieceHeight / 2.0f);
 
-    /*x = Math.max(0, x);
-    y = Math.max(0, y);
-    
-    x = Math.min(x, halfSteps ? model.getWidth()*2)*/
-    
     if (x < 0) x = 0;
     else if (x > realWidth - realPieceWidth)
       x = (int)(realWidth - realPieceWidth);
@@ -78,7 +73,6 @@ public class LevelView extends Drawable
     if (y < 0) y = 0;
     else if (y > realHeight - realPieceHeight)
       y = (int)(realHeight - realPieceHeight);
-    
     
     if (!halfSteps)
     {
@@ -88,7 +82,7 @@ public class LevelView extends Drawable
         --y;
     }
     
-    if (x != hx || y != hy)
+    if (x != hx || y != hy || parent.getHoveredLevel() != level)
     {
       if (x + realPieceWidth <= realWidth && y + realPieceHeight <= realHeight)
       {
@@ -97,15 +91,19 @@ public class LevelView extends Drawable
         rhx = rx;
         rhy = ry;
         parent.setHover(new Rectangle(hx, hy, Brush.type.width, Brush.type.height));
+        parent.setHoveredLevel(level);
       }
       else
       {
         parent.setHover(null);
+        parent.setHoveredLevel(null);
+
         hx = -1;
         hy = -1;
         rhx = -1;
         rhy = -1;
       }
+      
       Main.sketch.redraw();
     }
   }
@@ -119,6 +117,7 @@ public class LevelView extends Drawable
       rhx = -1;
       rhy = -1;
       parent.setHover(null);
+      parent.setHoveredLevel(null);
     }
     
     Main.sketch.redraw();
@@ -295,24 +294,23 @@ public class LevelView extends Drawable
     p.text(""+index, ox+5, oy+cellSize*model.getHeight()+15);
   }
   
-  void moveToNext()
+  /*void moveToNext()
   {
     level = level.next();
     this.index = model.indexOfLevel(level);
-  }
+  }*/
   
-  void moveToPrev()
+  /*void moveToPrev()
   {
     level = level.previous();
     this.index = model.indexOfLevel(level);
 
-  }
+  }*/
   
   public void moveToLevel(int index)
   {
     level = model.levelAt(index);
     this.index = model.indexOfLevel(level);
-
   }
   
   Level level() { return level; }
