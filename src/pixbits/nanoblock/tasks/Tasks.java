@@ -62,12 +62,17 @@ public class Tasks
   
   public static ModelTask MODEL_INSERT_LEVEL_ABOVE = new ModelTask() {
     public void execute(Model model) {
-      
+      //TODO: update level inside LevelView
+      model.insertAbove(Main.sketch.levelStackView.getLocked());
+      Main.sketch.redraw();
     }
   };
   
   public static ModelTask MODEL_INSERT_LEVEL_BELOW = new ModelTask() {
     public void execute(Model model) {
+      model.insertBelow(Main.sketch.levelStackView.getLocked());
+      //TODO: update level inside LevelView
+      Main.sketch.redraw();
       
     }
   };
@@ -86,7 +91,12 @@ public class Tasks
   
   public static ModelTask MODEL_DELETE_LEVEL = new ModelTask() {
     public void execute(Model model) {
-      
+      Level level = Main.sketch.levelStackView.getLocked();
+      model.deleteLevel(level);
+      //TODO: update level inside LevelView
+      Main.sketch.levelStackView.setLocked(level.previous());
+      Main.sketch.levelStackView.clearToBeDeleted();
+      Main.sketch.redraw();
     }
   };
   

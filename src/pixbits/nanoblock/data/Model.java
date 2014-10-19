@@ -163,68 +163,90 @@ public class Model implements Iterable<Level>
     //TODO: manage swapping model width/height
   }
   
-  public void insertBelow(Level level)
+  public void deleteLevel(Level level)
   {
-    for (int i = 0; i < levels.size(); ++i)
+    Level next = level.next();
+    Level previous = level.previous();
+    
+    boolean hasNext = next != null;
+    boolean hasPrev = previous != null;
+    
+    level.removeAllPieces();
+    
+    Set<Piece> previousPieces = null;
+    
+    if (hasPrev)
     {
-      if (levels.get(i) == level)
-      {
-        Level newLevel = new Level(this);
-        
-        Level oldLevel = levels.get(i);
-        
-        Set<Piece> caps = oldLevel.findAllCaps();
-        oldLevel.removePieces(caps);
-        newLevel.addPieces(caps);
-        
-        if (oldLevel.previous() != null)
-          oldLevel.previous().setNext(newLevel);
-        
-        newLevel.setNext(oldLevel);
-        newLevel.setPrevious(oldLevel.previous());
-        
-        oldLevel.setPrevious(newLevel);
-        
-        levels.add(i, newLevel);
-        
-        //TODO: move caps
-
-        ++info.levels;
-        return;
-      }
+      previousPieces = previous.findAllRealPieces();
+      previous.removePieces(previousPieces);
+      
+      previous.setNext(next);
     }
     
+    if (hasNext)
+      next.setPrevious(previous);
+    
+    if (hasPrev)
+      previous.addPieces(previousPieces);
+    
+    levels.remove(level);
   }
   
-  public void insertAbove(Level level)
+  public void insertBelow(Level oldLevel)
   {
-    for (int i = 0; i < levels.size(); ++i)
+    // TODO: cap bugged
+    int i = indexOfLevel(oldLevel);
+    
+    Level newLevel = new Level(this);
+    Level previousLevel = oldLevel.previous();
+
+    Set<Piece> previousPieces = null;
+    
+    if (previousLevel != null)
     {
-      if (levels.get(i) == level)
-      {
-        Level newLevel = new Level(this);
-        
-        Level oldLevel = levels.get(i);
-                
-        if (oldLevel.next() != null)
-        {
-          Set<Piece> caps = oldLevel.next().findAllCaps();
-          oldLevel.next().removePieces(caps);
-          newLevel.addPieces(caps);
-          
-          oldLevel.next().setPrevious(newLevel);
-        }
-        
-        newLevel.setPrevious(oldLevel);
-        newLevel.setNext(oldLevel.next());
-        
-        oldLevel.setNext(newLevel);
-        
-        //TODO: move caps
-        ++info.levels;
-        levels.add(i+1, newLevel);
-      }
+      previousPieces = previousLevel.findAllRealPieces();
+      previousLevel.removePieces(previousPieces);
+      
+      previousLevel.setNext(newLevel);
     }
+
+    newLevel.setNext(oldLevel);
+    newLevel.setPrevious(previousLevel);
+    oldLevel.setPrevious(newLevel);
+    
+    if (previousLevel != null)
+      previousLevel.addPieces(previousPieces);
+    
+    levels.add(i, newLevel);
+    ++info.levels;
+
+  }
+  
+  public void insertAbove(Level oldLevel)
+  {
+    int i = indexOfLevel(oldLevel);
+
+    Level newLevel = new Level(this);
+
+    Set<Piece> oldPieces = oldLevel.findAllRealPieces();
+    oldLevel.removePieces(oldPieces);
+    
+    Level nextLevel = oldLevel.next();
+    
+    
+    newLevel.setPrevious(oldLevel);
+    newLevel.setNext(nextLevel);
+    
+    if (nextLevel != null)
+      nextLevel.setPrevious(newLevel);
+    
+    oldLevel.setNext(newLevel);
+    
+    oldLevel.addPieces(oldPieces);
+    
+    //TODO: move caps
+    ++info.levels;
+    levels.add(i+1, newLevel);
   }
   
   public void removePiece(Level l, Piece piece)

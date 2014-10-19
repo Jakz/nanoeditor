@@ -13,7 +13,7 @@ public class LevelStackView
   
   private Level locked;
   
-  void setLocked(Level level) { this.locked = level; }
+  public void setLocked(Level level) { this.locked = level; }
   public Level getLocked() { return locked; }
   
   private Rectangle hover;
@@ -49,6 +49,18 @@ public class LevelStackView
   {
     for (LevelView v : views)
       v.wouldBeRemovedPiece = null;
+  }
+  
+  public void refreshAccordingToLockedLevel()
+  {
+    int index = 0;
+    
+    // first search for the locked level in the array
+    for (index = 0; index < views.length; ++index)
+      if (views[index].level() == locked)
+        break;
+
+    // TODO
   }
   
   public Level getHoveredLevel() { return hoverLayer; }

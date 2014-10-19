@@ -278,35 +278,6 @@ public class Sketch extends PApplet implements ChangeListener
     {
       Tasks.MODEL_RESET.execute();
     }
-    else if (this.key == '-')
-    {
-      Level hovered = levelStackView.getHoveredLevel();
-      
-      if (hovered != null)
-        Library.model.insertBelow(hovered);
-      
-      /*boolean wentOver = false;
-      
-      for (LevelView v : levelStackView.views)
-      {
-        if (v.level() == hovered)
-          wentOver = true;
-        else if (wentOver)
-          
-      }*/
-      
-      // TODO: manage refresh of the grid
-      
-    }
-    else if (this.key == '+')
-    {
-      Level hovered = levelStackView.getHoveredLevel();
-      
-      if (hovered != null)
-        Library.model.insertAbove(hovered);
-      
-      // TODO: manage refresh of the grid
-    }
     else if (this.key == CODED)
     {      
       switch (this.keyCode)

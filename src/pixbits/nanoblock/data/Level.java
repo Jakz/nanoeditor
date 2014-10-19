@@ -44,6 +44,11 @@ public class Level implements Iterable<Piece>
   public Level next() { return next; }
   
   
+  void removeAllPieces()
+  {
+    Set<Piece> pieces = new HashSet<Piece>(this.pieces);
+    removePieces(pieces);
+  }
   
   void removePiece(Piece piece)
   {    
@@ -194,6 +199,19 @@ public class Level implements Iterable<Piece>
     
     return caps;
   }
+  
+  public Set<Piece> findAllRealPieces()
+  {
+    Set<Piece> caps = new HashSet<Piece>();
+    
+    for (Piece p : pieces)
+      if (p.type != PieceType.CAP)
+        caps.add(p);
+    
+    return caps;
+  }
+  
+  Set<Piece> findAllPieces() { return new HashSet<Piece>(pieces); }
   
   public void removePieces(Set<Piece> pieces)
   {

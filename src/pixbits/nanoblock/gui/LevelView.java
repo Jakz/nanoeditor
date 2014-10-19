@@ -111,7 +111,13 @@ public class LevelView extends Drawable
       }
       
       if (Settings.values.get(Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER))
-        wouldBeRemovedPiece = level.pieceAt(rx, ry);
+      {
+        Piece dpiece = level.pieceAt(rx, ry);
+        if (dpiece != null && dpiece.type != PieceType.CAP)
+          wouldBeRemovedPiece = dpiece;
+        else
+          wouldBeRemovedPiece = null;
+      }
       
       Main.sketch.redraw();
     }
@@ -160,10 +166,13 @@ public class LevelView extends Drawable
       
       if (locked == null || locked != level)
       {
-        Menus.toggleLevelSpecificEntries(locked == null);
-        Toolbar.toggleLevelSpecificEntries(locked == null);
-        parent.setLocked(level);
+        if (locked == null)
+        {
+          Menus.toggleLevelSpecificEntries(true);
+          Toolbar.toggleLevelSpecificEntries(true);
+        }
         
+        parent.setLocked(level);
       }
       else if (locked == level)
       {
