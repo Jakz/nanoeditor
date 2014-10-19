@@ -1,12 +1,12 @@
 package pixbits.nanoblock.tasks;
 
+import java.util.*;
 import java.awt.image.RenderedImage;
 import java.io.*;
 
 import javax.imageio.ImageIO;
 
-import pixbits.nanoblock.data.Direction;
-import pixbits.nanoblock.data.Model;
+import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.files.FileUtils;
 import pixbits.nanoblock.files.Library;
@@ -60,13 +60,8 @@ public class Tasks
     }
   };
   
-  public static ModelTask MODEL_RESIZE = new ModelTask() {
-    public void execute(Model model)
-    {
-      Main.resizeModelFrame.show(model);
-    }
-  };
-  
+  public static ModelTask MODEL_SHOW_RESIZE = new ModelTask() { public void execute(Model model) { Main.resizeModelFrame.show(model); } };
+  public static ModelTask MODEL_SHOW_REPLACE_COLOR = new ModelTask() { public void execute(Model model) { Main.replaceColorFrame.show(model); } };
   
   
   public static Task LIBRARY_NEW_MODEL = new Task() {
@@ -175,6 +170,93 @@ public class Tasks
       Settings.loadSettings();
     } catch (Exception e) {
       Log.e(e);
+    }
+  }
+  
+  
+  
+  
+  
+  public static class ReplaceColorTask implements Task
+  {
+    private final PieceColor from;
+    private final PieceColor to;
+    private final Level level;
+    private final Model model;
+    private final Set<PieceType> types;
+    
+    public ReplaceColorTask(Model model, PieceColor from, PieceColor to, Set<PieceType> types)
+    {
+      this.model = model;
+      this.from = from;
+      this.to = to;
+      this.types = types;
+      this.level = null;
+    }
+    
+    public ReplaceColorTask(Model model, Level level, PieceColor from, PieceColor to, Set<PieceType> types)
+    {
+      this.model = model;
+      this.from = from;
+      this.to = to;
+      this.types = types;
+      this.level = level;
+    }
+    
+    private void recolorCaps(Piece piece, Level next)
+    {
+      if (next != null)
+      {
+        if (!piece.type.monocap)
+        {        
+          for (int i = 0; i < piece.type.width*2; i += 2)
+            for (int j = 0; j < piece.type.height*2; j += 2)
+            {
+              Piece cap = next.pieceAt(piece.x+i, piece.y+j);
+              if (cap.type == PieceType.CAP)
+                cap.color = piece.color;
+            }
+        }
+        else
+        {
+          int i = piece.type.width/2 + piece.x;
+          int j = piece.type.height/2 + piece.y;
+          Piece cap = next.pieceAt(i, j);
+          if (cap.type == PieceType.CAP)
+            cap.color = piece.color;
+        }
+      }
+    }
+    
+    public void execute()
+    {
+      if (level != null)
+      {
+        Level next = level.next();
+        for (Piece p : level)
+        {
+          if (types.contains(p.type) && p.color == from)
+          { 
+            p.color = to;
+            recolorCaps(p, next);
+          }
+        }
+      }
+      else
+      {
+        for (Level l : model)
+        {
+          Level next = l.next();
+          for (Piece p : l)
+          {
+            if (types.contains(p.type) && p.color == from)
+            {
+              p.color = to;
+              recolorCaps(p, next);
+            }
+          }
+        }
+      }
     }
   }
 }

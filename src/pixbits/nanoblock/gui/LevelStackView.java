@@ -14,7 +14,7 @@ public class LevelStackView
   private Level locked;
   
   void setLocked(Level level) { this.locked = level; }
-  Level getLocked() { return locked; }
+  public Level getLocked() { return locked; }
   
   private Rectangle hover;
   private Level hoverLayer;
@@ -33,7 +33,6 @@ public class LevelStackView
     p.addDrawable(scrollbar);
     
     locked = null;
-    
   }
   
   public Rectangle hover()

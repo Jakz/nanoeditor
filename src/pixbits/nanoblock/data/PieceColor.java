@@ -3,19 +3,20 @@ package pixbits.nanoblock.data;
 import java.awt.Color;
 
 public enum PieceColor {
-  WHITE,
-  BLACK,
-  GREEN_LIME,
-  YELLOW,
-  ORANGE,
-  PINK,
-  BROWN
+  WHITE("White"),
+  BLACK("Black"),
+  GREEN_LIME("Green Lime"),
+  YELLOW("Yellow"),
+  ORANGE("Orange"),
+  PINK("Pink"),
+  BROWN("Brown")
   ;
   
   public Color fillColor;
   public Color strokeColor;
+  public final String caption;
   
-  PieceColor() { }
+  PieceColor(String caption) { this.caption = caption; }
   
   public void setColors(Color strokeColor, Color fillColor)
   {

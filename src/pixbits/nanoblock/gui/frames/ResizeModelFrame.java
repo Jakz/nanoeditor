@@ -10,7 +10,7 @@ import pixbits.nanoblock.data.HorAttach;
 import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.data.VerAttach;
 
-public class ResizeModelFrame extends JFrame
+public class ResizeModelFrame extends JDialog
 {
   private static class AttachSide
   {
@@ -64,6 +64,9 @@ public class ResizeModelFrame extends JFrame
   
   public ResizeModelFrame()
   {
+    super(Main.mainFrame, "Resize Model", Dialog.ModalityType.APPLICATION_MODAL);
+
+    
     JPanel gridPanel = new JPanel(new GridLayout(3,3));
     gridPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
     
@@ -153,8 +156,6 @@ public class ResizeModelFrame extends JFrame
     this.add(resizePanel);
     this.add(lowerPanel);
     
-    
-    setTitle("Resize Model");
     pack();
   }
   

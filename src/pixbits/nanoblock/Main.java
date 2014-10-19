@@ -19,6 +19,7 @@ public class Main
   public static MainFrame mainFrame;
   public static LibraryFrame libraryFrame;
   public static ResizeModelFrame resizeModelFrame;
+  public static ReplaceColorFrame replaceColorFrame;
   
   public static void main(String[] args)
   {
@@ -57,5 +58,6 @@ public class Main
     libraryFrame.showMe();
     
     resizeModelFrame = new ResizeModelFrame();
+    replaceColorFrame = new ReplaceColorFrame();
   }
 }

@@ -13,6 +13,7 @@ public enum Icon
   ROTATE_LEFT("rotate_left"),
   ROTATE_RIGHT("rotate_right"),
   MODEL_RESIZE("resize_model"),
+  MODEL_REPLACE_COLOR("replace_color"),
   
   MODEL_DUPLICATE("duplicate_model"),
   MODEL_NEW("new_model"),

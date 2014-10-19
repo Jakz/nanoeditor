@@ -14,7 +14,8 @@ public class Toolbar
   {
     MODEL_ROTATE_LEFT(Icon.ROTATE_LEFT, Tasks.MODEL_ROTATE_WEST, "Rotate Left"),
     MODEL_ROTATE_RIGHT(Icon.ROTATE_RIGHT, Tasks.MODEL_ROTATE_EAST, "Rotate Right"),
-    MODEL_RESIZE(Icon.MODEL_RESIZE, Tasks.MODEL_RESIZE, "Resize"),
+    MODEL_RESIZE(Icon.MODEL_RESIZE, Tasks.MODEL_SHOW_RESIZE, "Resize"),
+    MODEL_REPLACE_COLOR(Icon.MODEL_REPLACE_COLOR, Tasks.MODEL_SHOW_REPLACE_COLOR, "Replace Color"),
 
     LIBRARY_MODEL_NEW(Icon.MODEL_NEW, Tasks.LIBRARY_NEW_MODEL, "New Model"),
     LIBRARY_MODEL_DUPLICATE(Icon.MODEL_DUPLICATE, Tasks.LIBRARY_CLONE_MODEL, "Duplicate Model"),
@@ -40,7 +41,8 @@ public class Toolbar
     Item.MODEL_ROTATE_LEFT,
     Item.MODEL_ROTATE_RIGHT,
     Item.SEPARATOR,
-    Item.MODEL_RESIZE
+    Item.MODEL_RESIZE,
+    Item.MODEL_REPLACE_COLOR
   };
   
   private final static Item[] LIBRARY_ITEMS = {
