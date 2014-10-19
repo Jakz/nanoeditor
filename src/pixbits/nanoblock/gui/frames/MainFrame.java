@@ -32,8 +32,6 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
     
     	    
     pack();
-    setVisible(true);
-    setLocation(100, 100);
   }
   
   public void windowActivated(WindowEvent e) { }

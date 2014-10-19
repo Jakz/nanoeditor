@@ -19,6 +19,18 @@ public enum Icon
   MODEL_NEW("new_model"),
   MODEL_DELETE("delete_model"),
   
+  INSERT_LEVEL_ABOVE("insert_level_above"),
+  INSERT_LEVEL_BELOW("insert_level_below"),
+  
+  SHIFT_LEVEL_UP("shift_level_up"),
+  SHIFT_LEVEL_DOWN("shift_level_down"),
+  DELETE_LEVEL("delete_level"),
+  
+  SHIFT_NORTH("shift_north"),
+  SHIFT_SOUTH("shift_south"),
+  SHIFT_WEST("shift_west"),
+  SHIFT_EAST("shift_east"),
+  
   ARROW_UP("arrow_up"),
   ARROW_DOWN("arrow_down"),
   ARROW_LEFT("arrow_left"),

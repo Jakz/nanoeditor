@@ -60,6 +60,36 @@ public class Tasks
     }
   };
   
+  public static ModelTask MODEL_INSERT_LEVEL_ABOVE = new ModelTask() {
+    public void execute(Model model) {
+      
+    }
+  };
+  
+  public static ModelTask MODEL_INSERT_LEVEL_BELOW = new ModelTask() {
+    public void execute(Model model) {
+      
+    }
+  };
+  
+  public static ModelTask MODEL_SHIFT_LEVEL_UP = new ModelTask() {
+    public void execute(Model model) {
+      
+    }
+  };
+  
+  public static ModelTask MODEL_SHIFT_LEVEL_DOWN = new ModelTask() {
+    public void execute(Model model) {
+      
+    }
+  };
+  
+  public static ModelTask MODEL_DELETE_LEVEL = new ModelTask() {
+    public void execute(Model model) {
+      
+    }
+  };
+  
   public static ModelTask MODEL_SHOW_RESIZE = new ModelTask() { public void execute(Model model) { Main.resizeModelFrame.show(model); } };
   public static ModelTask MODEL_SHOW_REPLACE_COLOR = new ModelTask() { public void execute(Model model) { Main.replaceColorFrame.show(model); } };
   
@@ -172,8 +202,6 @@ public class Tasks
       Log.e(e);
     }
   }
-  
-  
   
   
   

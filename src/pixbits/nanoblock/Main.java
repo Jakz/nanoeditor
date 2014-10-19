@@ -59,5 +59,10 @@ public class Main
     
     resizeModelFrame = new ResizeModelFrame();
     replaceColorFrame = new ReplaceColorFrame();
+    
+    Menus.toggleLevelSpecificEntries(false);
+    Toolbar.toggleLevelSpecificEntries(false);
+    
+    Main.mainFrame.setVisible(true);
   }
 }

@@ -75,6 +75,16 @@ public class Menus
     MODEL_ROTATE_LEFT("Left", Tasks.MODEL_ROTATE_WEST),
     MODEL_ROTATE_RIGHT("Right", Tasks.MODEL_ROTATE_EAST),
     MODEL_ROTATE_MENU("Rotate", new Item[] { MODEL_ROTATE_LEFT, MODEL_ROTATE_RIGHT }),
+    
+    MODEL_INSERT_LEVEL_ABOVE("Insert above", Tasks.MODEL_INSERT_LEVEL_ABOVE),
+    MODEL_INSERT_LEVEL_BELOW("Insert below", Tasks.MODEL_INSERT_LEVEL_BELOW),
+    MODEL_INSERT_LEVEL_MENU("Insert Level", new Item[] {MODEL_INSERT_LEVEL_ABOVE, MODEL_INSERT_LEVEL_BELOW} ),
+    
+    MODEL_SHIFT_LEVEL_UP("Shift up", Tasks.MODEL_SHIFT_LEVEL_UP),
+    MODEL_SHIFT_LEVEL_DOWN("Shift down", Tasks.MODEL_SHIFT_LEVEL_DOWN),
+    MODEL_SHIFT_LEVEL_MENU("Shift Level", new Item[] {MODEL_SHIFT_LEVEL_UP, MODEL_SHIFT_LEVEL_DOWN} ),
+    
+    MODEL_DELETE_LEVEL("Delete Level", Tasks.MODEL_DELETE_LEVEL)
     ;
     
     public final String caption;
@@ -130,11 +140,13 @@ public class Menus
   private static final Item[][] menuItems = new Item[][]{
     new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_HALF_STEPS, Item.SEPARATOR, Item.EDIT_RESET, Item.SEPARATOR, Item.EDIT_RESIZE, Item.EDIT_REPLACE_COLOR},
-    new Item[]{Item.MODEL_SHIFT_MENU, Item.MODEL_ROTATE_MENU},
+    new Item[]{Item.MODEL_SHIFT_MENU, Item.MODEL_ROTATE_MENU, Item.SEPARATOR, Item.MODEL_INSERT_LEVEL_MENU, Item.MODEL_SHIFT_LEVEL_MENU, Item.MODEL_DELETE_LEVEL},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_GRID_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.VIEW_HOVER_LAYER_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
   
   private static final Map<JMenuItem, Item> mapping = new HashMap<JMenuItem, Item>();
+  private static final Map<Item, JMenuItem> rmapping = new HashMap<Item, JMenuItem>();
+
   
   private static JMenu buildMenu(String caption, Item[] items)
   {
@@ -178,6 +190,7 @@ public class Menus
         {
           item.addActionListener(menuListener);
           mapping.put(item, items[i]);
+          rmapping.put(items[i], item);
           menu.add(item);
         }
       }
@@ -262,6 +275,9 @@ public class Menus
         case MODEL_SHIFT_WEST:
         case MODEL_ROTATE_LEFT:
         case MODEL_ROTATE_RIGHT:
+          
+        case MODEL_INSERT_LEVEL_ABOVE:
+        case MODEL_INSERT_LEVEL_BELOW:
         {
           ModelTask mtask = (ModelTask)item.task;
           mtask.execute(Library.model);
@@ -271,4 +287,14 @@ public class Menus
       }
     }
   };
+  
+  public static void toggleLevelSpecificEntries(boolean enable)
+  {
+    rmapping.get(Item.MODEL_INSERT_LEVEL_ABOVE).setEnabled(enable);
+    rmapping.get(Item.MODEL_INSERT_LEVEL_BELOW).setEnabled(enable);
+    rmapping.get(Item.MODEL_SHIFT_LEVEL_UP).setEnabled(enable);
+    rmapping.get(Item.MODEL_SHIFT_LEVEL_DOWN).setEnabled(enable);
+    rmapping.get(Item.MODEL_DELETE_LEVEL).setEnabled(enable);
+
+  }
 }
