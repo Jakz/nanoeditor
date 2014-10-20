@@ -43,8 +43,8 @@ public class Toolbar
     LIBRARY_MODEL_DUPLICATE(Icon.MODEL_DUPLICATE, Tasks.LIBRARY_CLONE_MODEL, "Duplicate Model"),
     LIBRARY_MODEL_DELETE(Icon.MODEL_DELETE, Tasks.LIBRARY_DELETE_MODEL, "Delete Model"),
     
-    EDIT_ENABLE_HALF_STEPS(Icon.MODEL_DELETE, Setting.HALF_STEPS_ENABLED, "Enable half steps", 0),
-    EDIT_USE_TAB_TO_ROTATE(Icon.MODEL_DELETE, Setting.USE_TAB_TO_ROTATE, "Use TAB to rotate", 0),
+    EDIT_ENABLE_HALF_STEPS(Icon.ENABLE_HALF_STEPS, Setting.HALF_STEPS_ENABLED, "Enable half steps", 0),
+    EDIT_USE_TAB_TO_ROTATE(Icon.USE_TAB_ROTATION, Setting.USE_TAB_TO_ROTATE, "Use TAB to rotate", 0),
     
     SEPARATOR(null, null, null)
     ;
@@ -179,8 +179,12 @@ public class Toolbar
         Settings.values.toggle(item.setting);
         JMenuItem mi = Menus.findItem(item.setting);
         if (mi != null) mi.setSelected(src.isSelected());
+        
+        if (item.setting == Setting.USE_TAB_TO_ROTATE)
+          Main.sketch.updatePiecePalette();
       }
       
+      Main.sketch.redraw();
       Main.sketch.requestFocus();
     }
   };

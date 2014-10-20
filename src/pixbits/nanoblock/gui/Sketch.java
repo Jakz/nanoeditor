@@ -35,6 +35,7 @@ public class Sketch extends PApplet implements ChangeListener
   final List<Drawable> drawables = new ArrayList<Drawable>();
   	
 	public LevelStackView levelStackView;
+	public PiecePaletteView pieceView;
 	
 	public PFont font;
   
@@ -76,15 +77,21 @@ public class Sketch extends PApplet implements ChangeListener
     ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,6);
     drawables.add(paletteView);
     
-    PiecePaletteView pieceView = new PiecePaletteView(this, 320,760,100,10);
-    drawables.add(pieceView);
-    
+    updatePiecePalette();
+
     UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
     addDrawable(checkBox);
     
     addDrawable(new UIButton(this,500,20,20,20));
     
     noLoop();
+  }
+  
+  public void updatePiecePalette()
+  {
+    if (pieceView != null) pieceView.dispose();
+    pieceView = new PiecePaletteView(this, 320,760,100,10, Settings.values.get(Setting.USE_TAB_TO_ROTATE));
+    drawables.add(pieceView);
   }
   
   public void addDrawable(Drawable d)
@@ -286,9 +293,7 @@ public class Sketch extends PApplet implements ChangeListener
   
   @Override
   public void keyPressed()
-  {
-    System.out.println("Is enabled: "+Settings.values.get(Setting.USE_TAB_TO_ROTATE));
-    
+  {    
     if (this.key == 'r')
     {
       Tasks.MODEL_RESET.execute();

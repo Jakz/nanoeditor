@@ -49,6 +49,10 @@ public class PieceType
     P1x1, P1x1r, P2x1, P1x2, P2x1c, P1x2c, P2x2, P3x1, P1x3, P4x1, P1x4, P4x2, P2x4, P8x2, P2x8
   };
   
+  public final static PieceType[] spieces = new PieceType[] {
+    P1x1, P1x1r, P2x1, P2x1c, P2x2, P3x1, P4x1, P4x2, P8x2
+  };
+  
   public static int count() { return pieces.length; }
   public static PieceType at(int index) { return pieces[index]; }
   

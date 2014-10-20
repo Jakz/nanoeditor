@@ -9,26 +9,71 @@ import java.awt.Rectangle;
 
 public class PiecePaletteView extends Drawable
 {
+  private static abstract class PiecesPaletteWrapper
+  {
+    public final int size;
+   
+    PiecesPaletteWrapper(int size)
+    {
+      this.size = size;
+    }
+    
+    public abstract PieceType brushAt(int i);
+    public abstract PieceType at(int i);
+  };
+  
+  private static class NormalPiecesWrapper extends PiecesPaletteWrapper
+  {
+    NormalPiecesWrapper() { super(PieceType.count()); }
+    
+    public PieceType at(int i) { return PieceType.at(i); }
+    public PieceType brushAt(int i) { return at(i); }
+  }
+  
+  private static class RotatedPiecesWrapper extends PiecesPaletteWrapper
+  {
+    RotatedPiecesWrapper() { super(PieceType.spieces.length); }
+    
+    public PieceType at(int i) { return Brush.typeInverted ? PieceType.getRotation(PieceType.spieces[i]) : PieceType.spieces[i]; }
+    public PieceType brushAt(int i) { return PieceType.spieces[i]; }
+  }
+  
+  
   public final int cellSize, cellCount;
   private int offset;
   private final PGraphics buffer;
   
+  private final PiecesPaletteWrapper wrapper;
+  
   private PieceScrollBar scrollBar;
   
-  PiecePaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount)
+  PiecePaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount, boolean implicitRotations)
   {
     super(p,ox,oy);
+    
+    if (implicitRotations)
+      wrapper = new RotatedPiecesWrapper();
+    else
+      wrapper = new NormalPiecesWrapper();
+
+    
     this.cellSize = cellSize;
-    this.cellCount = cellCount;
+    this.cellCount = Math.min(cellCount, wrapper.size);
     this.offset = 0;
     
     buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, Sketch.P2D);
     
-    if (cellCount < PieceType.count())
+    if (cellCount < wrapper.size)
     {
       scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, 20, 20);
       p.addDrawable(scrollBar);
     }
+  }
+  
+  void dispose()
+  {
+    Main.sketch.drawables.remove(this);
+    if (scrollBar != null) Main.sketch.drawables.remove(scrollBar);
   }
   
   
@@ -43,7 +88,7 @@ public class PiecePaletteView extends Drawable
     y -= oy;
     
     x /= cellSize;
-    Brush.setType(PieceType.at(offset+x));
+    Brush.setType(wrapper.brushAt(offset+x));
     
     Main.sketch.redraw();
   }
@@ -60,21 +105,21 @@ public class PiecePaletteView extends Drawable
   public void mouseWheelMoved(int x) 
   {
     int i = 0;
-    for (i = 0; i < PieceType.count(); ++i)
+    for (i = 0; i < wrapper.size; ++i)
     {
-      if (Brush.type() == PieceType.at(i))
+      if (Brush.type() == wrapper.at(i))
         break;
     }
     
-    if (x > 0 && i + 1 < PieceType.count())
+    if (x > 0 && i + 1 < wrapper.size)
     {
-      Brush.setType(PieceType.at(i+1));
+      Brush.setType(wrapper.brushAt(i+1));
       if (scrollBar != null && i >= offset + cellCount - 1)
         scrollBar.downArrow();
     }
     else if (x < 0 && i > 0)
     {
-      Brush.setType(PieceType.at(i-1));
+      Brush.setType(wrapper.brushAt(i-1));
       if (scrollBar != null && i < offset + 1)
         scrollBar.upArrow();
     }
@@ -95,8 +140,8 @@ public class PiecePaletteView extends Drawable
     
     for (int i = 0; i < cellCount; ++i)
     {
-      PieceType type = PieceType.at(offset+i);
-      
+      PieceType type = wrapper.at(offset+i);
+            
       if (type == Brush.type())
       {
         p.strokeWeight(3.0f);

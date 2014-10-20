@@ -259,10 +259,15 @@ public class Menus
         case VIEW_MARK_DELETED_PIECE_ON_LAYER:
           
         case EDIT_HALF_STEPS:
+        case EDIT_USE_TAB_TO_ROTATE:
         {
           Settings.values.toggle(item.setting);
           AbstractButton mi = Toolbar.findItem(item.setting);
           if (mi != null) mi.setSelected(src.isSelected());
+          
+          if (item.setting == Setting.USE_TAB_TO_ROTATE)
+            Main.sketch.updatePiecePalette();
+          
           Main.sketch.redraw();
           Main.sketch.requestFocus();
           break;

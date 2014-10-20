@@ -31,6 +31,9 @@ public enum Icon
   SHIFT_WEST("shift_west"),
   SHIFT_EAST("shift_east"),
   
+  USE_TAB_ROTATION("use_tab_rotation"),
+  ENABLE_HALF_STEPS("enable_half_steps"),
+  
   ARROW_UP("arrow_up"),
   ARROW_DOWN("arrow_down"),
   ARROW_LEFT("arrow_left"),
