@@ -63,6 +63,15 @@ public class Main
     Menus.toggleLevelSpecificEntries(false);
     Toolbar.toggleLevelSpecificEntries(false);
     
-    Main.mainFrame.setVisible(true);
+    //Main.mainFrame.setVisible(true);
+  }
+  
+  public static void initAccordingToStatus()
+  {
+    // no models exists in library, create a new one and open directly editor
+    if (Library.i().getModels().size() == 0)
+    {
+      
+    }
   }
 }

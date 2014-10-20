@@ -15,6 +15,7 @@ import java.util.*;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.ModelInfo;
 import pixbits.nanoblock.files.*;
+import pixbits.nanoblock.tasks.Tasks;
 
 public class LibraryFrame extends JFrame
 {
@@ -31,7 +32,8 @@ public class LibraryFrame extends JFrame
     list = new JList(model);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setCellRenderer(new LibraryModelRenderer());
-    list.addListSelectionListener(new LibraryModelListener());
+    list.addListSelectionListener(selectionListener);
+    list.addMouseListener(mouseListener);
     //table.setAutoCreateRowSorter(true);
     scrollpane = new JScrollPane(list);
     scrollpane.setPreferredSize(new Dimension(800,600));
@@ -70,8 +72,7 @@ public class LibraryFrame extends JFrame
     }
   };
   
-  private class LibraryModelListener implements ListSelectionListener
-  {
+  private final ListSelectionListener selectionListener = new ListSelectionListener() {
     @Override
     public void valueChanged(ListSelectionEvent e)
     {
@@ -94,7 +95,25 @@ public class LibraryFrame extends JFrame
         }
       }
     }
-  }
+  };
+  
+  private final MouseListener mouseListener = new MouseAdapter() {
+    public void mouseClicked(MouseEvent e)
+    {
+      JList list = (JList)e.getSource();
+      
+      if (e.getClickCount() == 2)
+      {
+        int index = list.getSelectedIndex();
+        
+        LibraryModel lmodel = model.get(index);
+        
+        list.setSelectedIndex(-1);
+        
+        Tasks.loadModelFromLibrary(lmodel);
+      }
+    }
+  };
   
   public void addModel(LibraryModel lmodel)
   {
@@ -202,6 +221,7 @@ public class LibraryFrame extends JFrame
     this.setLocationRelativeTo(Main.mainFrame);
     this.toFront();
     this.setVisible(true);
+    this.infoPanel.clear();
     
   }
 }

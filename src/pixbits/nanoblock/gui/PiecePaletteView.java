@@ -70,10 +70,10 @@ public class PiecePaletteView extends Drawable
     }
   }
   
-  void dispose()
+  void dispose(Sketch p)
   {
-    Main.sketch.drawables.remove(this);
-    if (scrollBar != null) Main.sketch.drawables.remove(scrollBar);
+    p.removeDrawable(this);
+    if (scrollBar != null) p.removeDrawable(scrollBar);
   }
   
   

@@ -38,6 +38,8 @@ public class Sketch extends PApplet implements ChangeListener
 	public PiecePaletteView pieceView;
 	
 	public PFont font;
+	
+	private Model model;
   
   public void setup()
   {
@@ -48,33 +50,17 @@ public class Sketch extends PApplet implements ChangeListener
     Brush.tileset = TileSetLoader.loadAndBuild("tileset.json");
 
     font = createFont("Helvetica", 16);
-    
-    Piece pieces[] = new Piece[] {
-       //new Piece(PieceType.P2x1, PieceColor.WHITE, 2, 0),
-       new Piece(PieceType.P2x1, PieceColor.YELLOW, 6, 0),
-       //new Piece(PieceType.P2x1, PieceColor.GREEN_LIME, 0, 2),
-       //new Piece(PieceType.P2x1, PieceColor.ORANGE, 4, 2),
-       new Piece(PieceType.P2x1, PieceColor.PINK, 2, 4),
-       //new Piece(PieceType.P2x1, PieceColor.WHITE, 6, 4)
-    };
-    
-    Level.PieceComparator p = new Level.PieceComparator();
-    
-    /*System.out.println("Real Test");
-    System.out.println(p.compare(pieces[0], pieces[1])+" "+pieces[0].color+", "+pieces[1].color);
-    System.out.println(p.compare(pieces[1], pieces[0])+" "+pieces[1].color+", "+pieces[0].color);*/
-    
-    Library.model = ModelLoader.loadModel(new File("model.nblock"));
+
+
+    /*Library.model = ModelLoader.loadModel(new File("model.nblock"));
     
     if (Library.model == null)
     { 
       Library.model = new Model(20,20);
       Library.model.allocateLevels(12);
-    }
-    
-    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 20, Library.model);
-    
-    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,6);
+    }*/
+        
+    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,7);
     drawables.add(paletteView);
     
     updatePiecePalette();
@@ -87,9 +73,35 @@ public class Sketch extends PApplet implements ChangeListener
     noLoop();
   }
   
+  public void initForModel(Model model)
+  {
+    if (levelStackView != null) levelStackView.dispose(this);
+    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 20, model);
+    
+    this.model = model;
+  }
+  
+  public void hideMe()
+  {
+    this.model = null; 
+  }
+  
   public void updatePiecePalette()
   {
-    if (pieceView != null) pieceView.dispose();
+    PieceType brush = Brush.realType();
+    
+    boolean found = false;
+    for (PieceType spiece : PieceType.spieces)
+      if (brush == spiece)
+      {
+        found = true;
+        break;
+      }
+    
+    if (!found)
+      Brush.setType(PieceType.getRotation(brush));
+    
+    if (pieceView != null) pieceView.dispose(this);
     pieceView = new PiecePaletteView(this, 320,760,100,10, Settings.values.get(Setting.USE_TAB_TO_ROTATE));
     drawables.add(pieceView);
   }
@@ -99,6 +111,11 @@ public class Sketch extends PApplet implements ChangeListener
     drawables.add(d);
   }
   
+  public void removeDrawable(Drawable d)
+  {
+    drawables.remove(d);
+  }
+  
   public int baseX = 350;
   public int baseY = 300;
   
@@ -106,7 +123,11 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void draw()
   {
-  	background(220);
+  	if (model == null)
+  	  return;
+    
+    
+    background(220);
   	
   	Level hovered = levelStackView.getHoveredLevel();
   	hoveredIndex = -1;
@@ -115,12 +136,12 @@ public class Sketch extends PApplet implements ChangeListener
   	if (levelStackView.getLocked() != null)
   	  hovered = levelStackView.getLocked();
   	
-  	int rx = baseX + Library.model.getWidth()*Brush.tileset.xOffset;
+  	int rx = baseX + model.getWidth()*Brush.tileset.xOffset;
   	int ry = baseY + Brush.tileset.yOffset;
   	
-  	for (int l = 0; l < Library.model.levelCount(); ++l)
+  	for (int l = 0; l < model.levelCount(); ++l)
   	{
-  	  Level level = Library.model.levelAt(l);
+  	  Level level = model.levelAt(l);
   	  Iterator<Piece> pieces = level.iterator();
 
   	  if (hovered == level)
@@ -180,7 +201,7 @@ public class Sketch extends PApplet implements ChangeListener
     this.strokeWeight(2.0f);
     this.stroke(40,40,40,128);
     
-    int w = Library.model.getWidth(), h = Library.model.getHeight();
+    int w = model.getWidth(), h = model.getHeight();
     
     for (int i = 0; i < w+1; ++i)
       drawGridLine(0,i*2,h*2,i*2,l);
@@ -195,7 +216,7 @@ public class Sketch extends PApplet implements ChangeListener
     this.fill(220,220,220,150);
     this.stroke(40,40,40,128);
     
-    int w = Library.model.getWidth(), h = Library.model.getHeight();
+    int w = model.getWidth(), h = model.getHeight();
     
     for (int i = 0; i < w; ++i)
       for (int j = 0; j < h; ++j)
@@ -232,7 +253,7 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void drawIsoSquare(int x, int y, int w, int h, int l)
   {
-    int baseX = this.baseX + Brush.tileset.xOffset * Library.model.getWidth();
+    int baseX = this.baseX + Brush.tileset.xOffset * model.getWidth();
     int baseY = this.baseY - 1;
     
     Tileset ts = Brush.tileset;
@@ -265,7 +286,7 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void drawGridLine(int x1, int y1, int x2, int y2, int h)
   {
-    int baseX = this.baseX + Brush.tileset.xOffset * Library.model.getWidth();
+    int baseX = this.baseX + Brush.tileset.xOffset * model.getWidth();
     int baseY = this.baseY - 1;
     
     int fx1 = (int) (baseX + (x1 - y1)/2.0f * Brush.tileset.xOffset);
@@ -307,8 +328,8 @@ public class Sketch extends PApplet implements ChangeListener
     {      
       switch (this.keyCode)
       {
-        case UP: Tasks.MODEL_SHIFT_NORTH.execute(Library.model); break;
-        case DOWN: Tasks.MODEL_SHIFT_SOUTH.execute(Library.model); break;
+        case UP: Tasks.MODEL_SHIFT_NORTH.execute(model); break;
+        case DOWN: Tasks.MODEL_SHIFT_SOUTH.execute(model); break;
         case LEFT:
         {
           if ((keyEvent.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
@@ -358,11 +379,11 @@ public class Sketch extends PApplet implements ChangeListener
         
         if (!locked.isFreeAt(hover.x, hover.y))
         {
-          Library.model.removePiece(locked, piece);
+          model.removePiece(locked, piece);
           levelStackView.clearToBeDeleted();
         }
         else if (locked.canPlace(Brush.type(), hover.x, hover.y))
-          Library.model.addPiece(locked,Brush.type(),Brush.color,hover.x,hover.y);
+          model.addPiece(locked,Brush.type(),Brush.color,hover.x,hover.y);
         
         Main.sketch.redraw();
       }
@@ -436,10 +457,10 @@ public class Sketch extends PApplet implements ChangeListener
         Log.i("Hover: "+ix+", "+iy);
 
         
-        if (ix >= 0 && ix+bw <= Library.model.getWidth() && iy >= 0 && iy+bh <= Library.model.getHeight())
+        if (ix >= 0 && ix+bw <= model.getWidth() && iy >= 0 && iy+bh <= model.getHeight())
         {
           if (hover == null || hover.x != ix*2 || hover.y != iy*2 || hover.width != bw || hover.height != bh)
-          {
+          {            
             this.strokeWeight(4.0f);
             this.stroke(180,0,0,220);
 
@@ -456,8 +477,8 @@ public class Sketch extends PApplet implements ChangeListener
   
   public Rectangle layerBounds(int l)
   {
-    int sx = baseX, sw = Library.model.getWidth()*Brush.tileset.xOffset * 2;
-    int sy = baseY - l * Brush.tileset.hOffset - 1, sh = Library.model.getHeight()*Brush.tileset.yOffset*2;
+    int sx = baseX, sw = model.getWidth()*Brush.tileset.xOffset * 2;
+    int sy = baseY - l * Brush.tileset.hOffset - 1, sh = model.getHeight()*Brush.tileset.yOffset*2;
     
     return new Rectangle(sx,sy,sw,sh);
   }
@@ -471,6 +492,27 @@ public class Sketch extends PApplet implements ChangeListener
     {
       if (d.isInside(x, y))
         d.mouseWheelMoved(amount);
+    }
+    
+    Level locked = levelStackView.getLocked();
+
+    if (locked != null)
+    {
+      Rectangle bounds = layerBounds(hoveredIndex);
+      
+      if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
+      {
+        if (amount > 0 && locked.previous() != null)
+        {
+          levelStackView.setLocked(locked.previous());
+          mouseMoved();
+        }
+        else if (amount < 0 && locked.next() != null)
+        {
+          levelStackView.setLocked(locked.next());
+          mouseMoved();
+        }   
+      }
     }
   }
   

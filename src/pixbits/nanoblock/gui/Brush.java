@@ -19,6 +19,7 @@ public class Brush
   public static boolean typeInverted = false;
   private static PieceType type = PieceType.P1x1;
   public static void setType(PieceType type) { Brush.type = type; }
+  public static PieceType realType() { return type; }
   public static PieceType type()
   {
     if (!typeInverted) return type;

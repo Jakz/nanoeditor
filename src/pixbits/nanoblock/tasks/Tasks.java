@@ -213,6 +213,16 @@ public class Tasks
     }
   }
   
+  public static void loadModelFromLibrary(LibraryModel model)
+  {
+    Main.libraryFrame.setVisible(false);
+    Library.i().setLibraryModel(model);
+    Model rmodel = ModelLoader.loadModel(model.file);
+    Library.model = rmodel;
+    Main.sketch.initForModel(rmodel);
+    Main.mainFrame.setVisible(true);
+  }
+  
   
   
   public static class ReplaceColorTask implements Task

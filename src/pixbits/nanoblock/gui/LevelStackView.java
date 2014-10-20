@@ -1,5 +1,6 @@
 package pixbits.nanoblock.gui;
 
+import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.ui.*;
 
@@ -33,6 +34,13 @@ public class LevelStackView
     p.addDrawable(scrollbar);
     
     locked = null;
+  }
+  
+  void dispose(Sketch p)
+  {
+    for (LevelView view : views)
+      p.removeDrawable(view);
+    if (scrollbar != null) p.removeDrawable(scrollbar);
   }
   
   public Rectangle hover()
