@@ -132,7 +132,7 @@ public class LevelView extends Drawable
         wouldBeRemovedPiece = null;
     }
     
-    if (vx != hx || vy != hy || parent.getHoveredLevel() != level)
+    if (vx != hx || vy != hy || parent.getHoveredLevel() != level || (parent.hover() != null && (parent.hover().width != Brush.type().width || parent.hover().height != Brush.type().height)))
     {
       if (vx + Brush.type().width <= model.getWidth()*2 && vy + Brush.type().height <= model.getHeight()*2)
       {
