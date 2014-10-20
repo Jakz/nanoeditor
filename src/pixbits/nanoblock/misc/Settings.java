@@ -41,6 +41,8 @@ public class Settings
     
     set(Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER, true);
     
+    set(Setting.USE_TAB_TO_ROTATE, true);
+    
     Setting.HoverSetter.INSTANCE.set(Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL);
     
     setPath(Setting.Path.LIBRARY, "./library");

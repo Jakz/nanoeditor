@@ -271,12 +271,32 @@ public class Sketch extends PApplet implements ChangeListener
 
     this.line(fx1, fy1, fx2, fy2);
   }
+  
+  public boolean tabPressed = false;
 
+  @Override
+  public void keyReleased()
+  {
+    if (this.key == '\t' && Brush.typeInverted)
+    {
+      Brush.typeInverted = false;
+      mouseMoved();
+    }
+  }
+  
+  @Override
   public void keyPressed()
   {
+    System.out.println("Is enabled: "+Settings.values.get(Setting.USE_TAB_TO_ROTATE));
+    
     if (this.key == 'r')
     {
       Tasks.MODEL_RESET.execute();
+    }
+    else if (this.key == '\t' && !Brush.typeInverted && Settings.values.get(Setting.USE_TAB_TO_ROTATE))
+    {
+      Brush.typeInverted = true;
+      mouseMoved();
     }
     else if (this.key == CODED)
     {      
@@ -336,8 +356,8 @@ public class Sketch extends PApplet implements ChangeListener
           Library.model.removePiece(locked, piece);
           levelStackView.clearToBeDeleted();
         }
-        else if (locked.canPlace(Brush.type, hover.x, hover.y))
-          Library.model.addPiece(locked,Brush.type,Brush.color,hover.x,hover.y);
+        else if (locked.canPlace(Brush.type(), hover.x, hover.y))
+          Library.model.addPiece(locked,Brush.type(),Brush.color,hover.x,hover.y);
         
         Main.sketch.redraw();
       }
@@ -405,15 +425,15 @@ public class Sketch extends PApplet implements ChangeListener
         //iy += Library.model.getHeight()/2;
         
         
-        int bw = Brush.type.width;
-        int bh = Brush.type.height;
+        int bw = Brush.type().width;
+        int bh = Brush.type().height;
         
         Log.i("Hover: "+ix+", "+iy);
 
         
         if (ix >= 0 && ix+bw <= Library.model.getWidth() && iy >= 0 && iy+bh <= Library.model.getHeight())
         {
-          if (hover == null || hover.x != ix*2 || hover.y != iy*2)
+          if (hover == null || hover.x != ix*2 || hover.y != iy*2 || hover.width != bw || hover.height != bh)
           {
             this.strokeWeight(4.0f);
             this.stroke(180,0,0,220);

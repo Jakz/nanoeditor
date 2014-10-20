@@ -6,10 +6,19 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import pixbits.nanoblock.Main;
+import pixbits.nanoblock.misc.Setting;
+import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.*;
 
 public class Toolbar
 {
+  private static enum ItemType
+  {
+    BUTTON,
+    TOGGLE
+  }
+  
   private static enum Item
   {
     MODEL_SHIFT_NORTH(Icon.SHIFT_NORTH, Tasks.MODEL_SHIFT_NORTH, "Shift North"),
@@ -34,6 +43,9 @@ public class Toolbar
     LIBRARY_MODEL_DUPLICATE(Icon.MODEL_DUPLICATE, Tasks.LIBRARY_CLONE_MODEL, "Duplicate Model"),
     LIBRARY_MODEL_DELETE(Icon.MODEL_DELETE, Tasks.LIBRARY_DELETE_MODEL, "Delete Model"),
     
+    EDIT_ENABLE_HALF_STEPS(Icon.MODEL_DELETE, Setting.HALF_STEPS_ENABLED, "Enable half steps", 0),
+    EDIT_USE_TAB_TO_ROTATE(Icon.MODEL_DELETE, Setting.USE_TAB_TO_ROTATE, "Use TAB to rotate", 0),
+    
     SEPARATOR(null, null, null)
     ;
     
@@ -42,10 +54,24 @@ public class Toolbar
       this.icon = icon != null ? icon.icon() : null;
       this.task = task;
       this.tooltip = tooltip;
+      this.type = ItemType.BUTTON;
+      this.setting = null;
+    }
+    
+    Item(Icon icon, Setting setting, String tooltip, int dummy)
+    {
+      this.icon = icon != null ? icon.icon() : null;
+      this.task = null;
+      this.tooltip = tooltip;
+      this.type = ItemType.TOGGLE;
+      this.setting = setting;
     }
     
     public final String tooltip;
     public final ImageIcon icon;
+    public final ItemType type;
+    
+    public final Setting setting;
     
     public final Task task;
   }
@@ -79,7 +105,12 @@ public class Toolbar
     
     Item.SEPARATOR,
     
-    Item.MODEL_DELETE_LEVEL
+    Item.MODEL_DELETE_LEVEL,
+    
+    Item.SEPARATOR,
+    
+    Item.EDIT_ENABLE_HALF_STEPS,
+    Item.EDIT_USE_TAB_TO_ROTATE
   };
   
   private final static Item[] LIBRARY_ITEMS = {
@@ -90,8 +121,8 @@ public class Toolbar
     
   };
   
-  private final static Map<JButton, Item> mapping = new HashMap<JButton, Item>();
-  private final static Map<Item, JButton> rmapping = new HashMap<Item, JButton>();
+  private final static Map<AbstractButton, Item> mapping = new HashMap<AbstractButton, Item>();
+  private final static Map<Item, AbstractButton> rmapping = new HashMap<Item, AbstractButton>();
 
   
   public static JToolBar buildEditorToolbar() { return buildToolbar(EDITOR_ITEMS); }
@@ -108,7 +139,16 @@ public class Toolbar
         bar.add(new JToolBar.Separator());
       else if (item.icon != null)
       {
-        JButton button = new JButton(item.icon);
+        AbstractButton button = null;
+        
+        if (item.setting != null)
+        {
+          JToggleButton tbutton = new JToggleButton(item.icon);
+          tbutton.setSelected(Settings.values.get(item.setting));
+          button = tbutton; 
+        }
+        else
+          button = new JButton(item.icon);
         
         if (item.tooltip != null)
           button.setToolTipText(item.tooltip);
@@ -116,7 +156,7 @@ public class Toolbar
         button.addActionListener(buttonListener);
         mapping.put(button, item);
         rmapping.put(item, button);
-        
+
         bar.add(button);
       }
     }
@@ -129,13 +169,30 @@ public class Toolbar
   private static final ActionListener buttonListener = new ActionListener() {
     public void actionPerformed(ActionEvent e)
     {
-      JButton src = (JButton)e.getSource();
+      AbstractButton src = (AbstractButton)e.getSource();
       Item item = mapping.get(src);
       
       if (item.task != null)
         item.task.execute();
+      else if (item.setting != null)
+      {
+        Settings.values.toggle(item.setting);
+        JMenuItem mi = Menus.findItem(item.setting);
+        if (mi != null) mi.setSelected(src.isSelected());
+      }
+      
+      Main.sketch.requestFocus();
     }
   };
+  
+  public static AbstractButton findItem(Setting setting)
+  {
+    for (Item i : Item.values())
+      if (i.setting == setting)
+        return rmapping.get(i);
+    
+    return null;
+  }
   
   public static void toggleLevelSpecificEntries(boolean enable)
   {

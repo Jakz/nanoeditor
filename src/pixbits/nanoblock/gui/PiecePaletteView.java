@@ -43,7 +43,7 @@ public class PiecePaletteView extends Drawable
     y -= oy;
     
     x /= cellSize;
-    Brush.type = PieceType.at(offset+x);
+    Brush.setType(PieceType.at(offset+x));
     
     Main.sketch.redraw();
   }
@@ -62,19 +62,19 @@ public class PiecePaletteView extends Drawable
     int i = 0;
     for (i = 0; i < PieceType.count(); ++i)
     {
-      if (Brush.type == PieceType.at(i))
+      if (Brush.type() == PieceType.at(i))
         break;
     }
     
     if (x > 0 && i + 1 < PieceType.count())
     {
-      Brush.type = PieceType.at(i+1);
+      Brush.setType(PieceType.at(i+1));
       if (scrollBar != null && i >= offset + cellCount - 1)
         scrollBar.downArrow();
     }
     else if (x < 0 && i > 0)
     {
-      Brush.type = PieceType.at(i-1);
+      Brush.setType(PieceType.at(i-1));
       if (scrollBar != null && i < offset + 1)
         scrollBar.upArrow();
     }
@@ -97,7 +97,7 @@ public class PiecePaletteView extends Drawable
     {
       PieceType type = PieceType.at(offset+i);
       
-      if (type == Brush.type)
+      if (type == Brush.type())
       {
         p.strokeWeight(3.0f);
         p.stroke(255,0,0);

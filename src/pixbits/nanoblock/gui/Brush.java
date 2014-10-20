@@ -14,6 +14,19 @@ public class Brush
   public static Mode mode = Mode.NONE;
   
   public static PieceColor color = PieceColor.BLACK;
-  public static PieceType type = PieceType.P1x1;
+  
+  
+  public static boolean typeInverted = false;
+  private static PieceType type = PieceType.P1x1;
+  public static void setType(PieceType type) { Brush.type = type; }
+  public static PieceType type()
+  {
+    if (!typeInverted) return type;
+    else
+    {
+      return PieceType.getRotation(type);
+    }
+  }
+  
   public static Tileset tileset;
 }

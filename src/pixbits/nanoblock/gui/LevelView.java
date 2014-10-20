@@ -63,8 +63,8 @@ public class LevelView extends Drawable
     float realWidth =  model.getWidth()*2.0f;
     float realHeight =  model.getHeight()*2.0f;
     
-    float realPieceWidth =  Brush.type.width*2.0f;
-    float realPieceHeight =  Brush.type.height*2.0f;
+    float realPieceWidth =  Brush.type().width*2.0f;
+    float realPieceHeight =  Brush.type().height*2.0f;
     
     int rx = x;
     int ry = y;
@@ -96,7 +96,7 @@ public class LevelView extends Drawable
         hy = y;
         rhx = rx;
         rhy = ry;
-        parent.setHover(new Rectangle(hx, hy, Brush.type.width, Brush.type.height));
+        parent.setHover(new Rectangle(hx, hy, Brush.type().width, Brush.type().height));
         parent.setHoveredLevel(level);
       }
       else
@@ -154,8 +154,8 @@ public class LevelView extends Drawable
           model.removePiece(level, piece);
           wouldBeRemovedPiece = null;
         }
-        else if (level.canPlace(Brush.type, hx, hy))
-          model.addPiece(level,Brush.type,Brush.color,hx,hy);
+        else if (level.canPlace(Brush.type(), hx, hy))
+          model.addPiece(level,Brush.type(),Brush.color,hx,hy);
         
         Main.sketch.redraw();
       }
