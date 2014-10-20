@@ -50,50 +50,94 @@ public class LevelView extends Drawable
   
   public void mouseMoved(int x, int y)
   {
-    x -= ox;
-    y -= oy;
+    float fx = x - ox;
+    float fy = y - oy;
+    
+    float stepSize = cellSize / 4.0f;
+    
+    float cx = fx / stepSize;
+    float cy = fy / stepSize;
+    
+    int rx = 0, ry = 0;
+    int vx = 0, vy = 0;
     
     boolean halfSteps = Settings.values.get(Setting.HALF_STEPS_ENABLED);
     
-    float realCellSize = cellSize/2.0f;
+    rx = Math.round((fx - cellSize/4.0f)/(cellSize/2.0f));
+    ry = Math.round((fy - cellSize/4.0f)/(cellSize/2.0f));
     
-    x = Math.round((x - realCellSize/2)/realCellSize);
-    y = Math.round((y - realCellSize/2)/realCellSize);
+    int bwidth = Brush.type().width;
+    int bheight = Brush.type().height;
+        
+    int tx = (int)cx, ty = (int)cy;
     
-    float realWidth =  model.getWidth()*2.0f;
-    float realHeight =  model.getHeight()*2.0f;
-    
-    float realPieceWidth =  Brush.type().width*2.0f;
-    float realPieceHeight =  Brush.type().height*2.0f;
-    
-    int rx = x;
-    int ry = y;
-    
-    x -= Math.floor(realPieceWidth / 2.0f);
-    y -= Math.floor(realPieceHeight / 2.0f);
-
-    if (x < 0) x = 0;
-    else if (x > realWidth - realPieceWidth)
-      x = (int)(realWidth - realPieceWidth);
-    
-    if (y < 0) y = 0;
-    else if (y > realHeight - realPieceHeight)
-      y = (int)(realHeight - realPieceHeight);
-    
-    if (!halfSteps)
+    if (halfSteps)
     {
-      if (x % 2 != 0)
-        --x;
-      if (y % 2 != 0)
-        --y;
+      vx = rx;
+      vy = ry;
+      
+      if (tx % 2 == 1)
+        vx = (tx + 1) / 2;
+      else
+        vx = tx / 2;
+      
+      if (ty % 2 == 1)
+        vy = (ty + 1) / 2;
+      else
+        vy = ty / 2; 
+      
+      vx -= bwidth;
+      vy -= bheight;
+    }
+    else
+    {
+      if (bwidth % 2 == 1)
+        vx = tx / 4 - bwidth/2;
+      else
+      {
+        if (tx % 4 >= 2)
+          vx = (tx + (4 - tx%4)) / 4 - bwidth/2;
+        else
+          vx = tx / 4 - bwidth/2;
+      }
+      
+      if (bheight % 2 == 1)
+        vy = ty / 4 - bheight/2;
+      else
+      {
+        if (ty % 4 >= 2)
+          vy = (ty + (4 - ty%4)) / 4 - bheight/2;
+ 
+        else
+          vy = ty / 4 - bheight/2;
+      }
+
+      vx *= 2;
+      vy *= 2;
     }
     
-    if (x != hx || y != hy || parent.getHoveredLevel() != level)
+    if (vx < 0) vx = 0;
+    else if (vx > model.getWidth()*2 - Brush.type().width*2) vx = model.getWidth()*2 - Brush.type().width*2;
+    
+    if (vy < 0) vy = 0;
+    else if (vy > model.getHeight()*2 - Brush.type().height*2) vy = model.getHeight()*2 - Brush.type().height*2;
+
+    
+    if (Settings.values.get(Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER))
     {
-      if (x + realPieceWidth <= realWidth && y + realPieceHeight <= realHeight)
+      Piece dpiece = level.pieceAt(rx, ry);
+      if (dpiece != null && dpiece.type != PieceType.CAP)
+        wouldBeRemovedPiece = dpiece;
+      else
+        wouldBeRemovedPiece = null;
+    }
+    
+    if (vx != hx || vy != hy || parent.getHoveredLevel() != level)
+    {
+      if (vx + Brush.type().width <= model.getWidth()*2 && vy + Brush.type().height <= model.getHeight()*2)
       {
-        hx = x;
-        hy = y;
+        hx = vx;
+        hy = vy;
         rhx = rx;
         rhy = ry;
         parent.setHover(new Rectangle(hx, hy, Brush.type().width, Brush.type().height));
@@ -109,15 +153,7 @@ public class LevelView extends Drawable
         rhx = -1;
         rhy = -1;
       }
-      
-      if (Settings.values.get(Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER))
-      {
-        Piece dpiece = level.pieceAt(rx, ry);
-        if (dpiece != null && dpiece.type != PieceType.CAP)
-          wouldBeRemovedPiece = dpiece;
-        else
-          wouldBeRemovedPiece = null;
-      }
+
       
       Main.sketch.redraw();
     }
