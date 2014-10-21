@@ -4,7 +4,6 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.Main;
 import processing.core.PImage;
 import java.util.*;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Color;
 

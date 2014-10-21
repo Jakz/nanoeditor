@@ -1,11 +1,9 @@
 package pixbits.nanoblock.gui;
 
-import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.ui.*;
 
 import java.awt.Rectangle;
-import java.awt.Point;
 
 public class LevelStackView
 {

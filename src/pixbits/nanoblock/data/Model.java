@@ -1,6 +1,5 @@
 package pixbits.nanoblock.data;
 
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.*;
 

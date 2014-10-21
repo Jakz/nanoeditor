@@ -5,9 +5,7 @@ import java.util.Iterator;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
-import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.gui.menus.Item;
-import pixbits.nanoblock.gui.menus.Menus;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import processing.core.*;

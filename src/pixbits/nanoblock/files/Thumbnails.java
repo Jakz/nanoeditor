@@ -8,8 +8,6 @@ import java.io.*;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.gui.PieceDrawer;
-import pixbits.nanoblock.misc.Setting;
-import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
 
 import javax.imageio.ImageIO;

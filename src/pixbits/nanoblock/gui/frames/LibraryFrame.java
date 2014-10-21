@@ -8,12 +8,10 @@ import java.awt.Dimension;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.table.*;
 
 import java.util.*;
 
 import pixbits.nanoblock.Main;
-import pixbits.nanoblock.data.ModelInfo;
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.menus.Menus;
 import pixbits.nanoblock.tasks.Tasks;
@@ -29,6 +27,8 @@ public class LibraryFrame extends JFrame
   
   public LibraryFrame()
   {
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
     model = new LibraryTableModel();
     list = new JList(model);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -109,7 +109,7 @@ public class LibraryFrame extends JFrame
         
         LibraryModel lmodel = model.get(index);
         
-        list.setSelectedIndex(-1);
+        list.clearSelection();
         
         Tasks.loadModelFromLibrary(lmodel);
       }
@@ -133,7 +133,7 @@ public class LibraryFrame extends JFrame
     model.refresh();
     
     if (isLast) list.setSelectedIndex(index - 1);
-    else if (willBeEmpty) list.setSelectedIndex(-1);
+    else if (willBeEmpty) list.clearSelection();
     else list.setSelectedIndex(index);
   }
   
@@ -221,8 +221,8 @@ public class LibraryFrame extends JFrame
   {
     this.setLocationRelativeTo(Main.mainFrame);
     this.toFront();
-    this.setVisible(true);
     this.infoPanel.clear();
-    
+    this.list.clearSelection();
+    this.setVisible(true);
   }
 }

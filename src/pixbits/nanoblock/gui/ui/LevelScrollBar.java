@@ -2,8 +2,6 @@ package pixbits.nanoblock.gui.ui;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.Model;
-import pixbits.nanoblock.data.PieceColor;
-import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.gui.*;
 
 public class LevelScrollBar extends UIScrollBar

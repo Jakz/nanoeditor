@@ -1,7 +1,6 @@
 package pixbits.nanoblock.gui.menus;
 
 import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -9,7 +8,6 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
-import javax.swing.JFrame;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
@@ -18,13 +16,7 @@ import java.awt.event.ActionEvent;
 import java.util.Map;
 import java.util.HashMap;
 
-import pixbits.nanoblock.Main;
-import pixbits.nanoblock.data.Direction;
-import pixbits.nanoblock.files.Library;
-import pixbits.nanoblock.gui.frames.Dialogs;
-import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
-import pixbits.nanoblock.tasks.*;
 
 public class Menus
 {

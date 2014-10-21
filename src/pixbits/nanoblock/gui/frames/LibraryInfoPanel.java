@@ -54,6 +54,9 @@ public class LibraryInfoPanel extends JPanel
   void clear()
   {
     thumbnail.setIcon(null);
+    lmodel = null;
+    modelName.setText("");
+    tableModel.refresh();
   }
   
   void update(LibraryModel model)
@@ -110,7 +113,7 @@ public class LibraryInfoPanel extends JPanel
     }
     
     @Override
-    public int getRowCount() { return rowNames.length; }
+    public int getRowCount() { return lmodel != null ? rowNames.length : 0; }
     
     @Override
     public int getColumnCount() { return 2; }

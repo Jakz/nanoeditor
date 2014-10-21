@@ -1,13 +1,9 @@
 package pixbits.nanoblock;
 
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
 import pixbits.nanoblock.gui.frames.*;
 import pixbits.nanoblock.gui.menus.Item;
-import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.Tasks;
 
 public class Main

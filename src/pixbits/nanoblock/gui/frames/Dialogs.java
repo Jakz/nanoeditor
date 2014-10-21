@@ -3,7 +3,6 @@ package pixbits.nanoblock.gui.frames;
 import java.awt.Component;
 import javax.swing.JOptionPane;
 
-import pixbits.nanoblock.Main;
 import pixbits.nanoblock.tasks.Task;
 
 public class Dialogs

@@ -1,7 +1,6 @@
 package pixbits.nanoblock.gui.frames;
 
 import pixbits.nanoblock.*;
-import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.gui.Sketch;
 import pixbits.nanoblock.gui.menus.Menus;
 import pixbits.nanoblock.tasks.Tasks;
@@ -11,7 +10,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class MainFrame extends JFrame implements WindowListener, MouseWheelListener
+public class MainFrame extends JFrame implements MouseWheelListener
 {
   private static final long serialVersionUID = 1L;
   
@@ -25,9 +24,8 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
     add(Menus.buildEditorToolbar(), BorderLayout.NORTH);
     embed.init();
 
-    this.addWindowListener(this);
+    this.addWindowListener(windowListener);
     this.addMouseWheelListener(this);
-    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
     this.setJMenuBar(Menus.buildMenu());
     
@@ -35,24 +33,13 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
     pack();
   }
   
-  public void windowActivated(WindowEvent e) { }
-  
-  public void windowClosing(WindowEvent e)
-  { 
-    Tasks.saveModel();
-    Tasks.saveSettings();
-  }
-  
-  
-  public void windowClosed(WindowEvent e) { }
-  public void windowDeactivated(WindowEvent e) { }
-  public void windowDeiconified(WindowEvent e) { }
-  public void windowGainedFocus(WindowEvent e) { }
-  public void windowIconified(WindowEvent e) { }
-  public void windowLostFocus(WindowEvent e) { }
-  public void windowOpened(WindowEvent e) { }
-  public void windowStateChanged(WindowEvent e) { }
-  
+  private final WindowListener windowListener = new WindowAdapter() { 
+    public void windowClosing(WindowEvent e)
+    { 
+      Tasks.closeEditor();
+    }
+  };
+
   public void mouseWheelMoved(MouseWheelEvent e)
   {
     Main.sketch.mouseWheelMoved(e.getWheelRotation());

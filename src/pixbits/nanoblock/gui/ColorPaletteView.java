@@ -2,7 +2,6 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.PieceColor;
-import pixbits.nanoblock.data.PieceType;
 import pixbits.nanoblock.gui.ui.ColorScrollBar;
 
 public class ColorPaletteView extends Drawable 

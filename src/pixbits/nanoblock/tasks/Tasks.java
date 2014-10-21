@@ -1,6 +1,5 @@
 package pixbits.nanoblock.tasks;
 
-import java.util.*;
 import java.awt.image.RenderedImage;
 import java.io.*;
 
@@ -183,9 +182,20 @@ public class Tasks
     Main.libraryFrame.setVisible(false);
     Library.i().setLibraryModel(lmodel);
     lmodel.load();
-    Library.i().model = lmodel.model;
+    Library.model = lmodel.model;
     Main.sketch.initForModel(lmodel.model);
     Main.mainFrame.setVisible(true);
     Main.sketch.redraw();
+  }
+  
+  public static void closeEditor()
+  {
+    //TODO: warn to save
+    saveModel();
+    saveSettings();
+    Main.sketch.hideMe();
+    Main.mainFrame.setVisible(false);
+    Main.libraryFrame.setLocationRelativeTo(Main.mainFrame);
+    Main.libraryFrame.showMe();
   }
 }

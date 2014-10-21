@@ -175,11 +175,7 @@ public enum Item
     {
       if (this == FILE_CLOSE)
       {
-        //TODO: warn to save
-        Main.sketch.hideMe();
-        Main.mainFrame.setVisible(false);
-        Main.libraryFrame.setLocationRelativeTo(Main.mainFrame);
-        Main.libraryFrame.showMe();
+        Tasks.closeEditor();
       }
       else if (this == FILE_EXIT)
       {

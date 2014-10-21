@@ -9,11 +9,7 @@ import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.ModelOperations;
 import pixbits.nanoblock.tasks.Tasks;
 import pixbits.nanoblock.files.Log;
-import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.files.TileSetLoader;
-import pixbits.nanoblock.files.Library;
-
-import java.io.*;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.*;
