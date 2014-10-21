@@ -4,7 +4,6 @@ import pixbits.nanoblock.*;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.gui.Sketch;
 import pixbits.nanoblock.gui.menus.Menus;
-import pixbits.nanoblock.gui.menus.Toolbar;
 import pixbits.nanoblock.tasks.Tasks;
 
 import java.awt.*;
@@ -23,7 +22,7 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
     setLayout(new BorderLayout());
     Sketch embed = Main.sketch;
     add(embed, BorderLayout.CENTER);
-    add(Toolbar.buildEditorToolbar(), BorderLayout.NORTH);
+    add(Menus.buildEditorToolbar(), BorderLayout.NORTH);
     embed.init();
 
     this.addWindowListener(this);

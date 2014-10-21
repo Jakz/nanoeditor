@@ -5,7 +5,9 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
+import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.Direction;
+import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.gui.frames.*;
 import pixbits.nanoblock.misc.*;
 import pixbits.nanoblock.tasks.*;
@@ -160,6 +162,71 @@ public enum Item
     if (buttonMenu != null) buttonMenu.setEnabled(enabled);
     if (buttonToolbar != null) buttonToolbar.setEnabled(enabled);
   }
+  
+  
+  public void clicked(AbstractButton source, boolean isToolbar)
+  {
+    if (type == ItemType.RADIO)
+    {
+      radioSetter.set(radioValue);
+      Main.sketch.requestFocus();
+    }
+    else if (type == ItemType.BUTTON)
+    {
+      if (this == FILE_CLOSE)
+      {
+        //TODO: warn to save
+        Main.sketch.hideMe();
+        Main.mainFrame.setVisible(false);
+        Main.libraryFrame.setLocationRelativeTo(Main.mainFrame);
+        Main.libraryFrame.showMe();
+      }
+      else if (this == FILE_EXIT)
+      {
+        Tasks.saveModel();
+        System.exit(0);
+      }
+      else if (this == FILE_SAVE)
+      {
+        Tasks.saveModel();
+      }
+      else if (this == EDIT_RESET)
+      {
+        if (Dialogs.showConfirmDialog(Main.mainFrame, "Reset model", "Are you sure you want to reset the model?", Tasks.MODEL_RESET))
+        {
+          Main.sketch.requestFocus();
+        }
+      }
+      else if (builder != null)
+      {
+        UndoableTask task = builder.build(Library.model);
+        task.execute();
+      }
+      else if (task != null)
+      {
+        task.execute();
+      }
+    }
+    else if (type == ItemType.CHECKBOX)
+    {
+      if (setting != null)
+      {
+        Settings.values.toggle(setting);
+        
+        if (buttonMenu != null && source != buttonMenu) buttonMenu.setSelected(source.isSelected());
+        if (buttonToolbar != null && source != buttonToolbar) buttonToolbar.setSelected(source.isSelected());
+        
+        if (setting == Setting.USE_TAB_TO_ROTATE)
+          Main.sketch.updatePiecePalette();
+        
+        if (isToolbar)
+          Main.sketch.requestFocus();
+      }
+    }
+    
+    Main.sketch.redraw();
+  }
+  
   
   public static void setLevelOperationsEnabled(boolean enabled)
   {

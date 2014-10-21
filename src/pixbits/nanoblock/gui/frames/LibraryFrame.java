@@ -15,7 +15,7 @@ import java.util.*;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.ModelInfo;
 import pixbits.nanoblock.files.*;
-import pixbits.nanoblock.gui.menus.Toolbar;
+import pixbits.nanoblock.gui.menus.Menus;
 import pixbits.nanoblock.tasks.Tasks;
 
 public class LibraryFrame extends JFrame
@@ -44,7 +44,7 @@ public class LibraryFrame extends JFrame
     this.setLayout(new BorderLayout());
     this.add(scrollpane, BorderLayout.CENTER);
     this.add(infoPanel, BorderLayout.EAST);
-    this.add(Toolbar.buildLibraryToolbar(), BorderLayout.NORTH);
+    this.add(Menus.buildLibraryToolbar(), BorderLayout.NORTH);
 
     
     setTitle("Library");

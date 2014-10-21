@@ -2,6 +2,7 @@ package pixbits.nanoblock.gui.menus;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
@@ -9,6 +10,8 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
 import javax.swing.JFrame;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -25,15 +28,17 @@ import pixbits.nanoblock.tasks.*;
 
 public class Menus
 {
-  private static final String[] menus = {"File", "Edit", "Model", "View"};
-  private static final Item[][] menuItems = new Item[][]{
+  private static final Map<AbstractButton, Item> mapping = new HashMap<AbstractButton, Item>();
+
+  
+  
+  private static final String[] editorMenus = {"File", "Edit", "Model", "View"};
+  private static final Item[][] editorMenuItems = new Item[][]{
     new Item[]{Item.FILE_SAVE, Item.FILE_CLOSE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_HALF_STEPS, Item.EDIT_USE_TAB_TO_ROTATE, Item.SEPARATOR, Item.EDIT_RESET, Item.SEPARATOR, Item.EDIT_RESIZE, Item.EDIT_REPLACE_COLOR},
     new Item[]{Item.MODEL_SHIFT_MENU, Item.MODEL_ROTATE_MENU, Item.SEPARATOR, Item.MODEL_INSERT_LEVEL_MENU, Item.MODEL_SHIFT_LEVEL_MENU, Item.MODEL_DELETE_LEVEL},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_GRID_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.VIEW_HOVER_LAYER_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
   };
-  
-  private static final Map<JMenuItem, Item> mapping = new HashMap<JMenuItem, Item>();
   
   private static JMenu buildMenu(String caption, Item[] items)
   {
@@ -94,128 +99,127 @@ public class Menus
     
     JPopupMenu.setDefaultLightWeightPopupEnabled(false);
     
-    for (int i = 0; i < menus.length; ++i)
+    for (int i = 0; i < editorMenus.length; ++i)
     {
-      JMenu menu = buildMenu(menus[i], menuItems[i]);
+      JMenu menu = buildMenu(editorMenus[i], editorMenuItems[i]);
       bar.add(menu);
     }
 
     return bar;
   }
+ 
+  
+  
+  
+  
+  private final static Item[] EDITOR_ITEMS = {
+    Item.MODEL_SHIFT_NORTH,
+    Item.MODEL_SHIFT_SOUTH,
+    Item.MODEL_SHIFT_WEST,
+    Item.MODEL_SHIFT_EAST,
+    
+    Item.SEPARATOR,
+    
+    Item.MODEL_ROTATE_LEFT,
+    Item.MODEL_ROTATE_RIGHT,
+    
+    Item.SEPARATOR,
+    
+    Item.EDIT_RESIZE,
+    Item.EDIT_REPLACE_COLOR,
+    
+    Item.SEPARATOR,
+    
+    Item.MODEL_INSERT_LEVEL_ABOVE,
+    Item.MODEL_INSERT_LEVEL_BELOW,
+    
+    Item.SEPARATOR,
+
+    
+    Item.MODEL_SHIFT_LEVEL_UP,
+    Item.MODEL_SHIFT_LEVEL_DOWN,
+    
+    Item.SEPARATOR,
+    
+    Item.MODEL_DELETE_LEVEL,
+    
+    Item.SEPARATOR,
+    
+    Item.EDIT_HALF_STEPS,
+    Item.EDIT_USE_TAB_TO_ROTATE
+  };
+  
+  private final static Item[] LIBRARY_ITEMS = {
+    Item.LIBRARY_MODEL_NEW,
+    Item.LIBRARY_MODEL_DUPLICATE,
+    Item.SEPARATOR,
+    Item.LIBRARY_MODEL_DELETE
+    
+  };
+  
+  
+  public static JToolBar buildEditorToolbar() { return buildToolbar(EDITOR_ITEMS); }
+  public static JToolBar buildLibraryToolbar() { return buildToolbar(LIBRARY_ITEMS); }
+
+  
+  private static JToolBar buildToolbar(Item[] items)
+  {
+    JToolBar bar = new JToolBar();
+    
+    for (Item item : items)
+    {
+      if (item == Item.SEPARATOR)
+        bar.add(new JToolBar.Separator());
+      else if (item.icon != null)
+      {
+        AbstractButton button = null;
+        
+        if (item.setting != null)
+        {
+          JToggleButton tbutton = new JToggleButton(item.icon);
+          tbutton.setSelected(Settings.values.get(item.setting));
+          button = tbutton; 
+        }
+        else
+          button = new JButton(item.icon);
+        
+        if (item.tooltip != null)
+          button.setToolTipText(item.tooltip);
+        
+        button.addActionListener(toolbarListener);
+        mapping.put(button, item);
+        item.buttonToolbar = button;
+        bar.add(button);
+      }
+    }
+    
+    bar.setFloatable(false);
+    
+    return bar;
+  }
+
+  
+  
+  
+  
   
   private static final ActionListener menuListener = new ActionListener() {
     public void actionPerformed(ActionEvent e)
     {
-      JMenuItem src = (JMenuItem)e.getSource();
+      AbstractButton src = (AbstractButton)e.getSource();
       Item item = mapping.get(src);
-      
       System.out.println("Clicked "+item);
-      
-      switch (item)
-      {
-        case FILE_EXIT:
-        {
-          Tasks.saveModel();
-          System.exit(0);
-          break;
-        }
-        
-        case FILE_SAVE:
-        {
-          Tasks.saveModel();
-          break;
-        }
-        
-        case FILE_CLOSE:
-        {
-          //TODO: warn to save
-          Main.sketch.hideMe();
-          Main.mainFrame.setVisible(false);
-          Main.libraryFrame.setLocationRelativeTo(Main.mainFrame);
-          Main.libraryFrame.showMe();
-          break;
-        }
-        
-        case VIEW_HOVER_PIECE_DISABLE:
-        case VIEW_HOVER_PIECE_FILL:
-        case VIEW_HOVER_PIECE_STROKE_BACK:
-        case VIEW_HOVER_PIECE_STROKE_FRONT:
-        {
-          Setting.EnumSetter setter = item.radioSetter;
-          Enum<?> value = item.radioValue;
-          setter.set(value);
-          Main.sketch.redraw();
-          Main.sketch.requestFocus();
-          break;
-        }
-        
-      
-        case VIEW_SHOW_PIECE_ORDER:
-        case VIEW_HIDE_CAPS:
-        case VIEW_SHOW_LAYER_GRID:
-        case VIEW_LAYER_GRID_ALPHA:
-          
-        case VIEW_SHOW_GRID:
-        case VIEW_SHOW_GRID_POINTS:
-        case VIEW_MARK_DELETED_PIECE_ON_LAYER:
-          
-        case EDIT_HALF_STEPS:
-        case EDIT_USE_TAB_TO_ROTATE:
-        {
-          Settings.values.toggle(item.setting);
-          AbstractButton mi = Toolbar.findItem(item.setting);
-          if (mi != null) mi.setSelected(src.isSelected());
-          
-          if (item.setting == Setting.USE_TAB_TO_ROTATE)
-            Main.sketch.updatePiecePalette();
-          
-          Main.sketch.redraw();
-          Main.sketch.requestFocus();
-          break;
-        }
-        
-        case EDIT_RESET:
-        {
-          if (Dialogs.showConfirmDialog(Main.mainFrame, "Reset model", "Are you sure you want to reset the model?", Tasks.MODEL_RESET))
-          {
-            Main.sketch.redraw();
-            Main.sketch.requestFocus();
-          }
-          break;
-        }
-        
-        case MODEL_ROTATE_LEFT:
-        case MODEL_ROTATE_RIGHT:
-        case MODEL_SHIFT_NORTH:
-        case MODEL_SHIFT_SOUTH:
-        case MODEL_SHIFT_EAST:
-        case MODEL_SHIFT_WEST:
-        {
-          OperationBuilder builder = item.builder;
-          UndoableTask task = builder.build(Library.model);
-          task.execute();
-          break;
-        }
-          
-        case MODEL_INSERT_LEVEL_ABOVE:
-        case MODEL_INSERT_LEVEL_BELOW:
-        {
-          ModelTask mtask = (ModelTask)item.task;
-          mtask.execute(Library.model);
-          Main.sketch.requestFocus();
-        }
-      
-        default: break;
-      }
+      item.clicked(src, false);
     }
   };
   
-  public static JMenuItem findItem(Setting setting)
-  {
-    for (Item i : Item.values())
-      if (i.setting == setting)
-        return i.buttonMenu;
-    
-    return null;
-  }
+  private static final ActionListener toolbarListener = new ActionListener() {
+    public void actionPerformed(ActionEvent e)
+    {
+      AbstractButton src = (AbstractButton)e.getSource();
+      Item item = mapping.get(src);
+      System.out.println("Clicked "+item);
+      item.clicked(src, true);
+    }
+  };
 }
