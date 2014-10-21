@@ -35,15 +35,12 @@ public class Menus
   {
     SEPARATOR(null),
     
-    FILE_NEW("New.."),
-    FILE_OPEN("Open.."),
-    FILE_SAVE_AS("Save as.."),
     FILE_SAVE("Save"),
+    FILE_CLOSE("Close"),
+    FILE_EXIT("Exit"),
     FILE_EXPORT("Export.."),
     FILE_EXPORT_INSTRUCTIONS("Export instructions.."),
-    
-    FILE_EXIT("Exit"),
-    
+        
     EDIT_HALF_STEPS("Use half steps", ItemType.CHECKBOX, Setting.HALF_STEPS_ENABLED),
     EDIT_USE_TAB_TO_ROTATE("Use tab to rotate", ItemType.CHECKBOX, Setting.USE_TAB_TO_ROTATE),
     EDIT_RESET("Reset"),
@@ -140,7 +137,7 @@ public class Menus
   
   private static final String[] menus = {"File", "Edit", "Model", "View"};
   private static final Item[][] menuItems = new Item[][]{
-    new Item[]{Item.FILE_NEW, Item.FILE_OPEN, Item.SEPARATOR, Item.FILE_SAVE_AS, Item.FILE_SAVE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
+    new Item[]{Item.FILE_SAVE, Item.FILE_CLOSE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_HALF_STEPS, Item.EDIT_USE_TAB_TO_ROTATE, Item.SEPARATOR, Item.EDIT_RESET, Item.SEPARATOR, Item.EDIT_RESIZE, Item.EDIT_REPLACE_COLOR},
     new Item[]{Item.MODEL_SHIFT_MENU, Item.MODEL_ROTATE_MENU, Item.SEPARATOR, Item.MODEL_INSERT_LEVEL_MENU, Item.MODEL_SHIFT_LEVEL_MENU, Item.MODEL_DELETE_LEVEL},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_GRID_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.VIEW_HOVER_LAYER_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}
@@ -232,6 +229,22 @@ public class Menus
         {
           Tasks.saveModel();
           System.exit(0);
+          break;
+        }
+        
+        case FILE_SAVE:
+        {
+          Tasks.saveModel();
+          break;
+        }
+        
+        case FILE_CLOSE:
+        {
+          //TODO: warn to save
+          Main.sketch.hideMe();
+          Main.mainFrame.setVisible(false);
+          Main.libraryFrame.setLocationRelativeTo(Main.mainFrame);
+          Main.libraryFrame.showMe();
           break;
         }
         

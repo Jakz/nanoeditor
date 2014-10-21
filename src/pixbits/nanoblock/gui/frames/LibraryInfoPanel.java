@@ -105,7 +105,7 @@ public class LibraryInfoPanel extends JPanel
         lmodel.info.modelNumber = (String)o;
       
       Main.libraryFrame.getModel().refresh();
-      lmodel.writeBack();
+      lmodel.lazySave();
       refresh();
     }
     

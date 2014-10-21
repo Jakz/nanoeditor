@@ -22,16 +22,16 @@ public class ModelLoader
     JsonPiece[][] pieces;
   }
   
-  public static void saveModel(Model model, File file)
+  public static void saveModel(LibraryModel lmodel)
   {
     try
     {      
       JsonModel jmodel = new JsonModel();
-      jmodel.info = model.getInfo();
+      jmodel.info = lmodel.info;
       
       List<ArrayList<JsonPiece>> pieces = new ArrayList<ArrayList<JsonPiece>>();
       ArrayList<JsonPiece> current = null;
-      for (Level l : model)
+      for (Level l : lmodel.model)
       {
         current = new ArrayList<JsonPiece>();
         pieces.add(current);
@@ -56,7 +56,7 @@ public class ModelLoader
         pieces.get(i).toArray(jmodel.pieces[i]);
       }
       
-      FileUtils.writeJson(file, JsonModel.class, jmodel, true);
+      FileUtils.writeJson(lmodel.file, JsonModel.class, jmodel, true);
     }
     catch (Exception e)
     {
@@ -70,15 +70,17 @@ public class ModelLoader
     return jmodel.info;
   }
   
-  public static Model loadModel(File file)
+  public static Model loadModel(LibraryModel lmodel)
   {
     try
     {    
+      File file = lmodel.file;
+      
       if (file.exists())
       {
         JsonModel jmodel = FileUtils.readJson(file, JsonModel.class);
         
-        Model model = new Model(jmodel.info);
+        Model model = new Model(lmodel);
         model.allocateLevels(jmodel.info.levels+1);
         
         JsonPiece[][] pieces = jmodel.pieces;

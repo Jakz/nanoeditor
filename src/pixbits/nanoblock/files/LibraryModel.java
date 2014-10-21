@@ -12,6 +12,7 @@ import pixbits.nanoblock.misc.*;
 public class LibraryModel implements Comparable<LibraryModel>
 {
   public final ModelInfo info;
+  public Model model;
   public File file;
   public ImageIcon thumbnail;
   
@@ -26,11 +27,10 @@ public class LibraryModel implements Comparable<LibraryModel>
     this.colorCount = 0;
     this.file = new File(Settings.values.getPath(Setting.Path.LIBRARY)+File.separator+info.hashCode+".nblock");
     
-    Model m = new Model(w,h);
-    m.allocateLevels(l+1);
-    m.setInfo(this.info);
+    model = new Model(this);
+    model.allocateLevels(l+1);
     
-    ModelLoader.saveModel(m, file);
+    ModelLoader.saveModel(this);
     
     this.loadThumbnail();
   }
@@ -47,12 +47,26 @@ public class LibraryModel implements Comparable<LibraryModel>
   
   public String thumbnailName() { return Settings.values.getPath(Setting.Path.CACHE)+File.separator+info.hashCode + ".png"; }
   
-  public void writeBack()
+  public void load()
   {
-    Model model = ModelLoader.loadModel(file);
-    model.setInfo(this.info);
-    //TODO: if model is the current edited one update its info too
-    ModelLoader.saveModel(model, file);
+    model = ModelLoader.loadModel(this);
+  }
+  
+  public void unload()
+  {
+    model = null;
+  }
+  
+  public void save()
+  {
+    ModelLoader.saveModel(this);
+  }
+  
+  public void lazySave()
+  {
+    load();
+    ModelLoader.saveModel(this);
+    unload();
   }
   
   public void loadThumbnail() 

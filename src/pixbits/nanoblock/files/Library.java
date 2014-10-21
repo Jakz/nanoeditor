@@ -9,10 +9,9 @@ import pixbits.nanoblock.misc.Settings;
 
 public class Library
 {
-  public static Model model;
-  
   private final List<LibraryModel> models;
-  
+
+  public static Model model;
   private LibraryModel libraryModel;
   
   Library()
@@ -35,16 +34,17 @@ public class Library
     
     Log.i("Found "+fmodels.length+" models inside library.");
     
-    for (File model : fmodels)
+    for (File fmodel : fmodels)
     {
-      Model rmodel = ModelLoader.loadModel(model);
+      ModelInfo info = ModelLoader.loadInfo(fmodel);
+      LibraryModel lmodel = new LibraryModel(info, fmodel);
       
-      Log.i("Loaded "+rmodel.getInfo().name+" from "+rmodel.getInfo().author);
-      
-      LibraryModel lmodel = new LibraryModel(rmodel.getInfo(), model);
-      
-      lmodel.pieceCount = countPieces(rmodel);
-      lmodel.colorCount = countColors(rmodel);
+      Log.i("Loaded "+lmodel.info.name+" from "+lmodel.info.author);
+
+      lmodel.load();
+      lmodel.pieceCount = countPieces(lmodel.model);
+      lmodel.colorCount = countColors(lmodel.model);
+      lmodel.unload();
       
       models.add(lmodel);      
     }
@@ -121,7 +121,7 @@ public class Library
       if (model.info.hashCode == null)
       {
         model.info.generateRandomHash();
-        model.writeBack();
+        model.lazySave();
       }
   }
   

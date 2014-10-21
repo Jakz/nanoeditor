@@ -182,10 +182,12 @@ public class Toolbar
         
         if (item.setting == Setting.USE_TAB_TO_ROTATE)
           Main.sketch.updatePiecePalette();
+        
+        Main.sketch.requestFocus();
       }
       
       Main.sketch.redraw();
-      Main.sketch.requestFocus();
+      
     }
   };
   

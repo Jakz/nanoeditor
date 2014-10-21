@@ -21,7 +21,9 @@ public class Thumbnails
   {
     Log.i("Generating thumbnail for "+lmodel.info.name+" ("+lmodel.info.author+")");
     
-    Model model = ModelLoader.loadModel(lmodel.file);
+    lmodel.load();
+    Model model = lmodel.model;
+    lmodel.unload();
     
     Rectangle bound = PieceDrawer.computeBoundsForModel(model);
     PImage image = Main.sketch.createImage(bound.width, bound.height, PApplet.ARGB);

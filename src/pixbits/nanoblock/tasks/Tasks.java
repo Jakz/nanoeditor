@@ -117,29 +117,29 @@ public class Tasks
   };
   
   public static LibraryModelTask LIBRARY_CLONE_MODEL = new LibraryModelTask() {
-    public void execute(LibraryModel model) {
-      if (model == null)
+    public void execute(LibraryModel lmodel) {
+      if (lmodel == null)
         Dialogs.showErrorDialog(Main.libraryFrame, "Error", "You must select a model first");
       else
       {
         try
         {
-          Log.i("Duplicating model "+model.info.name+".");
+          Log.i("Duplicating model "+lmodel.info.name+".");
           
-          LibraryModel nmodel = new LibraryModel(model);
+          LibraryModel nmodel = new LibraryModel(lmodel);
           
           // TODO: check unicity of hash before going on
           
-          if (model.thumbnail != null)
-            ImageIO.write((RenderedImage)model.thumbnail.getImage(), "PNG", new File(nmodel.thumbnailName()));
+          if (lmodel.thumbnail != null)
+            ImageIO.write((RenderedImage)lmodel.thumbnail.getImage(), "PNG", new File(nmodel.thumbnailName()));
           
-          Model rmodel = ModelLoader.loadModel(model.file);
-          
-          nmodel.thumbnail = model.thumbnail;
+          lmodel.load();
+          nmodel.model = lmodel.model;
+          nmodel.thumbnail = lmodel.thumbnail;
           nmodel.file = new File(Settings.values.getPath(Setting.Path.LIBRARY)+File.separator+nmodel.info.hashCode+".nblock");
+          lmodel.unload();
           
-          rmodel.setInfo(nmodel.info);
-          ModelLoader.saveModel(rmodel, nmodel.file);
+          ModelLoader.saveModel(nmodel);
           
           Library.i().insertModel(nmodel);
           Library.i().sort();
@@ -189,7 +189,8 @@ public class Tasks
   public static void saveModel()
   {
     Log.i("Saving model.");
-    ModelLoader.saveModel(Library.model, new File("model.nblock"));
+    ModelLoader.saveModel(Library.i().getLibraryModel());
+    // TODO: update thumbnail
   }
   
   public static void saveSettings()
@@ -213,14 +214,14 @@ public class Tasks
     }
   }
   
-  public static void loadModelFromLibrary(LibraryModel model)
+  public static void loadModelFromLibrary(LibraryModel lmodel)
   {
     Main.libraryFrame.setVisible(false);
-    Library.i().setLibraryModel(model);
-    Model rmodel = ModelLoader.loadModel(model.file);
-    Library.model = rmodel;
-    Main.sketch.initForModel(rmodel);
+    Library.i().setLibraryModel(lmodel);
+    lmodel.load();
+    Main.sketch.initForModel(lmodel.model);
     Main.mainFrame.setVisible(true);
+    Main.sketch.redraw();
   }
   
   

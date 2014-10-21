@@ -4,33 +4,23 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.*;
 
+import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.files.Log;
 
 public class Model implements Iterable<Level>
 {
-  private ModelInfo info;
+  private LibraryModel lmodel; 
   
   final private List<Level> levels;
   
-  public Model(ModelInfo info)
+  public Model(LibraryModel lmodel)
   {
     levels = new ArrayList<Level>();
-    this.info = info;
+    this.lmodel = lmodel;
   }
-  
-  public Model(int width, int height)
-  {
-    levels = new ArrayList<Level>();
-    info = new ModelInfo();
-    info.width = width;
-    info.height = height;
-  }
-  
-  public ModelInfo getInfo() { return info; }
-  public void setInfo(ModelInfo info) { this.info = info; }
-  
-  public int getHeight() { return info.height; }
-  public int getWidth() { return info.width; }
+
+  public int getHeight() { return lmodel.info.height; }
+  public int getWidth() { return lmodel.info.width; }
   
   public Level levelAt(int index)
   {
@@ -80,14 +70,14 @@ public class Model implements Iterable<Level>
       previous = level;
     }
     
-    info.levels = count-1;
+    lmodel.info.levels = count-1;
   }
     
   public boolean canShift(Direction dir)
   {
-    int minX = info.width*2;
+    int minX = getWidth()*2;
     int maxX = 0;
-    int minY = info.height*2;
+    int minY = getHeight()*2;
     int maxY = 0;
     
     for (Level l : levels)
@@ -104,9 +94,9 @@ public class Model implements Iterable<Level>
     switch (dir)
     {
       case NORTH: return minY >= 2;
-      case SOUTH: return maxY <= info.height*2 - 2;
+      case SOUTH: return maxY <= getHeight()*2 - 2;
       
-      case EAST: return maxX <= info.width*2 - 2;
+      case EAST: return maxX <= getWidth()*2 - 2;
       case WEST: return minX >= 2;
       
       default: return false;
@@ -218,7 +208,7 @@ public class Model implements Iterable<Level>
       previousLevel.addPieces(previousPieces);
     
     levels.add(i, newLevel);
-    ++info.levels;
+    ++lmodel.info.levels;
 
   }
   
@@ -244,8 +234,7 @@ public class Model implements Iterable<Level>
     
     oldLevel.addPieces(oldPieces);
     
-    //TODO: move caps
-    ++info.levels;
+    ++lmodel.info.levels;
     levels.add(i+1, newLevel);
   }
   
@@ -339,8 +328,8 @@ public class Model implements Iterable<Level>
   
     Log.i("Delta "+deltaX+", "+deltaY);
    
-    this.info.width = w;
-    this.info.height = h;
+    lmodel.info.width = w;
+    lmodel.info.height = h;
     
     for (Level l : levels)
       for (Piece p : l)
