@@ -3,6 +3,8 @@ package pixbits.nanoblock.gui.frames;
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.gui.Sketch;
+import pixbits.nanoblock.gui.menus.Menus;
+import pixbits.nanoblock.gui.menus.Toolbar;
 import pixbits.nanoblock.tasks.Tasks;
 
 import java.awt.*;

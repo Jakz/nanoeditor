@@ -6,8 +6,9 @@ import java.util.Iterator;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.files.Log;
-import pixbits.nanoblock.gui.frames.Menus;
-import pixbits.nanoblock.gui.frames.Toolbar;
+import pixbits.nanoblock.gui.menus.Item;
+import pixbits.nanoblock.gui.menus.Menus;
+import pixbits.nanoblock.gui.menus.Toolbar;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
@@ -203,18 +204,14 @@ public class LevelView extends Drawable
       if (locked == null || locked != level)
       {
         if (locked == null)
-        {
-          Menus.toggleLevelSpecificEntries(true);
-          Toolbar.toggleLevelSpecificEntries(true);
-        }
+          Item.setLevelOperationsEnabled(true);
         
         parent.setLocked(level);
       }
       else if (locked == level)
       {
         parent.setLocked(null);
-        Menus.toggleLevelSpecificEntries(false);
-        Toolbar.toggleLevelSpecificEntries(false);
+        Item.setLevelOperationsEnabled(false);
       }
       
       Main.sketch.redraw();

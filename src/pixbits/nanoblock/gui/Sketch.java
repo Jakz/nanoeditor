@@ -6,6 +6,7 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.ui.*;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
+import pixbits.nanoblock.tasks.ModelOperations;
 import pixbits.nanoblock.tasks.Tasks;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.ModelLoader;
@@ -328,22 +329,22 @@ public class Sketch extends PApplet implements ChangeListener
     {      
       switch (this.keyCode)
       {
-        case UP: Tasks.MODEL_SHIFT_NORTH.execute(model); break;
-        case DOWN: Tasks.MODEL_SHIFT_SOUTH.execute(model); break;
+        case UP: new ModelOperations.Shift(model, Direction.NORTH).execute(); break;
+        case DOWN: new ModelOperations.Shift(model, Direction.SOUTH).execute(); break;
         case LEFT:
         {
           if ((keyEvent.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
-            Tasks.MODEL_ROTATE_WEST.execute();
+            new ModelOperations.Rotate(model, Direction.WEST).execute();
           else
-            Tasks.MODEL_SHIFT_WEST.execute();
+            new ModelOperations.Shift(model, Direction.WEST).execute();
           break;
         }
         case RIGHT: 
         {
           if ((keyEvent.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
-            Tasks.MODEL_ROTATE_EAST.execute();
+            new ModelOperations.Rotate(model, Direction.EAST).execute();
           else
-            Tasks.MODEL_SHIFT_EAST.execute();
+            new ModelOperations.Shift(model, Direction.EAST).execute();
           break;
         }
       }     

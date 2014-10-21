@@ -18,42 +18,6 @@ import pixbits.nanoblock.misc.*;
 
 public class Tasks
 {
-  public static ModelTask MODEL_SHIFT_NORTH = new ModelTask() {
-    public void execute(Model model) {
-      if (model.canShift(Direction.NORTH)) { model.shift(Direction.NORTH); Main.sketch.redraw(); }
-    }
-  };
-  
-  public static ModelTask MODEL_SHIFT_SOUTH = new ModelTask() {
-    public void execute(Model model) {
-      if (model.canShift(Direction.SOUTH)) { model.shift(Direction.SOUTH); Main.sketch.redraw(); }
-    }
-  };
-  
-  public static ModelTask MODEL_SHIFT_EAST = new ModelTask() {
-    public void execute(Model model) {
-      if (model.canShift(Direction.EAST)) { model.shift(Direction.EAST); Main.sketch.redraw(); }
-    }
-  };
-  
-  public static ModelTask MODEL_SHIFT_WEST = new ModelTask() {
-    public void execute(Model model) {
-      if (model.canShift(Direction.WEST)) { model.shift(Direction.WEST); Main.sketch.redraw(); }
-    }
-  };
-  
-  public static ModelTask MODEL_ROTATE_WEST = new ModelTask() {
-    public void execute(Model model) {
-      model.rotate(Direction.WEST); Main.sketch.redraw();
-    }
-  };
-  
-  public static ModelTask MODEL_ROTATE_EAST = new ModelTask() {
-    public void execute(Model model) {
-      model.rotate(Direction.EAST); Main.sketch.redraw();
-    }
-  };
-  
   public static ModelTask MODEL_RESET = new ModelTask() {
     public void execute(Model model) {
       Library.model.clear();
@@ -219,93 +183,9 @@ public class Tasks
     Main.libraryFrame.setVisible(false);
     Library.i().setLibraryModel(lmodel);
     lmodel.load();
+    Library.i().model = lmodel.model;
     Main.sketch.initForModel(lmodel.model);
     Main.mainFrame.setVisible(true);
     Main.sketch.redraw();
-  }
-  
-  
-  
-  public static class ReplaceColorTask implements Task
-  {
-    private final PieceColor from;
-    private final PieceColor to;
-    private final Level level;
-    private final Model model;
-    private final Set<PieceType> types;
-    
-    public ReplaceColorTask(Model model, PieceColor from, PieceColor to, Set<PieceType> types)
-    {
-      this.model = model;
-      this.from = from;
-      this.to = to;
-      this.types = types;
-      this.level = null;
-    }
-    
-    public ReplaceColorTask(Model model, Level level, PieceColor from, PieceColor to, Set<PieceType> types)
-    {
-      this.model = model;
-      this.from = from;
-      this.to = to;
-      this.types = types;
-      this.level = level;
-    }
-    
-    private void recolorCaps(Piece piece, Level next)
-    {
-      if (next != null)
-      {
-        if (!piece.type.monocap)
-        {        
-          for (int i = 0; i < piece.type.width*2; i += 2)
-            for (int j = 0; j < piece.type.height*2; j += 2)
-            {
-              Piece cap = next.pieceAt(piece.x+i, piece.y+j);
-              if (cap.type == PieceType.CAP)
-                cap.color = piece.color;
-            }
-        }
-        else
-        {
-          int i = piece.type.width/2 + piece.x;
-          int j = piece.type.height/2 + piece.y;
-          Piece cap = next.pieceAt(i, j);
-          if (cap.type == PieceType.CAP)
-            cap.color = piece.color;
-        }
-      }
-    }
-    
-    public void execute()
-    {
-      if (level != null)
-      {
-        Level next = level.next();
-        for (Piece p : level)
-        {
-          if (types.contains(p.type) && p.color == from)
-          { 
-            p.color = to;
-            recolorCaps(p, next);
-          }
-        }
-      }
-      else
-      {
-        for (Level l : model)
-        {
-          Level next = l.next();
-          for (Piece p : l)
-          {
-            if (types.contains(p.type) && p.color == from)
-            {
-              p.color = to;
-              recolorCaps(p, next);
-            }
-          }
-        }
-      }
-    }
   }
 }

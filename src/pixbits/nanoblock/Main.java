@@ -6,6 +6,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
 import pixbits.nanoblock.gui.frames.*;
+import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.Tasks;
 
@@ -60,9 +61,8 @@ public class Main
     resizeModelFrame = new ResizeModelFrame();
     replaceColorFrame = new ReplaceColorFrame();
     
-    Menus.toggleLevelSpecificEntries(false);
-    Toolbar.toggleLevelSpecificEntries(false);
-    
+    Item.setLevelOperationsEnabled(false);
+
     //Main.mainFrame.setVisible(true);
   }
   

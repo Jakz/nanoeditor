@@ -15,6 +15,7 @@ import java.util.*;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.ModelInfo;
 import pixbits.nanoblock.files.*;
+import pixbits.nanoblock.gui.menus.Toolbar;
 import pixbits.nanoblock.tasks.Tasks;
 
 public class LibraryFrame extends JFrame

@@ -213,9 +213,9 @@ public class ReplaceColorFrame extends JDialog
         Task task = null;
         
         if (onlyLockedLayer.isSelected())
-          task = new Tasks.ReplaceColorTask(model, Main.sketch.levelStackView.getLocked(), (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
+          task = new ModelOperations.ReplaceColor(model, Main.sketch.levelStackView.getLocked(), (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
         else
-          task = new Tasks.ReplaceColorTask(model, (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
+          task = new ModelOperations.ReplaceColor(model, (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
         
         task.execute();
         Main.sketch.redraw();
