@@ -46,6 +46,8 @@ public class TileSetLoader
   {
     try
     {
+      Log.i("Loading tileset from "+fileName+".");
+      
       File file = new File(fileName);
       BufferedReader rdr = new BufferedReader(new FileReader(file));
       

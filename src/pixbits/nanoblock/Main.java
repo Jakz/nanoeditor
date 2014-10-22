@@ -34,8 +34,6 @@ public class Main
     
     Tasks.loadSettings();
     
-    TileSetLoader.loadTileset("tileset.json");
-
     sketch = new Sketch();
     mainFrame = new MainFrame();
     mainFrame.setLocationRelativeTo(null);

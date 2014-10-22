@@ -341,4 +341,32 @@ public class Model implements Iterable<Level>
   }
   
   public Iterator<Level> iterator() { return levels.iterator(); }
+  
+  public ModelState dumpState()
+  {
+    ModelState state = new ModelState(getWidth(), getHeight(), lmodel.info.levels);
+    
+    int i = 0;
+    for (Level l : this)
+    {
+      for (Piece p : l)
+      {
+        if (p.type != PieceType.CAP)
+          state.addPiece(i, p);
+      }
+      ++i;
+    }
+    
+    return state;
+  }
+  
+  public void restoreState(ModelState state)
+  {
+    this.lmodel.info.width = state.getWidth();
+    this.lmodel.info.height = state.getHeight();
+    levels.clear();
+    this.allocateLevels(lmodel.info.levels+1);
+    for (ModelState.PieceState ps : state)
+      this.addPiece(levels.get(ps.level), new Piece(ps.type, ps.color, ps.x, ps.y));
+  }
 }
