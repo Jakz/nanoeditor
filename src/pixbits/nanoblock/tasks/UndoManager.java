@@ -3,6 +3,7 @@ package pixbits.nanoblock.tasks;
 import java.util.*;
 
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.gui.menus.Item;
 
 public class UndoManager
 {
@@ -49,6 +50,10 @@ public class UndoManager
   
   private static void updateMenuEntries()
   {
-    
+    Item.setUndoRedoEnabled(!undos.isEmpty(), !redos.isEmpty());
   }
+  
+  public static final Task UNDO_TASK = new Task() { public boolean execute() { UndoManager.undoAction(); return true; } };
+  public static final Task REDO_TASK = new Task() { public boolean execute() { UndoManager.redoAction(); return true; } };
+
 }

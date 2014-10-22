@@ -8,8 +8,10 @@ import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.ModelOperations;
 import pixbits.nanoblock.tasks.Tasks;
+import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.TileSetLoader;
+
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.*;
@@ -314,7 +316,7 @@ public class Sketch extends PApplet implements ChangeListener
   {    
     if (this.key == 'r')
     {
-      Tasks.MODEL_RESET.execute();
+      new ModelOperations.Reset(Library.model).execute();
     }
     else if (this.key == '\t' && !Brush.typeInverted && Settings.values.get(Setting.USE_TAB_TO_ROTATE))
     {

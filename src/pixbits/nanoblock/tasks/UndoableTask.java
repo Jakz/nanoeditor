@@ -12,8 +12,9 @@ public abstract class UndoableTask implements Task
   {
     this.model = model;
     this.state = model.dumpState();
+    
   }
   
-  public final void execute() { execute(model); }
-  protected abstract void execute(Model model); 
+  public final boolean execute() { UndoManager.actionDone(this); return execute(model); }
+  protected abstract boolean execute(Model model); 
 }

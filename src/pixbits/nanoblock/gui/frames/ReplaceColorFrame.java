@@ -13,7 +13,7 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.tasks.*;
 
 
-public class ReplaceColorFrame extends JDialog
+public class ReplaceColorFrame extends JDialog implements ModelOperationFrame
 {
   private final JComboBox fromColor;
   private final JComboBox toColor;

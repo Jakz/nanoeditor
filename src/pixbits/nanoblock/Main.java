@@ -6,6 +6,8 @@ import pixbits.nanoblock.gui.frames.*;
 import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.tasks.Tasks;
 
+import java.io.*;
+
 public class Main
 {
   public static final int SW = 1440;
@@ -55,8 +57,6 @@ public class Main
     resizeModelFrame = new ResizeModelFrame();
     replaceColorFrame = new ReplaceColorFrame();
     
-    Item.setLevelOperationsEnabled(false);
-
     //Main.mainFrame.setVisible(true);
   }
   

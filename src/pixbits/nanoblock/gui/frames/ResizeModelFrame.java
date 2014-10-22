@@ -9,8 +9,9 @@ import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.HorAttach;
 import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.data.VerAttach;
+import pixbits.nanoblock.tasks.ModelOperations;
 
-public class ResizeModelFrame extends JDialog
+public class ResizeModelFrame extends JDialog implements ModelOperationFrame
 {
   private static class AttachSide
   {
@@ -196,7 +197,7 @@ public class ResizeModelFrame extends JDialog
                 ha = buttons[y][x].hor;
               }
           
-          if (!model.resize(bounds, nw, nh, va, ha, keepCentered.isSelected()))
+          if (new ModelOperations.Resize(model, bounds, nw, nh, va, ha, keepCentered.isSelected()).execute())
             Dialogs.showErrorDialog(ResizeModelFrame.this, "Error", "Final size must be at least equal to model bounds!");
           else
           {

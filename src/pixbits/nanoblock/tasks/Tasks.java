@@ -13,76 +13,79 @@ import pixbits.nanoblock.files.LibraryModel;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.gui.frames.Dialogs;
+import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.misc.*;
 
 public class Tasks
 {
-  public static ModelTask MODEL_RESET = new ModelTask() {
-    public void execute(Model model) {
-      Library.model.clear();
-    }
-  };
   
   public static ModelTask MODEL_INSERT_LEVEL_ABOVE = new ModelTask() {
-    public void execute(Model model) {
+    public boolean execute(Model model) {
       //TODO: update level inside LevelView
       model.insertAbove(Main.sketch.levelStackView.getLocked());
       Main.sketch.redraw();
+      return true;
     }
   };
   
   public static ModelTask MODEL_INSERT_LEVEL_BELOW = new ModelTask() {
-    public void execute(Model model) {
+    public boolean execute(Model model) {
       model.insertBelow(Main.sketch.levelStackView.getLocked());
       //TODO: update level inside LevelView
       Main.sketch.redraw();
-      
+      return true;
     }
   };
   
   public static ModelTask MODEL_SHIFT_LEVEL_UP = new ModelTask() {
-    public void execute(Model model) {
-      
+    public boolean execute(Model model) {
+      return true;
     }
   };
   
   public static ModelTask MODEL_SHIFT_LEVEL_DOWN = new ModelTask() {
-    public void execute(Model model) {
-      
+    public boolean execute(Model model) {
+      return true;
     }
   };
   
   public static ModelTask MODEL_DELETE_LEVEL = new ModelTask() {
-    public void execute(Model model) {
+    public boolean execute(Model model) {
       Level level = Main.sketch.levelStackView.getLocked();
       model.deleteLevel(level);
       //TODO: update level inside LevelView
       Main.sketch.levelStackView.setLocked(level.previous());
       Main.sketch.levelStackView.clearToBeDeleted();
       Main.sketch.redraw();
+      return true;
     }
   };
   
-  public static ModelTask MODEL_SHOW_RESIZE = new ModelTask() { public void execute(Model model) { Main.resizeModelFrame.show(model); } };
-  public static ModelTask MODEL_SHOW_REPLACE_COLOR = new ModelTask() { public void execute(Model model) { Main.replaceColorFrame.show(model); } };
+  
+  
+  public static ModelTask MODEL_SHOW_RESIZE = new ModelTask() { public boolean execute(Model model) { Main.resizeModelFrame.show(model); return true; } };
+  public static ModelTask MODEL_SHOW_REPLACE_COLOR = new ModelTask() { public boolean execute(Model model) { Main.replaceColorFrame.show(model); return true; } };
   
   
   public static Task LIBRARY_NEW_MODEL = new Task() {
-    public void execute() {
+    public boolean execute() {
       Log.i("Creating new empty model");
       LibraryModel nmodel = new LibraryModel(20,20,15);
       
       Library.i().insertModel(nmodel);
       Library.i().sort();
       Main.libraryFrame.refreshLibrary();
-      
+      return true;
     }
   };
   
   public static LibraryModelTask LIBRARY_CLONE_MODEL = new LibraryModelTask() {
-    public void execute(LibraryModel lmodel) {
+    public boolean execute(LibraryModel lmodel) {
       if (lmodel == null)
+      {
         Dialogs.showErrorDialog(Main.libraryFrame, "Error", "You must select a model first");
+        return false;
+      }
       else
       {
         try
@@ -107,19 +110,25 @@ public class Tasks
           Library.i().insertModel(nmodel);
           Library.i().sort();
           Main.libraryFrame.refreshLibrary();
+          return true;
         }
         catch (Exception e)
         {
           Log.e(e);
         }
+        
+        return false;
       }
     }
   };
   
   public static LibraryModelTask LIBRARY_DELETE_MODEL = new LibraryModelTask() {
-    public void execute(LibraryModel model) {
+    public boolean execute(LibraryModel model) {
       if (model == null)
+      {
         Dialogs.showErrorDialog(Main.libraryFrame, "Error", "You must select a model first");
+        return false;
+      } 
       else
       {
         if (Dialogs.showConfirmDialog(Main.libraryFrame, "Delete Model", "Are you sure you want to delete the model?", null))
@@ -142,6 +151,8 @@ public class Tasks
           
           //TODO: if it can happen that current opened model is the one just deleted we must make something
         }
+        
+        return true;
       }
     }
   };
@@ -179,6 +190,9 @@ public class Tasks
   
   public static void loadModelFromLibrary(LibraryModel lmodel)
   {
+    Item.setLevelOperationsEnabled(false);
+    Item.setUndoRedoEnabled(false, false);
+    
     Main.libraryFrame.setVisible(false);
     Library.i().setLibraryModel(lmodel);
     lmodel.load();
@@ -193,6 +207,7 @@ public class Tasks
     //TODO: warn to save
     saveModel();
     saveSettings();
+    UndoManager.clear();
     Main.sketch.hideMe();
     Main.mainFrame.setVisible(false);
     Main.libraryFrame.setLocationRelativeTo(Main.mainFrame);

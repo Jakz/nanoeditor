@@ -5,11 +5,11 @@ import pixbits.nanoblock.files.LibraryModel;
 
 public abstract class LibraryModelTask implements Task
 {
-  public abstract void execute(LibraryModel lmodel);
+  public abstract boolean execute(LibraryModel lmodel);
   
   @Override
-  public void execute()
+  public boolean execute()
   {
-    execute(Library.i().getLibraryModel());
+    return execute(Library.i().getLibraryModel());
   }
 }

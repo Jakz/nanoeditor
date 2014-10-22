@@ -1,5 +1,6 @@
 package pixbits.nanoblock.tasks;
 
+import java.awt.Rectangle;
 import java.util.Set;
 
 import pixbits.nanoblock.Main;
@@ -40,9 +41,16 @@ public class ModelOperations
       this.direction = direction;
     }
     
-    protected void execute(Model model)
+    protected boolean execute(Model model)
     {
-      if (model.canShift(direction)) { model.shift(direction); Main.sketch.redraw(); }
+      if (model.canShift(direction))
+      { 
+        model.shift(direction);
+        Main.sketch.redraw();
+        return true;
+      }
+      
+      return false;
     }
   }
   
@@ -56,10 +64,11 @@ public class ModelOperations
       this.direction = direction;
     }
     
-    protected void execute(Model model)
+    protected boolean execute(Model model)
     {
       model.rotate(direction);
       Main.sketch.redraw();
+      return true;
     }
   }
   
@@ -113,7 +122,7 @@ public class ModelOperations
       }
     }
     
-    protected void execute(Model model)
+    protected boolean execute(Model model)
     {
       if (level != null)
       {
@@ -142,6 +151,49 @@ public class ModelOperations
           }
         }
       }
+      
+      return true;
+    }
+  }
+  
+  public static class Resize extends UndoableTask
+  {
+    final int width;
+    final int height;
+    final VerAttach va;
+    final HorAttach ha;
+    final boolean keepCentered;
+    final Rectangle bounds;
+    
+    
+    public Resize(Model model, Rectangle bounds, int width, int height, VerAttach va, HorAttach ha, boolean keepCentered)
+    {
+      super(model);
+      this.bounds = bounds;
+      this.width = width;
+      this.height = height;
+      this.va = va;
+      this.ha = ha;
+      this.keepCentered = keepCentered;
+    }
+    
+    public boolean execute(Model model)
+    {
+      return model.resize(bounds, width, height, va, ha, keepCentered);
+    }
+  }
+  
+  public static class Reset extends UndoableTask
+  {
+    public Reset(Model model)
+    {
+      super(model);
+    }
+    
+    public boolean execute(Model model)
+    {
+      model.clear();
+      return true;
     }
   }
 }

@@ -66,6 +66,8 @@ public enum Item
   
   MODEL_DELETE_LEVEL("Delete Level", "Delete Level", Icon.DELETE_LEVEL, Tasks.MODEL_DELETE_LEVEL),
   
+  EDIT_UNDO("Undo", "Undo", Icon.UNDO, UndoManager.UNDO_TASK),
+  EDIT_REDO("Redo", "Redo", Icon.REDO, UndoManager.REDO_TASK),
   
   
   // TOOLBAR ONLY
@@ -188,7 +190,7 @@ public enum Item
       }
       else if (this == EDIT_RESET)
       {
-        if (Dialogs.showConfirmDialog(Main.mainFrame, "Reset model", "Are you sure you want to reset the model?", Tasks.MODEL_RESET))
+        if (Dialogs.showConfirmDialog(Main.mainFrame, "Reset model", "Are you sure you want to reset the model?", new ModelOperations.Reset(Library.model)))
         {
           Main.sketch.requestFocus();
         }
@@ -223,6 +225,11 @@ public enum Item
     Main.sketch.redraw();
   }
   
+  public static void setUndoRedoEnabled(boolean undo, boolean redo)
+  {
+    Item.EDIT_UNDO.setEnabled(undo);
+    Item.EDIT_REDO.setEnabled(redo);
+  }
   
   public static void setLevelOperationsEnabled(boolean enabled)
   {
