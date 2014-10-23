@@ -31,7 +31,7 @@ public class ModelOperations
   }
   
   
-  public static class Shift extends UndoableTask
+  public static class Shift extends UndoableLightTask
   {
     private final Direction direction;
     
@@ -52,9 +52,16 @@ public class ModelOperations
       
       return false;
     }
+    
+    protected UndoableLightTask reverseAction()
+    {
+      Shift reverse = new Shift(model, direction.flipped());
+      reverse.isRealAction = false;
+      return reverse;
+    }
   }
   
-  public static class Rotate extends UndoableTask
+  public static class Rotate extends UndoableLightTask
   {
     private final Direction direction;
     
@@ -70,13 +77,20 @@ public class ModelOperations
       Main.sketch.redraw();
       return true;
     }
+    
+    protected UndoableLightTask reverseAction()
+    {
+      Rotate reverse = new Rotate(model, direction.flipped());
+      reverse.isRealAction = false;
+      return reverse;
+    }
   }
   
-  public static class ReplaceColor extends UndoableTask
+  public static class ReplaceColor extends UndoableHeavyTask
   {
     private final PieceColor from;
     private final PieceColor to;
-    private final Level level;
+    private final Level level; //TODO: level is a reference, won't work for redo if level is changed
     private final Set<PieceType> types;
     
     public ReplaceColor(Model model, PieceColor from, PieceColor to, Set<PieceType> types)
@@ -156,7 +170,7 @@ public class ModelOperations
     }
   }
   
-  public static class Resize extends UndoableTask
+  public static class Resize extends UndoableHeavyTask
   {
     final int width;
     final int height;
@@ -183,7 +197,7 @@ public class ModelOperations
     }
   }
   
-  public static class Reset extends UndoableTask
+  public static class Reset extends UndoableHeavyTask
   {
     public Reset(Model model)
     {

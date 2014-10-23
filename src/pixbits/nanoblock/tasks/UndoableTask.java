@@ -1,20 +1,26 @@
 package pixbits.nanoblock.tasks;
 
 import pixbits.nanoblock.data.Model;
-import pixbits.nanoblock.data.ModelState;
 
 public abstract class UndoableTask implements Task
 {  
-  protected final ModelState state;
   protected final Model model;
   
   public UndoableTask(Model model)
   {
-    this.model = model;
-    this.state = model.dumpState();
-    
+    this.model = model;    
   }
   
-  public final boolean execute() { UndoManager.actionDone(this); return execute(model); }
+  public boolean execute() { return execute(model); };
   protected abstract boolean execute(Model model); 
+  
+  public void undo()
+  {
+    UndoManager.actionUndone(this);
+  }
+  
+  public void redo()
+  {
+    UndoManager.actionDone(this, true);
+  }
 }
