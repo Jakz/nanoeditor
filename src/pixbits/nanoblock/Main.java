@@ -19,6 +19,7 @@ public class Main
   public static LibraryFrame libraryFrame;
   public static ResizeModelFrame resizeModelFrame;
   public static ReplaceColorFrame replaceColorFrame;
+  public static ExportImageFrame exportImageFrame;
   
   public static void main(String[] args)
   {
@@ -56,7 +57,10 @@ public class Main
     
     resizeModelFrame = new ResizeModelFrame();
     replaceColorFrame = new ReplaceColorFrame();
+    exportImageFrame = new ExportImageFrame();
     
+    
+    //exportImageFrame.showMe();
     //Main.mainFrame.setVisible(true);
   }
   

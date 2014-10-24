@@ -13,16 +13,13 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.tasks.*;
 
 
-public class ReplaceColorFrame extends JDialog implements ModelOperationFrame
+public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
 {
   private final JComboBox fromColor;
   private final JComboBox toColor;
   private final JCheckBox onlyLockedLayer;
   private final JList pieces;
-  
-  private final JButton cancel;
-  private final JButton execute;
-  
+
   private final Map<PieceColor, ImageIcon> colorIcons;
   
   private final PieceSelection[] types;
@@ -45,7 +42,7 @@ public class ReplaceColorFrame extends JDialog implements ModelOperationFrame
   
   public ReplaceColorFrame()
   {
-    super(Main.mainFrame, "Replace Color", Dialog.ModalityType.APPLICATION_MODAL);
+    super(Main.mainFrame, "Replace Color", new String[] {"Cancel", "Replace"});
     
     model = null;
     
@@ -65,11 +62,10 @@ public class ReplaceColorFrame extends JDialog implements ModelOperationFrame
     
     onlyLockedLayer = new JCheckBox("Limit to selected level");
     
-    JPanel panel1 = new JPanel();
-    panel1.add(fromColor);
-    panel1.add(new JLabel(" -> "));
-    panel1.add(toColor);
-    panel1.setBorder(BorderFactory.createTitledBorder("Colors"));
+    top.add(fromColor);
+    top.add(new JLabel(" -> "));
+    top.add(toColor);
+    top.setBorder(BorderFactory.createTitledBorder("Colors"));
     
     types = new PieceSelection[PieceType.count()+1];
     types[0] = new PieceSelection(null);
@@ -83,27 +79,11 @@ public class ReplaceColorFrame extends JDialog implements ModelOperationFrame
     JScrollPane listPane = new JScrollPane(pieces);
     listPane.setBorder(BorderFactory.createTitledBorder("Piece Types"));
     
-    
-    JPanel lowerPanel = new JPanel(new BorderLayout());
-    
-    JPanel btPanel = new JPanel(new GridLayout(1,2));
-    cancel = new JButton("Cancel");
-    execute = new JButton("Replace");
-    cancel.addActionListener(listener);
-    execute.addActionListener(listener);
-    
-    btPanel.add(cancel);
-    btPanel.add(execute);
-    
-    lowerPanel.add(btPanel, BorderLayout.CENTER);
-    lowerPanel.add(onlyLockedLayer, BorderLayout.NORTH);
-    
-    this.setLayout(new BorderLayout());
-    this.add(panel1, BorderLayout.NORTH);
-    this.add(listPane, BorderLayout.CENTER);
-    this.add(lowerPanel, BorderLayout.SOUTH);
-    
-    pack();
+    middle.setLayout(new BorderLayout());
+    middle.add(listPane, BorderLayout.CENTER);
+    middle.add(onlyLockedLayer, BorderLayout.SOUTH);
+
+    finalizeDialog();
   }
   
   private ImageIcon iconForColor(PieceColor color)
@@ -178,50 +158,48 @@ public class ReplaceColorFrame extends JDialog implements ModelOperationFrame
     }
   };
   
-  private final ActionListener listener = new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e)
+  @Override
+  public void buttonClicked(JButton button)
+  {
+    if (button == cancel)
     {
-      if (e.getSource() == cancel)
-      {
-        for (PieceSelection ps : types)
-          ps.isSelected = true;
-        
-        onlyLockedLayer.setSelected(false);
-        
-        setVisible(false);
-      }
-      else if (e.getSource() == execute)
-      {
-        Set<PieceType> set = new HashSet<PieceType>();
-        for (PieceSelection ps : types)
-          if (ps.isSelected && ps.type != null)
-            set.add(ps.type);
-        
-        if (set.isEmpty())
-        {
-          Dialogs.showErrorDialog(ReplaceColorFrame.this, "Error", "You must select at least one piece type.");
-          return;
-        }
-        else if (fromColor.getSelectedItem() == toColor.getSelectedItem())
-        {
-          Dialogs.showErrorDialog(ReplaceColorFrame.this, "Error", "Source and destination color must be different.");
-          return;
-        }
-        
-        Task task = null;
-        
-        if (onlyLockedLayer.isSelected())
-          task = new ModelOperations.ReplaceColor(model, Main.sketch.levelStackView.getLocked(), (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
-        else
-          task = new ModelOperations.ReplaceColor(model, (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
-        
-        task.execute();
-        Main.sketch.redraw();
-        setVisible(false);
-      }
+      for (PieceSelection ps : types)
+        ps.isSelected = true;
+      
+      onlyLockedLayer.setSelected(false);
+      
+      setVisible(false);
     }
-  };
+    else if (button == execute)
+    {
+      Set<PieceType> set = new HashSet<PieceType>();
+      for (PieceSelection ps : types)
+        if (ps.isSelected && ps.type != null)
+          set.add(ps.type);
+      
+      if (set.isEmpty())
+      {
+        Dialogs.showErrorDialog(ReplaceColorFrame.this, "Error", "You must select at least one piece type.");
+        return;
+      }
+      else if (fromColor.getSelectedItem() == toColor.getSelectedItem())
+      {
+        Dialogs.showErrorDialog(ReplaceColorFrame.this, "Error", "Source and destination color must be different.");
+        return;
+      }
+      
+      Task task = null;
+      
+      if (onlyLockedLayer.isSelected())
+        task = new ModelOperations.ReplaceColor(model, Main.sketch.levelStackView.getLocked(), (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
+      else
+        task = new ModelOperations.ReplaceColor(model, (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
+      
+      task.execute();
+      Main.sketch.redraw();
+      setVisible(false);
+    }
+  }
   
   private class PieceCellRenderer extends JCheckBox implements ListCellRenderer
   {

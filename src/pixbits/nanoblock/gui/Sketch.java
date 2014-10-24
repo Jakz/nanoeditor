@@ -188,11 +188,14 @@ public class Sketch extends PApplet implements ChangeListener
     
     if (hoveredIndex != -1)
     {
-      Rectangle bounds = layerBounds(hoveredIndex);
+      Rectangle bounds = PieceDrawer.computeRealBounds(model, baseX, baseY, Settings.values.get(Setting.DRAW_CAPS));
       
+      this.strokeWeight(1.0f);
       this.noFill();
       this.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
+    
+    this.point(baseX, baseY);
   }
   
   public void drawGrid(int l)
@@ -369,7 +372,7 @@ public class Sketch extends PApplet implements ChangeListener
     Level locked = levelStackView.getLocked();
     if (locked != null)
     {
-      Rectangle bounds = layerBounds(hoveredIndex);
+      Rectangle bounds = PieceDrawer.computeLayerBounds(model, baseX, baseY, hoveredIndex);
       Rectangle hover = levelStackView.hover();
 
       if (x >= bounds.x && x < bounds.x+bounds.width && y >= bounds.y && y < bounds.y+bounds.height && hover != null)
@@ -434,7 +437,7 @@ public class Sketch extends PApplet implements ChangeListener
 
     if (locked != null)
     {
-      Rectangle bounds = layerBounds(hoveredIndex);
+      Rectangle bounds = PieceDrawer.computeLayerBounds(model, baseX, baseY, hoveredIndex);
       Rectangle hover = levelStackView.hover();
       
       if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
@@ -474,14 +477,6 @@ public class Sketch extends PApplet implements ChangeListener
 
   }
   
-  public Rectangle layerBounds(int l)
-  {
-    int sx = baseX, sw = model.getWidth()*Brush.tileset.xOffset * 2;
-    int sy = baseY - l * Brush.tileset.hOffset - 1, sh = model.getHeight()*Brush.tileset.yOffset*2;
-    
-    return new Rectangle(sx,sy,sw,sh);
-  }
-  
   public void mouseWheelMoved(int amount)
   {
     int x = mouseX;
@@ -497,7 +492,7 @@ public class Sketch extends PApplet implements ChangeListener
 
     if (locked != null)
     {
-      Rectangle bounds = layerBounds(hoveredIndex);
+      Rectangle bounds = PieceDrawer.computeLayerBounds(model, baseX, baseY, hoveredIndex);
       
       if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
       {

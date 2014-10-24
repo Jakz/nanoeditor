@@ -1,5 +1,6 @@
 package pixbits.nanoblock.gui;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Iterator;
 
@@ -10,36 +11,43 @@ import processing.core.*;
 
 public class PieceDrawer
 {
+  public static Point positionForPiece(int baseX, int baseY, Piece piece, int l)
+  {
+    Tileset ts = Brush.tileset;
+    Tileset.PieceSpec spec = ts.spec(piece.type);
+
+    
+    int fx = (int) (baseX + (piece.x - piece.y)/2.0f * ts.xOffset);
+    int fy = (int) (baseY + (piece.x + piece.y)/2.0f * ts.yOffset);
+    
+    fy -= ts.hOffset * l;
+
+    return new Point(fx, fy);
+  }
+  
   public static void drawPiece(PApplet gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
   {    
     Tileset ts = Brush.tileset;
-    
-    int fx = (int) (baseX + (x - y)/2.0f * ts.xOffset);
-    int fy = (int) (baseY + (x + y)/2.0f * ts.yOffset);
-    
-    fy -= ts.hOffset * l;
-    
     Tileset.PieceSpec spec = ts.spec(piece.type);
+    Point p = positionForPiece(baseX, baseY, piece, l);
+
     PImage texture = ts.imageForColor(piece.color);
+    
     gfx.fill(0);
-    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, PApplet.BLEND);
+    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy, spec.w, spec.h, PApplet.BLEND);
     
     if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
-      gfx.text(""+level.indexOfPiece(piece),fx+spec.ox+spec.w/2,fy+spec.oy+spec.h/2);
+      gfx.text(""+level.indexOfPiece(piece),p.x+spec.w/2,p.y+spec.oy+spec.h/2);
   }
   
   public static void drawPiece(PImage gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
   {    
     Tileset ts = Brush.tileset;
-    
-    int fx = (int) (baseX + (x - y)/2.0f * ts.xOffset);
-    int fy = (int) (baseY + (x + y)/2.0f * ts.yOffset);
-    
-    fy -= ts.hOffset * l;
-    
     Tileset.PieceSpec spec = ts.spec(piece.type);
+    Point p = positionForPiece(baseX, baseY, piece, l);
+    
     PImage texture = ts.imageForColor(piece.color);
-    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, fx+spec.ox, fy+spec.oy, spec.w, spec.h, PApplet.BLEND);
+    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy, spec.w, spec.h, PApplet.BLEND);
   }
   
   public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model, boolean showCaps)
@@ -66,4 +74,97 @@ public class PieceDrawer
     
     return new Rectangle(512,384,1024,768);
   }
+  
+  public static Rectangle computeLayerBounds(Model model, int baseX, int baseY, int l)
+  {
+    int sx = baseX, sw = model.getWidth()*Brush.tileset.xOffset * 2;
+    int sy = baseY - l * Brush.tileset.hOffset - 1, sh = model.getHeight()*Brush.tileset.yOffset*2;
+    
+    return new Rectangle(sx,sy,sw,sh);
+  }
+  
+  public static Rectangle computeLayerBoundsWithPiece(Model model, int baseX, int baseY, int l)
+  {
+    int sx = baseX, sw = model.getWidth()*Brush.tileset.xOffset * 2;
+    int sy = baseY - l * Brush.tileset.hOffset - 2, sh = model.getHeight()*Brush.tileset.yOffset*2 + 1;
+    
+    sy -= Brush.tileset.hOffset;
+    sh += Brush.tileset.hOffset;
+    
+    return new Rectangle(sx,sy,sw,sh);
+  }
+  
+  public static Rectangle computeRealBounds(Model model, int baseX, int baseY, boolean withCaps)
+  {
+    Rectangle bounds = null;
+    
+    int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
+    int maxX = 0, maxY = 0;
+    
+    for (int i = 0; i < model.levelCount(); ++i)
+    {
+      Rectangle lbounds = computeRealBounds(model, baseX, baseY, i, withCaps);
+      
+      if (lbounds == null)
+        continue;
+      
+      if (lbounds.x < minX) minX = lbounds.x;
+      if (lbounds.y < minY) minY = lbounds.y;
+      if (maxX < lbounds.x + lbounds.width) maxX = lbounds.x + lbounds.width;
+      if (maxY < lbounds.y + lbounds.height) maxY = lbounds.y + lbounds.height;
+    }
+    
+    return new Rectangle(minX, minY, maxX-minX, maxY-minY);
+  }
+  
+  public static Rectangle computeRealBounds(Model model, int baseX, int baseY, int l, boolean withCaps)
+  {
+    Piece leftMost = null, rightMost = null, topMost = null, bottomMost = null;
+    Level level = model.levelAt(l);
+    int w = model.getWidth()*2, h = model.getHeight()*2;
+    
+    if (level.count() == 0) return new Rectangle(baseX, baseY, 1, 1);
+    
+    for (Piece p : level)
+    {
+      if (!withCaps && p.type == PieceType.CAP)
+        continue;
+      
+      if (topMost == null || p.x + p.y < topMost.x + topMost.y) topMost = p;
+      if (bottomMost == null || p.x + (p.type.width-1)*2 + p.y + (p.type.height-1)*2 > bottomMost.x + (bottomMost.type.width-1)*2 + bottomMost.y + (bottomMost.type.height-1)*2) bottomMost = p;
+      if (leftMost == null || p.x + (h - (p.y+(p.type.height-1)*2)) < leftMost.x + (h - (leftMost.y+(leftMost.type.height-1)*2))) leftMost = p;
+      if (rightMost == null || (w - (p.x+(p.type.width-1)*2)) + p.y < (w - (rightMost.x+(rightMost.type.width-1)*2)) + rightMost.y) rightMost = p;
+    }
+    
+    if (topMost == null || bottomMost == null || leftMost == null || rightMost == null)
+      return null;
+    
+    Tileset ts = Brush.tileset;
+
+    
+    System.out.println("bounds");
+    System.out.println("left: "+leftMost);
+    System.out.println("right: "+rightMost);
+    System.out.println("top: "+topMost);
+    System.out.println("bottom: "+bottomMost);
+    
+    Point left = positionForPiece(baseX, baseY, leftMost, l);
+    left.x -= ts.xOffset*(leftMost.type.height-1);
+    
+    Point right = positionForPiece(baseX, baseY, rightMost, l);
+    right.x += ts.xOffset*(rightMost.type.width-1);
+    
+    Point top = positionForPiece(baseX, baseY, topMost, l);
+    
+    Point bottom = positionForPiece(baseX, baseY, bottomMost, l);
+    bottom.y += ts.yOffset*(bottomMost.type.height-1 + bottomMost.type.width-1);
+
+    return new Rectangle(
+        left.x + model.getWidth()*Brush.tileset.xOffset - ts.xOffset,
+        top.y + Brush.tileset.yOffset - ts.yOffset*3,
+        right.x-left.x + ts.xOffset*2,
+        bottom.y-top.y + ts.yOffset*4
+    );
+  }
+  
 }

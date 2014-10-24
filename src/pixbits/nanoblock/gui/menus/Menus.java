@@ -26,7 +26,7 @@ public class Menus
   
   private static final String[] editorMenus = {"File", "Edit", "Model", "View"};
   private static final Item[][] editorMenuItems = new Item[][]{
-    new Item[]{Item.FILE_SAVE, Item.FILE_CLOSE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
+    new Item[]{Item.FILE_SAVE, Item.FILE_CLOSE, Item.SEPARATOR, Item.FILE_EXPORT, Item.FILE_EXPORT_IMAGE, Item.FILE_EXPORT_INSTRUCTIONS, Item.SEPARATOR, Item.FILE_EXIT},
     new Item[]{Item.EDIT_UNDO, Item.EDIT_REDO, Item.SEPARATOR, Item.EDIT_HALF_STEPS, Item.EDIT_USE_TAB_TO_ROTATE, Item.SEPARATOR, Item.EDIT_RESET, Item.SEPARATOR, Item.EDIT_RESIZE, Item.EDIT_REPLACE_COLOR},
     new Item[]{Item.MODEL_SHIFT_MENU, Item.MODEL_ROTATE_MENU, Item.SEPARATOR, Item.MODEL_INSERT_LEVEL_MENU, Item.MODEL_SHIFT_LEVEL_MENU, Item.MODEL_DELETE_LEVEL},
     new Item[]{Item.VIEW_HIDE_CAPS, Item.SEPARATOR, Item.VIEW_GRID_LAYER_MENU, Item.VIEW_HOVER_PIECE_MENU, Item.VIEW_HOVER_LAYER_MENU, Item.SEPARATOR, Item.VIEW_SHOW_PIECE_ORDER}

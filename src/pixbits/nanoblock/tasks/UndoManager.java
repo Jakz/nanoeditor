@@ -14,7 +14,6 @@ public class UndoManager
   public static void actionUndone(UndoableTask action)
   {
     redos.add(action);
-    Log.i("undoing action undos: "+undos.size()+"  redos: "+redos.size());
     updateMenuEntries();
   }
   
@@ -24,11 +23,6 @@ public class UndoManager
     
     if (!isRedo)
       redos.clear();
-    
-    if (!isRedo)
-      Log.i("executing action undos: "+undos.size()+"  redos: "+redos.size());
-    else
-      Log.i("redoing action undos: "+undos.size()+"  redos: "+redos.size());
 
     updateMenuEntries();
   }
