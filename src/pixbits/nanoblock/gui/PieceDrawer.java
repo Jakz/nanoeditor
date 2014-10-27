@@ -11,6 +11,18 @@ import processing.core.*;
 
 public class PieceDrawer
 {
+  public static Point basePositionForLayer(int x, int y, int l)
+  {
+    Tileset ts = Brush.tileset;
+
+    int fx = (int) ((x - y)/2.0f * ts.xOffset);
+    int fy = (int) ((x + y)/2.0f * ts.yOffset);
+    
+    fy -= ts.hOffset * l;
+
+    return new Point(fx, fy);
+  }
+  
   public static Point positionForPiece(int baseX, int baseY, Piece piece, int l)
   {
     Tileset ts = Brush.tileset;
@@ -34,7 +46,7 @@ public class PieceDrawer
     PImage texture = ts.imageForColor(piece.color);
     
     gfx.fill(0);
-    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy, spec.w, spec.h, PApplet.BLEND);
+    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
     
     if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
       gfx.text(""+level.indexOfPiece(piece),p.x+spec.w/2,p.y+spec.oy+spec.h/2);
@@ -47,7 +59,7 @@ public class PieceDrawer
     Point p = positionForPiece(baseX, baseY, piece, l);
     
     PImage texture = ts.imageForColor(piece.color);
-    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy, spec.w, spec.h, PApplet.BLEND);
+    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
   }
   
   public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model, boolean showCaps)
@@ -67,6 +79,8 @@ public class PieceDrawer
     }
   }
   
+  
+  
   public static Rectangle computeBoundsForModel(Model model)
   {
     int x = 0;
@@ -75,55 +89,63 @@ public class PieceDrawer
     return new Rectangle(512,384,1024,768);
   }
   
-  public static Rectangle computeLayerBounds(Model model, int baseX, int baseY, int l)
+  public static Rectangle computeLayerBounds(Model model, int l)
   {
-    int sx = baseX, sw = model.getWidth()*Brush.tileset.xOffset * 2;
-    int sy = baseY - l * Brush.tileset.hOffset - 1, sh = model.getHeight()*Brush.tileset.yOffset*2;
+    int sx = -model.getWidth()*Brush.tileset.xOffset, sw = model.getWidth()*Brush.tileset.xOffset*2;
+    int sh = model.getHeight()*Brush.tileset.yOffset*2;
+
+    Point base = basePositionForLayer(0,0,l);
     
-    return new Rectangle(sx,sy,sw,sh);
+    int sy = base.y - 2;
+    
+    return new Rectangle(sx+base.x,sy,sw,sh);
   }
   
-  public static Rectangle computeLayerBoundsWithPiece(Model model, int baseX, int baseY, int l)
-  {
-    int sx = baseX, sw = model.getWidth()*Brush.tileset.xOffset * 2;
-    int sy = baseY - l * Brush.tileset.hOffset - 2, sh = model.getHeight()*Brush.tileset.yOffset*2 + 1;
+  public static Rectangle computeLayerBoundsWithPiece(Model model, int l)
+  {    
+    int sx = -model.getWidth()*Brush.tileset.xOffset, sw = model.getWidth()*Brush.tileset.xOffset*2;
+    int sh = model.getHeight()*Brush.tileset.yOffset*2;
     
-    sy -= Brush.tileset.hOffset;
     sh += Brush.tileset.hOffset;
     
-    return new Rectangle(sx,sy,sw,sh);
+    Point base = basePositionForLayer(0,0,l);
+    
+    int sy = base.y - Brush.tileset.hOffset - 2;
+    
+    return new Rectangle(sx+base.x,sy,sw,sh);
   }
   
-  public static Rectangle computeRealBounds(Model model, int baseX, int baseY, boolean withCaps)
+  public static Rectangle computeRealBounds(Model model, boolean withCaps)
   {
-    Rectangle bounds = null;
-    
     int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
-    int maxX = 0, maxY = 0;
-    
+    int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
+    boolean found = false;
+
     for (int i = 0; i < model.levelCount(); ++i)
     {
-      Rectangle lbounds = computeRealBounds(model, baseX, baseY, i, withCaps);
+      Rectangle lbounds = computeRealBounds(model, i, withCaps);
       
       if (lbounds == null)
         continue;
+            
+      found = true;
       
       if (lbounds.x < minX) minX = lbounds.x;
       if (lbounds.y < minY) minY = lbounds.y;
       if (maxX < lbounds.x + lbounds.width) maxX = lbounds.x + lbounds.width;
       if (maxY < lbounds.y + lbounds.height) maxY = lbounds.y + lbounds.height;
     }
-    
-    return new Rectangle(minX, minY, maxX-minX, maxY-minY);
+        
+    return found ? new Rectangle(minX, minY, maxX-minX, maxY-minY) : null;
   }
   
-  public static Rectangle computeRealBounds(Model model, int baseX, int baseY, int l, boolean withCaps)
+  public static Rectangle computeRealBounds(Model model, int l, boolean withCaps)
   {
     Piece leftMost = null, rightMost = null, topMost = null, bottomMost = null;
     Level level = model.levelAt(l);
     int w = model.getWidth()*2, h = model.getHeight()*2;
     
-    if (level.count() == 0) return new Rectangle(baseX, baseY, 1, 1);
+    if (level.count() == 0) return null;
     
     for (Piece p : level)
     {
@@ -148,19 +170,19 @@ public class PieceDrawer
     System.out.println("top: "+topMost);
     System.out.println("bottom: "+bottomMost);
     
-    Point left = positionForPiece(baseX, baseY, leftMost, l);
+    Point left = positionForPiece(0, 0, leftMost, l);
     left.x -= ts.xOffset*(leftMost.type.height-1);
     
-    Point right = positionForPiece(baseX, baseY, rightMost, l);
+    Point right = positionForPiece(0, 0, rightMost, l);
     right.x += ts.xOffset*(rightMost.type.width-1);
     
-    Point top = positionForPiece(baseX, baseY, topMost, l);
+    Point top = positionForPiece(0, 0, topMost, l);
     
-    Point bottom = positionForPiece(baseX, baseY, bottomMost, l);
+    Point bottom = positionForPiece(0, 0, bottomMost, l);
     bottom.y += ts.yOffset*(bottomMost.type.height-1 + bottomMost.type.width-1);
 
     return new Rectangle(
-        left.x + model.getWidth()*Brush.tileset.xOffset - ts.xOffset,
+        left.x - ts.xOffset,
         top.y + Brush.tileset.yOffset - ts.yOffset*3,
         right.x-left.x + ts.xOffset*2,
         bottom.y-top.y + ts.yOffset*4

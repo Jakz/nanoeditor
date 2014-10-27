@@ -115,7 +115,7 @@ public class Sketch extends PApplet implements ChangeListener
     drawables.remove(d);
   }
   
-  public int baseX = 350;
+  public int baseX = 750;
   public int baseY = 300;
   
   public int hoveredIndex = -1;
@@ -135,8 +135,8 @@ public class Sketch extends PApplet implements ChangeListener
   	if (levelStackView.getLocked() != null)
   	  hovered = levelStackView.getLocked();
   	
-  	int rx = baseX + model.getWidth()*Brush.tileset.xOffset;
-  	int ry = baseY + Brush.tileset.yOffset;
+  	int rx = baseX;
+  	int ry = baseY;// + Brush.tileset.yOffset;
   	
   	for (int l = 0; l < model.levelCount(); ++l)
   	{
@@ -188,14 +188,49 @@ public class Sketch extends PApplet implements ChangeListener
     
     if (hoveredIndex != -1)
     {
-      Rectangle bounds = PieceDrawer.computeRealBounds(model, baseX, baseY, Settings.values.get(Setting.DRAW_CAPS));
+      //Rectangle bounds = PieceDrawer.computeRealBounds(model, Settings.values.get(Setting.DRAW_CAPS));
       
-      this.strokeWeight(1.0f);
-      this.noFill();
-      this.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+      Rectangle bounds = PieceDrawer.computeLayerBoundsWithPiece(model, hoveredIndex);
+      
+      this.strokeWeight(2.0f);
+
+      
+      if (bounds != null)
+      {
+        this.stroke(255,0,0,200);
+        this.noFill();
+        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
+      }
+      
+      bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
+
+      if (bounds != null)
+      {
+        this.stroke(255,128,0,200);
+        this.noFill();
+        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
+      }
+      
+      bounds = PieceDrawer.computeRealBounds(model, hoveredIndex, Settings.values.get(Setting.DRAW_CAPS));
+      
+      if (bounds != null)
+      {
+        this.stroke(0,0,180,200);
+        this.noFill();
+        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
+      }
+      
+      bounds = PieceDrawer.computeRealBounds(model, Settings.values.get(Setting.DRAW_CAPS));
+      
+      if (bounds != null)
+      {
+        this.stroke(0,180,0,200);
+        this.noFill();
+        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
+      }
     }
     
-    this.point(baseX, baseY);
+    this.point(rx, ry);
   }
   
   public void drawGrid(int l)
@@ -255,7 +290,7 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void drawIsoSquare(int x, int y, int w, int h, int l)
   {
-    int baseX = this.baseX + Brush.tileset.xOffset * model.getWidth();
+    int baseX = this.baseX;
     int baseY = this.baseY - 1;
     
     Tileset ts = Brush.tileset;
@@ -288,7 +323,7 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void drawGridLine(int x1, int y1, int x2, int y2, int h)
   {
-    int baseX = this.baseX + Brush.tileset.xOffset * model.getWidth();
+    int baseX = this.baseX;
     int baseY = this.baseY - 1;
     
     int fx1 = (int) (baseX + (x1 - y1)/2.0f * Brush.tileset.xOffset);
@@ -372,7 +407,10 @@ public class Sketch extends PApplet implements ChangeListener
     Level locked = levelStackView.getLocked();
     if (locked != null)
     {
-      Rectangle bounds = PieceDrawer.computeLayerBounds(model, baseX, baseY, hoveredIndex);
+      Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
+      bounds.x += baseX;
+      bounds.y += baseY;
+      
       Rectangle hover = levelStackView.hover();
 
       if (x >= bounds.x && x < bounds.x+bounds.width && y >= bounds.y && y < bounds.y+bounds.height && hover != null)
@@ -437,7 +475,10 @@ public class Sketch extends PApplet implements ChangeListener
 
     if (locked != null)
     {
-      Rectangle bounds = PieceDrawer.computeLayerBounds(model, baseX, baseY, hoveredIndex);
+      Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
+      bounds.x += baseX;
+      bounds.y += baseY;
+      
       Rectangle hover = levelStackView.hover();
       
       if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
@@ -492,7 +533,9 @@ public class Sketch extends PApplet implements ChangeListener
 
     if (locked != null)
     {
-      Rectangle bounds = PieceDrawer.computeLayerBounds(model, baseX, baseY, hoveredIndex);
+      Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
+      bounds.x += baseX;
+      bounds.y += baseY;
       
       if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
       {
