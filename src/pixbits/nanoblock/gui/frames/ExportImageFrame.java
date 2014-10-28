@@ -1,12 +1,17 @@
 package pixbits.nanoblock.gui.frames;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.io.File;
 import java.awt.*;
+
 import javax.swing.*;
+
 import java.awt.event.*;
 
 import pixbits.nanoblock.Main;
+import pixbits.nanoblock.data.Model;
+import pixbits.nanoblock.tasks.*;
 
 public class ExportImageFrame extends BaseDialog
 {
@@ -17,6 +22,9 @@ public class ExportImageFrame extends BaseDialog
   private final ButtonGroup typeGroup;
   
   private final JFileChooser fc;
+  
+  private Model model;
+  private File file;
     
   public ExportImageFrame()
   {
@@ -41,8 +49,9 @@ public class ExportImageFrame extends BaseDialog
     finalizeDialog();
   }
   
-  public void showMe()
+  public void showMe(Model model)
   {
+    this.model = model;
     setLocationRelativeTo(Main.libraryFrame);
     setVisible(true);
   }
@@ -61,7 +70,7 @@ public class ExportImageFrame extends BaseDialog
       
       if (choice == JFileChooser.APPROVE_OPTION)
       {
-        File file = fc.getSelectedFile();
+        file = fc.getSelectedFile();
         String name = file.getName();
         if (!name.endsWith(".png"))
         {
@@ -75,7 +84,8 @@ public class ExportImageFrame extends BaseDialog
     }
     else if (button == execute)
     {
-      
+      Task task = new Tasks.ExportModelImageTask(model, file, false);
+      task.execute();
     }
   }
 }

@@ -1,6 +1,7 @@
 package pixbits.nanoblock.misc;
 
 import java.io.*;
+import java.awt.Dimension;
 
 import pixbits.nanoblock.files.FileUtils;
 
@@ -46,10 +47,8 @@ public class Settings
     setPath(Setting.Path.CACHE, "./cache");
   }
   
-  
-  
-  
-  
+  public Dimension getThumbnailSize() { return new Dimension(200,200); }
+  public int getThumbnailPadding() { return 10; }
   
   public static Settings values;
   

@@ -1,5 +1,7 @@
 package pixbits.nanoblock.tasks;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
 
@@ -12,9 +14,12 @@ import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.LibraryModel;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.ModelLoader;
+import pixbits.nanoblock.gui.PieceDrawer;
+import pixbits.nanoblock.gui.Sketch;
 import pixbits.nanoblock.gui.frames.Dialogs;
 import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.misc.*;
+import processing.core.PImage;
 
 public class Tasks
 {
@@ -157,8 +162,39 @@ public class Tasks
     }
   };
   
-  
-  
+  public static class ExportModelImageTask implements Task
+  {
+    private final Model model;
+    private final boolean withCaps;
+    private final File file;
+    
+    public ExportModelImageTask(Model model, File file, boolean withCaps)
+    {
+      this.model = model;
+      this.file = file;
+      this.withCaps = withCaps;
+    }
+    
+    @Override
+    public boolean execute()
+    {
+      Rectangle bounds = PieceDrawer.computeRealBounds(model, withCaps);
+      
+      PImage image = Main.sketch.createImage(bounds.width, bounds.height, Sketch.ARGB);
+      PieceDrawer.drawModelOnImage(image, -bounds.x, -bounds.y, model, withCaps);
+      
+      try 
+      {
+        ImageIO.write((RenderedImage)image.getImage(), "PNG", file);   
+      }
+      catch (IOException e)
+      {
+        Log.e(e);
+      }
+      
+      return true;
+    }
+  }
   
   public static void saveModel()
   {

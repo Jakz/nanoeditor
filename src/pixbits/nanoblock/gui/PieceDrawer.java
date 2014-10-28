@@ -164,11 +164,11 @@ public class PieceDrawer
     Tileset ts = Brush.tileset;
 
     
-    System.out.println("bounds");
+    /*System.out.println("bounds");
     System.out.println("left: "+leftMost);
     System.out.println("right: "+rightMost);
     System.out.println("top: "+topMost);
-    System.out.println("bottom: "+bottomMost);
+    System.out.println("bottom: "+bottomMost);*/
     
     Point left = positionForPiece(0, 0, leftMost, l);
     left.x -= ts.xOffset*(leftMost.type.height-1);

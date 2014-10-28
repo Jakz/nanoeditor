@@ -5,9 +5,11 @@ import javax.swing.border.BevelBorder;
 import javax.swing.table.*;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.files.LibraryModel;
+import pixbits.nanoblock.misc.Settings;
 
 
 public class LibraryInfoPanel extends JPanel 
@@ -19,6 +21,8 @@ public class LibraryInfoPanel extends JPanel
   private final JTable infoTable;
   private final InfoTableModel tableModel;
   
+  private ImageIcon thumbnailPlaceholder;
+  
   private LibraryModel lmodel;
   
   LibraryInfoPanel()
@@ -28,9 +32,8 @@ public class LibraryInfoPanel extends JPanel
     this.setPreferredSize(new Dimension(300,600));
     
     thumbnail = new JLabel();
-    thumbnail.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10), BorderFactory.createBevelBorder(BevelBorder.LOWERED)));
     thumbnail.setAlignmentX(Component.CENTER_ALIGNMENT);
-    thumbnail.setPreferredSize(new Dimension(240, 200));
+    updateThumbnailSize();
     
     modelName = new JLabel();
     modelName.setFont(new Font(modelName.getFont().getName(), Font.BOLD, 20));
@@ -51,9 +54,23 @@ public class LibraryInfoPanel extends JPanel
     this.add(spTable);
   }
   
+  void updateThumbnailSize()
+  {
+    int padding = Settings.values.getThumbnailPadding();
+    Dimension size = Settings.values.getThumbnailSize();
+    
+    thumbnail.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10), BorderFactory.createBevelBorder(BevelBorder.LOWERED)));
+    
+    BufferedImage placeholder = new BufferedImage(size.width+padding*2, size.height+padding*2, BufferedImage.TYPE_INT_ARGB);
+    thumbnailPlaceholder = new ImageIcon(placeholder);
+    thumbnail.setIcon(thumbnailPlaceholder);
+    
+    
+  }
+  
   void clear()
   {
-    thumbnail.setIcon(null);
+    thumbnail.setIcon(thumbnailPlaceholder);
     lmodel = null;
     modelName.setText("");
     tableModel.refresh();

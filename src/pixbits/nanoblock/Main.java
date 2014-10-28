@@ -59,8 +59,8 @@ public class Main
     replaceColorFrame = new ReplaceColorFrame();
     exportImageFrame = new ExportImageFrame();
     
-    
-    //exportImageFrame.showMe();
+    //Library.i().getModels().get(0).load();
+    //exportImageFrame.showMe(Library.i().getModels().get(0).model);
     //Main.mainFrame.setVisible(true);
   }
   
