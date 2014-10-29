@@ -8,6 +8,7 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
+import pixbits.nanoblock.tasks.ModelOperations;
 import processing.core.*;
 
 public class LevelView extends Drawable
@@ -185,12 +186,12 @@ public class LevelView extends Drawable
     
         if (!level.isFreeAt(rhx, rhy))
         {
-          model.removePiece(level, piece);
+          new ModelOperations.Remove(model, index, rhx, rhy).execute();
           wouldBeRemovedPiece = null;
         }
         else if (level.canPlace(Brush.type(), hx, hy))
-          model.addPiece(level,Brush.type(),Brush.color,hx,hy);
-        
+          new ModelOperations.Place(model, index, Brush.type(), Brush.color, hx, hy).execute();
+
         Main.sketch.redraw();
       }
     }

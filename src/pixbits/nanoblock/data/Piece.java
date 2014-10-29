@@ -14,6 +14,11 @@ public class Piece
     this.y = y;
   }
   
+  public Piece dupe()
+  {
+    return new Piece(type, color, x, y);
+  }
+  
   public boolean equals(Object o)
   {
     if (o != null && o instanceof Piece)

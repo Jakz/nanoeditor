@@ -86,6 +86,71 @@ public class ModelOperations
     }
   }
   
+  public static class Remove extends UndoableLightTask
+  {
+    private final Piece oldPiece;
+    private final int level;
+    
+    public Remove(Model model, int level, int x, int y)
+    {
+      super(model);
+     
+      Piece piece = model.levelAt(level).pieceAt(x, y);
+      oldPiece = piece != null ? piece.dupe() : null;
+      this.level = level;
+    }
+    
+    @Override
+    protected boolean execute(Model model)
+    {
+      if (oldPiece != null)
+        model.removePiece(model.levelAt(level), oldPiece);
+      
+      return true;
+    }
+    
+    @Override 
+    protected UndoableLightTask reverseAction()
+    {
+      Place reverse = new Place(model, oldPiece, level);
+      reverse.isRealAction = false;
+      return reverse;
+    }
+  }
+  
+  public static class Place extends UndoableLightTask
+  {
+    private final Piece piece;
+    private final int level;
+    
+    public Place(Model model, Piece piece, int level)
+    {
+      super(model);
+      this.piece = piece.dupe();
+      this.level = level;
+    }
+    
+    public Place(Model model, int level, PieceType type, PieceColor color, int x, int y)
+    {
+      this(model, new Piece(type, color, x, y), level);
+    }
+    
+    @Override
+    protected boolean execute(Model model)
+    {
+      model.addPiece(model.levelAt(level), piece.type, piece.color, piece.x, piece.y);
+      return true;
+    }
+    
+    @Override 
+    protected UndoableLightTask reverseAction()
+    {
+      Remove reverse = new Remove(model, level, piece.x, piece.y);
+      reverse.isRealAction = false;
+      return reverse;
+    }
+  }
+  
   public static class ReplaceColor extends UndoableHeavyTask
   {
     private final PieceColor from;
