@@ -6,6 +6,7 @@ import java.awt.image.RenderedImage;
 import java.io.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.JDialog;
 
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.Main;
@@ -17,6 +18,7 @@ import pixbits.nanoblock.files.ModelLoader;
 import pixbits.nanoblock.gui.PieceDrawer;
 import pixbits.nanoblock.gui.Sketch;
 import pixbits.nanoblock.gui.frames.Dialogs;
+import pixbits.nanoblock.gui.frames.ExportImageFrame;
 import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.misc.*;
 import processing.core.PImage;
@@ -70,7 +72,7 @@ public class Tasks
   
   public static ModelTask MODEL_SHOW_RESIZE = new ModelTask() { public boolean execute(Model model) { Main.resizeModelFrame.show(model); return true; } };
   public static ModelTask MODEL_SHOW_REPLACE_COLOR = new ModelTask() { public boolean execute(Model model) { Main.replaceColorFrame.show(model); return true; } };
-  
+  public static ModelTask MODEL_SHOW_EXPORT_IMAGE = new ModelTask() { public boolean execute(Model model) { ExportImageFrame.showMe(Main.mainFrame, model); return true; } };
   
   public static Task LIBRARY_NEW_MODEL = new Task() {
     public boolean execute() {
@@ -169,12 +171,16 @@ public class Tasks
     private final boolean allRotations;
     private final File file;
     
-    public ExportModelImageTask(Model model, File file, boolean withCaps, boolean allRotations)
+    private JDialog parent;
+    
+    public ExportModelImageTask(JDialog parent, Model model, File file, boolean withCaps, boolean allRotations)
     {
       this.model = model;
       this.file = file;
       this.withCaps = withCaps;
       this.allRotations = allRotations;
+      
+      this.parent = parent;
     }
     
     @Override
@@ -182,7 +188,7 @@ public class Tasks
     {
       if (file.exists())
       {
-        if (!Dialogs.showConfirmDialog(Main.exportImageFrame, "File exists", "File already exists, do you want to overwrite it?", null))
+        if (!Dialogs.showConfirmDialog(parent, "File exists", "File already exists, do you want to overwrite it?", null))
           return false;
       }
       

@@ -20,7 +20,7 @@ public enum Item
   FILE_CLOSE("Close"),
   FILE_EXIT("Exit"),
   FILE_EXPORT("Export.."),
-  FILE_EXPORT_IMAGE("Export image.."),
+  FILE_EXPORT_IMAGE("Export image..", Tasks.MODEL_SHOW_EXPORT_IMAGE),
   FILE_EXPORT_INSTRUCTIONS("Export instructions.."),
       
   EDIT_HALF_STEPS("Use half steps", "Enable half steps", Icon.ENABLE_HALF_STEPS, Setting.HALF_STEPS_ENABLED),

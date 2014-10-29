@@ -16,11 +16,11 @@ public class Tileset {
   final private Map<PieceType, PieceSpec> specs;
   final private Map<PieceColor, PImage> textures;
   
-  public Tileset(String image, int hOffset,int xOffset, int yOffset, ArrayList<Integer[]> baseCols)
+  public Tileset(PImage image, int hOffset,int xOffset, int yOffset, ArrayList<Integer[]> baseCols)
   {
     specs = new HashMap<PieceType, PieceSpec>();
     textures = new HashMap<PieceColor, PImage>();
-    this.image = Main.sketch.loadImage(image);
+    this.image = image;
     this.xOffset = xOffset;
     this.yOffset = yOffset;
     this.hOffset = hOffset;

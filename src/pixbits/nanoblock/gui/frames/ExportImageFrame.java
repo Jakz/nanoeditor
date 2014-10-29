@@ -18,8 +18,6 @@ public class ExportImageFrame extends BaseDialog
   private final JPHTextField fileName;
   
   private final JButton browse;
-
-  private final ButtonGroup typeGroup;
   
   private final JFileChooser fc;
   
@@ -31,14 +29,16 @@ public class ExportImageFrame extends BaseDialog
   
   
     
-  public ExportImageFrame()
+  private ExportImageFrame(JFrame parent, Model model)
   {
     //TODO: not library but main
-    super(Main.libraryFrame, "Export Image", new String[] {"Cancel", "Export"});
+    super(parent, "Export Image", new String[] {"Cancel", "Export"});
+    
+    this.model = model;
 
     middle.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
     
-    fileName = new JPHTextField(40);
+    fileName = new JPHTextField(30);
     fileName.setPlaceholder("filename");
 
     browse = new JButton("...");
@@ -51,27 +51,21 @@ public class ExportImageFrame extends BaseDialog
     allRotations = new JCheckBox("Export all rotations");
     showCaps = new JCheckBox("Show caps");
     
-    top.add(allRotations);
     top.add(showCaps);
+    top.add(allRotations);
     
     middle.add(fileName);
-
-    typeGroup = new ButtonGroup();
     
     fc = new JFileChooser();
     
     finalizeDialog();
   }
   
-  public void showMe(Model model)
+  public static void showMe(JFrame parent, Model model)
   {
-    this.model = model;
-    setLocationRelativeTo(Main.libraryFrame);
-    
-    fileName.setText("/Users/jack/Desktop/antani.png");
-    file = new File(fileName.getText());
-    
-    setVisible(true);
+    ExportImageFrame frame = new ExportImageFrame(parent, model);
+    frame.setLocationRelativeTo(parent);
+    frame.setVisible(true);
   }
   
   @Override
@@ -102,7 +96,7 @@ public class ExportImageFrame extends BaseDialog
     }
     else if (button == execute)
     {
-      if (file == null || fileName.getText().equals(""))
+      if (file == null && fileName.getText().equals(""))
       {
         Dialogs.showErrorDialog(this, "Error", "Please specify an output file name");
         return;
@@ -110,7 +104,7 @@ public class ExportImageFrame extends BaseDialog
       
       file = new File(fileName.getText());
       
-      Task task = new Tasks.ExportModelImageTask(model, file, showCaps.isSelected(), allRotations.isSelected());
+      Task task = new Tasks.ExportModelImageTask(this, model, file, showCaps.isSelected(), allRotations.isSelected());
       if (task.execute())
         this.setVisible(false);
     }
