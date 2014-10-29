@@ -23,8 +23,13 @@ public class ExportImageFrame extends BaseDialog
   
   private final JFileChooser fc;
   
+  private final JCheckBox showCaps;
+  private final JCheckBox allRotations;
+  
   private Model model;
   private File file;
+  
+  
     
   public ExportImageFrame()
   {
@@ -35,13 +40,22 @@ public class ExportImageFrame extends BaseDialog
     
     fileName = new JPHTextField(40);
     fileName.setPlaceholder("filename");
-    
+
     browse = new JButton("...");
     browse.addActionListener(listener);
+    browse.setBorder(null);
+    
+    ComponentBorder cb = new ComponentBorder(browse, ComponentBorder.Edge.RIGHT);
+    cb.install(fileName);
+
+    allRotations = new JCheckBox("Export all rotations");
+    showCaps = new JCheckBox("Show caps");
+    
+    top.add(allRotations);
+    top.add(showCaps);
     
     middle.add(fileName);
-    middle.add(browse);
-    
+
     typeGroup = new ButtonGroup();
     
     fc = new JFileChooser();
@@ -53,6 +67,10 @@ public class ExportImageFrame extends BaseDialog
   {
     this.model = model;
     setLocationRelativeTo(Main.libraryFrame);
+    
+    fileName.setText("/Users/jack/Desktop/antani.png");
+    file = new File(fileName.getText());
+    
     setVisible(true);
   }
   
@@ -70,7 +88,7 @@ public class ExportImageFrame extends BaseDialog
       
       if (choice == JFileChooser.APPROVE_OPTION)
       {
-        file = fc.getSelectedFile();
+        File file = fc.getSelectedFile();
         String name = file.getName();
         if (!name.endsWith(".png"))
         {
@@ -84,8 +102,17 @@ public class ExportImageFrame extends BaseDialog
     }
     else if (button == execute)
     {
-      Task task = new Tasks.ExportModelImageTask(model, file, false);
-      task.execute();
+      if (file == null || fileName.getText().equals(""))
+      {
+        Dialogs.showErrorDialog(this, "Error", "Please specify an output file name");
+        return;
+      }
+      
+      file = new File(fileName.getText());
+      
+      Task task = new Tasks.ExportModelImageTask(model, file, showCaps.isSelected(), allRotations.isSelected());
+      if (task.execute())
+        this.setVisible(false);
     }
   }
 }

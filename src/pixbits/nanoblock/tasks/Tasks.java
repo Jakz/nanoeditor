@@ -166,26 +166,95 @@ public class Tasks
   {
     private final Model model;
     private final boolean withCaps;
+    private final boolean allRotations;
     private final File file;
     
-    public ExportModelImageTask(Model model, File file, boolean withCaps)
+    public ExportModelImageTask(Model model, File file, boolean withCaps, boolean allRotations)
     {
       this.model = model;
       this.file = file;
       this.withCaps = withCaps;
+      this.allRotations = allRotations;
     }
     
     @Override
     public boolean execute()
     {
-      Rectangle bounds = PieceDrawer.computeRealBounds(model, withCaps);
+      if (file.exists())
+      {
+        if (!Dialogs.showConfirmDialog(Main.exportImageFrame, "File exists", "File already exists, do you want to overwrite it?", null))
+          return false;
+      }
       
-      PImage image = Main.sketch.createImage(bounds.width, bounds.height, Sketch.ARGB);
-      PieceDrawer.drawModelOnImage(image, -bounds.x, -bounds.y, model, withCaps);
+      RenderedImage image = null;
+      
+      if (!allRotations)
+      {
+        Rectangle bounds = PieceDrawer.computeRealBounds(model, withCaps);
+        PImage pimage = Main.sketch.createImage(bounds.width, bounds.height, Sketch.ARGB);
+        PieceDrawer.drawModelOnImage(pimage, -bounds.x, -bounds.y, model, withCaps);
+        image = (RenderedImage)pimage.getImage();
+      }
+      else
+      {
+        boolean vertical = true;
+        final int padding = 20;
+        
+        PImage images[] = new PImage[4];
+        int common = Integer.MIN_VALUE;
+        int[] separated = new int[4];
+        
+        for (int i = 0; i < 4; ++i)
+        {
+          Rectangle bounds = PieceDrawer.computeRealBounds(model, withCaps);
+          images[i] = Main.sketch.createImage(bounds.width, bounds.height, Sketch.ARGB);
+          PieceDrawer.drawModelOnImage(images[i], -bounds.x, -bounds.y, model, withCaps);
+          model.rotate(Direction.EAST);
+          
+          if (vertical)
+          {
+            common = Math.max(common, bounds.width);
+            separated[i] = bounds.height;
+          }
+          else
+          {
+            common = Math.max(common, bounds.height);
+            separated[i] = bounds.width;
+          }
+        }
+        
+        int finalHeight = 0;
+        int finalWidth = 0;
+        
+        if (vertical)
+        {
+          finalWidth = common;
+          for (int i = 0; i < 4; ++i) finalHeight += separated[i] + padding;
+        }
+        else
+        {
+          // TODO
+        }
+        
+        BufferedImage bimage = new BufferedImage(finalWidth, finalHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D)bimage.getGraphics();
+        image = bimage;
+        
+        int c = 0;
+        for (int i = 0; i < 4; ++i)
+        {
+          if (vertical)
+          {
+            g.drawImage(images[i].getImage(), (finalWidth - images[i].width)/2, c, null);
+            c += separated[i] + padding;
+          }
+        }
+        
+      }
       
       try 
       {
-        ImageIO.write((RenderedImage)image.getImage(), "PNG", file);   
+        ImageIO.write(image, "PNG", file);   
       }
       catch (IOException e)
       {
