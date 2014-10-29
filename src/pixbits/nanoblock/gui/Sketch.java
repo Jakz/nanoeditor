@@ -419,11 +419,11 @@ public class Sketch extends PApplet implements ChangeListener
         
         if (!locked.isFreeAt(hover.x, hover.y))
         {
-          model.removePiece(locked, piece);
+          new ModelOperations.Remove(model, hoveredIndex, hover.x, hover.y).execute();
           levelStackView.clearToBeDeleted();
         }
         else if (locked.canPlace(Brush.type(), hover.x, hover.y))
-          model.addPiece(locked,Brush.type(),Brush.color,hover.x,hover.y);
+          new ModelOperations.Place(model, hoveredIndex, Brush.type(), Brush.color, hover.x, hover.y).execute();
         
         Main.sketch.redraw();
       }
