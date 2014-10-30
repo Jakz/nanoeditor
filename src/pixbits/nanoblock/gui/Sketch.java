@@ -231,8 +231,6 @@ public class Sketch extends PApplet implements ChangeListener
         this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
       }
     }
-    
-    this.point(rx, ry);
   }
   
   public void drawGrid(int l)

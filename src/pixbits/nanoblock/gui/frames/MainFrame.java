@@ -24,6 +24,7 @@ public class MainFrame extends JFrame implements MouseWheelListener
     add(Menus.buildEditorToolbar(), BorderLayout.NORTH);
     embed.init();
 
+    this.addComponentListener(componentListener);
     this.addWindowListener(windowListener);
     this.addMouseWheelListener(this);
     
@@ -37,6 +38,12 @@ public class MainFrame extends JFrame implements MouseWheelListener
     public void windowClosing(WindowEvent e)
     { 
       Tasks.closeEditor();
+    }
+  };
+  
+  private final ComponentListener componentListener = new ComponentAdapter() {
+    public void componentResized(ComponentEvent e) {
+      Main.sketch.redraw();
     }
   };
 
