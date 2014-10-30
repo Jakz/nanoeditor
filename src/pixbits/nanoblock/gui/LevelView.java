@@ -1,5 +1,6 @@
 package pixbits.nanoblock.gui;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Iterator;
 
@@ -174,7 +175,7 @@ public class LevelView extends Drawable
     Main.sketch.redraw();
   }
   
-  public void mouseDragged(int x, int y) { }
+  public void mouseDragged(int x, int y, int b) { }
   
   public void mouseReleased(int x, int y, int b)
   {

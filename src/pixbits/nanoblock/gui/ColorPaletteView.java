@@ -3,6 +3,7 @@ package pixbits.nanoblock.gui;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.PieceColor;
 import pixbits.nanoblock.gui.ui.ColorScrollBar;
+import processing.core.PConstants;
 
 public class ColorPaletteView extends Drawable 
 {  
@@ -45,7 +46,40 @@ public class ColorPaletteView extends Drawable
   
   public void mouseMoved(int x, int y) { }
   
-  public void mouseDragged(int x, int y) { }
+  int lockX = -1, lockY = -1;
+  
+  public void mouseDragged(int x, int y, int b)
+  { 
+
+    
+    if (b == PConstants.RIGHT)
+    {
+      if (!dragging)
+      {        
+        if (x >= ox && y >= oy && x < ox + cellSize*cellCount && y < oy + cellSize)
+        {
+          dragging = true;
+          lockX = x;
+          lockY = y;
+        }
+        else
+          return;
+      }
+      
+      this.ox += x - lockX;
+      this.oy += y - lockY;
+      
+      if (scrollBar != null)
+      {
+        scrollBar.shift(x-lockX, y-lockY);
+      }
+      
+      lockX = x;
+      lockY = y;
+      
+      p.redraw();
+    }
+  }
   
   public void mouseExited() { }
 

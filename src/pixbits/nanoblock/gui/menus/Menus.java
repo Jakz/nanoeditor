@@ -89,7 +89,6 @@ public class Menus
   {
     JMenuBar bar = new JMenuBar();
     
-    JPopupMenu.setDefaultLightWeightPopupEnabled(false);
     
     for (int i = 0; i < editorMenus.length; ++i)
     {

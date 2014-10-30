@@ -2,7 +2,7 @@ package pixbits.nanoblock.gui;
 
 public abstract class Drawable
 {
-  final protected int ox, oy;
+  protected int ox, oy;
   final protected Sketch p;
   protected boolean dragging;
   
@@ -16,7 +16,7 @@ public abstract class Drawable
   
   public abstract boolean isInside(int x, int y);
   public abstract void mouseReleased(int x, int y, int b);
-  public abstract void mouseDragged(int x, int y);
+  public abstract void mouseDragged(int x, int y, int b);
   public abstract void mouseMoved(int x, int y);
   public abstract void mouseExited();
   public abstract void mouseWheelMoved(int x);

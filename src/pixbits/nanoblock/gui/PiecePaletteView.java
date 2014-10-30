@@ -90,7 +90,7 @@ public class PiecePaletteView extends Drawable
     x /= cellSize;
     Brush.setType(wrapper.brushAt(offset+x));
     
-    Main.sketch.redraw();
+    p.redraw();
   }
 
   public void mouseMoved(int x, int y)
@@ -98,7 +98,41 @@ public class PiecePaletteView extends Drawable
 
   }
   
-  public void mouseDragged(int x, int y) { }
+  int lockX = -1;
+  int lockY = -1;
+  
+  public void mouseDragged(int x, int y, int b)
+  { 
+    if (b == PConstants.RIGHT)
+    {
+      if (!dragging)
+      {        
+        if (x >= ox && y >= oy && x < ox + cellSize*cellCount && y < oy + cellSize)
+        {
+          dragging = true;
+          lockX = x;
+          lockY = y;
+        }
+        else
+          return;
+      }
+      
+      this.ox += x - lockX;
+      this.oy += y - lockY;
+      
+      if (scrollBar != null)
+      {
+        scrollBar.shift(x-lockX, y-lockY);
+      }
+      
+      lockX = x;
+      lockY = y;
+      
+      
+      
+      p.redraw();
+    }
+  }
 
   public void mouseExited() { }
   

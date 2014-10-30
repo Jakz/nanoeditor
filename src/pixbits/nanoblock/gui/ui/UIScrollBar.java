@@ -60,6 +60,17 @@ public abstract class UIScrollBar extends Drawable
 
   }
   
+  public void shift(int x, int y)
+  {
+    ox += x;
+    oy += y;
+    
+    button1.translate(x,y);
+    button2.translate(x,y);
+    scroll.translate(x,y);
+    base.translate(x, y);  
+  }
+  
   public boolean isInside(int x, int y)
   {
     return x >= ox && x < ox + width && y >= oy && y < oy + height;
@@ -142,7 +153,7 @@ public abstract class UIScrollBar extends Drawable
     Main.sketch.redraw();
   }
   
-  public void mouseDragged(int x, int y)
+  public void mouseDragged(int x, int y, int b)
   {
     
     if (!dragging)

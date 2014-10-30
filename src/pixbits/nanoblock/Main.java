@@ -8,6 +8,10 @@ import pixbits.nanoblock.tasks.Tasks;
 
 import java.io.*;
 
+import javax.swing.JPopupMenu;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+
 public class Main
 {
   public static final int SW = 1440;
@@ -22,17 +26,22 @@ public class Main
   
   public static void main(String[] args)
   {
+    if (System.getProperty("os.name").indexOf("Mac") == -1)
+    {
+      try {
+          for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+              if ("Nimbus".equals(info.getName())) {
+                  UIManager.setLookAndFeel(info.getClassName());
+                  break;
+              }
+          }
+      } catch (Exception e) {
+          // If Nimbus is not available, you can set the GUI to another look and feel.
+      }
+    }
+    
+    JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
-    /*try {
-        for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-            if ("Nimbus".equals(info.getName())) {
-                UIManager.setLookAndFeel(info.getClassName());
-                break;
-            }
-        }
-    } catch (Exception e) {
-        // If Nimbus is not available, you can set the GUI to another look and feel.
-    }*/
     
     Tasks.loadSettings();
     

@@ -66,10 +66,10 @@ public class Sketch extends PApplet implements ChangeListener
     
     updatePiecePalette();
 
-    UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
+    /*UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
     addDrawable(checkBox);
     
-    addDrawable(new UIButton(this,500,20,20,20));
+    addDrawable(new UIButton(this,500,20,20,20));*/
     
     noLoop();
   }
@@ -390,16 +390,27 @@ public class Sketch extends PApplet implements ChangeListener
 
     redraw();
   }
+  
+  int lockX = -1, lockY = -1;
+  boolean draggingLock = false;
 
   public void mouseReleased()
   {    	
     int x = mouseX;
     int y = mouseY;
+    
+    if (draggingLock)
+    {
+      draggingLock = false;
+      return;
+    }
         
     for (Drawable d : drawables)
     {
+      boolean dragLocked = d.draggingLock(); 
       d.draggingReset();
-      if (d.isInside(x, y))
+      
+      if (!dragLocked && d.isInside(x, y))
       {
         d.mouseReleased(x, y, mouseButton);
         return;
@@ -437,26 +448,64 @@ public class Sketch extends PApplet implements ChangeListener
 
     
   }
-  
+ 
   public void mouseDragged()
   {
     int x = mouseX;
     int y = mouseY;
     
-    for (Drawable d : drawables)
-      if (d.draggingLock())
-      {
-        d.mouseDragged(x, y);
-        return;
-      }
-    
-    for (Drawable d : drawables)
+    if (!draggingLock)
     {
-      if (d.isInside(x, y))
+      for (Drawable d : drawables)
+        if (d.draggingLock())
+        {
+          d.mouseDragged(x, y, mouseButton);
+          return;
+        }
+      
+      for (Drawable d : drawables)
       {
-        d.mouseDragged(x, y);
-        return;
+        if (d.isInside(x, y))
+        {
+          d.mouseDragged(x, y, mouseButton);
+          return;
+        }
       }
+    }
+    
+    if (mouseButton == PConstants.RIGHT)
+    {
+      if (!draggingLock)
+      {        
+        Level locked = levelStackView.getLocked();
+
+        if (locked == null)
+        {
+          Rectangle bounds = PieceDrawer.computeRealBounds(model, false);
+          bounds.x += baseX;
+          bounds.y += baseY;
+          
+        if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
+        {
+          draggingLock = true;
+          lockX = x;
+          lockY = y;
+        }
+        else
+          return;
+          
+        }
+        else
+          return;
+      }
+      
+      this.baseX += x - lockX;
+      this.baseY += y - lockY;
+      
+      lockX = x;
+      lockY = y;
+      
+      redraw();
     }
   }
   
