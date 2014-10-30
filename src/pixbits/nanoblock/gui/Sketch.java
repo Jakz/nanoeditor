@@ -39,6 +39,8 @@ public class Sketch extends PApplet implements ChangeListener
 	public PFont font;
 	
 	private Model model;
+	
+	public Model getModel() { return model; }
   
   public void setup()
   {
@@ -354,7 +356,7 @@ public class Sketch extends PApplet implements ChangeListener
   {    
     if (this.key == 'r')
     {
-      new ModelOperations.Reset(Library.model).execute();
+      new ModelOperations.Reset(model).execute();
     }
     else if (this.key == '\t' && !Brush.typeInverted && Settings.values.get(Setting.USE_TAB_TO_ROTATE))
     {

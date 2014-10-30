@@ -72,7 +72,8 @@ public class Tasks
   
   public static ModelTask MODEL_SHOW_RESIZE = new ModelTask() { public boolean execute(Model model) { Main.resizeModelFrame.show(model); return true; } };
   public static ModelTask MODEL_SHOW_REPLACE_COLOR = new ModelTask() { public boolean execute(Model model) { Main.replaceColorFrame.show(model); return true; } };
-  public static ModelTask MODEL_SHOW_EXPORT_IMAGE = new ModelTask() { public boolean execute(Model model) { ExportImageFrame.showMe(Main.mainFrame, model); return true; } };
+  public static ModelTask MODEL_SHOW_EXPORT_IMAGE = new ModelTask() { public boolean execute(Model model) { ExportImageFrame.showMe(model); return true; } };
+
   
   public static Task LIBRARY_NEW_MODEL = new Task() {
     public boolean execute() {
@@ -81,7 +82,7 @@ public class Tasks
       
       Library.i().insertModel(nmodel);
       Library.i().sort();
-      Main.libraryFrame.refreshLibrary();
+      Main.libraryFrame.refreshLibrary(nmodel);
       return true;
     }
   };
@@ -116,7 +117,7 @@ public class Tasks
           
           Library.i().insertModel(nmodel);
           Library.i().sort();
-          Main.libraryFrame.refreshLibrary();
+          Main.libraryFrame.refreshLibrary(nmodel);
           return true;
         }
         catch (Exception e)
@@ -154,13 +155,29 @@ public class Tasks
           
           Library.i().deleteModel(model);
           Library.i().sort();
-          Main.libraryFrame.refreshLibrary();
+          Main.libraryFrame.refreshLibrary(null);
           
           //TODO: if it can happen that current opened model is the one just deleted we must make something
         }
         
         return true;
       }
+    }
+  };
+  
+  public static LibraryModelTask LIBRARY_OPEN_IN_EDITOR = new LibraryModelTask() {  
+    public boolean execute(LibraryModel lmodel) {
+      Item.setLevelOperationsEnabled(false);
+      Item.setUndoRedoEnabled(false, false);
+      
+      Main.libraryFrame.setVisible(false);
+      Library.i().setLibraryModel(lmodel);
+      lmodel.load();
+      Main.sketch.initForModel(lmodel.model);
+      Main.mainFrame.setVisible(true);
+      Item.setLibraryModelOperationsEnabled(true);
+      Main.sketch.redraw();
+      return true;
     }
   };
   
@@ -299,25 +316,12 @@ public class Tasks
     }
   }
   
-  public static void loadModelFromLibrary(LibraryModel lmodel)
-  {
-    Item.setLevelOperationsEnabled(false);
-    Item.setUndoRedoEnabled(false, false);
-    
-    Main.libraryFrame.setVisible(false);
-    Library.i().setLibraryModel(lmodel);
-    lmodel.load();
-    Library.model = lmodel.model;
-    Main.sketch.initForModel(lmodel.model);
-    Main.mainFrame.setVisible(true);
-    Main.sketch.redraw();
-  }
-  
   public static void closeEditor()
   {
     //TODO: warn to save
     saveModel();
     saveSettings();
+    Library.i().getLibraryModel().unload();
     UndoManager.clear();
     Main.sketch.hideMe();
     Main.mainFrame.setVisible(false);

@@ -37,6 +37,13 @@ public enum Icon
   UNDO("undo"),
   REDO("redo"),
   
+  OPEN_IN_EDITOR("open_in_editor"),
+  
+  EXPORT_IMAGE("export_image"),
+  EXPORT_INSTRUCTIONS("export_instructions"),
+  EXPORT_MODEL("export_model"),
+  
+  
   ARROW_UP("arrow_up"),
   ARROW_DOWN("arrow_down"),
   ARROW_LEFT("arrow_left"),

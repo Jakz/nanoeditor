@@ -20,8 +20,9 @@ public enum Item
   FILE_CLOSE("Close"),
   FILE_EXIT("Exit"),
   FILE_EXPORT("Export.."),
-  FILE_EXPORT_IMAGE("Export image..", Tasks.MODEL_SHOW_EXPORT_IMAGE),
-  FILE_EXPORT_INSTRUCTIONS("Export instructions.."),
+  FILE_EXPORT_IMAGE("Export image..", "Export Image", Icon.EXPORT_IMAGE, Tasks.MODEL_SHOW_EXPORT_IMAGE),
+  FILE_EXPORT_INSTRUCTIONS("Export instructions..", "Export Instructions", Icon.EXPORT_INSTRUCTIONS, Tasks.MODEL_SHOW_EXPORT_IMAGE),
+  FILE_EXPORT_MODEL("Export model..", "Export Model", Icon.EXPORT_MODEL, Tasks.MODEL_SHOW_EXPORT_IMAGE),
       
   EDIT_HALF_STEPS("Use half steps", "Enable half steps", Icon.ENABLE_HALF_STEPS, Setting.HALF_STEPS_ENABLED),
   EDIT_USE_TAB_TO_ROTATE("Use TAB to rotate", "Use TAB to rotate", Icon.USE_TAB_ROTATION, Setting.USE_TAB_TO_ROTATE),
@@ -76,6 +77,8 @@ public enum Item
   LIBRARY_MODEL_NEW("New Model", Icon.MODEL_NEW, Tasks.LIBRARY_NEW_MODEL),
   LIBRARY_MODEL_DUPLICATE("Duplicate Model", Icon.MODEL_DUPLICATE, Tasks.LIBRARY_CLONE_MODEL),
   LIBRARY_MODEL_DELETE("Delete Model", Icon.MODEL_DELETE, Tasks.LIBRARY_DELETE_MODEL),
+  
+  LIBRARY_MODEL_OPEN_IN_EDITOR("Open In Editor", Icon.OPEN_IN_EDITOR, Tasks.LIBRARY_OPEN_IN_EDITOR)
   ;
   
   Item(String caption, String tooltip, Icon icon, ItemType type, Setting setting, Task task, OperationBuilder builder)
@@ -191,14 +194,14 @@ public enum Item
       }
       else if (this == EDIT_RESET)
       {
-        if (Dialogs.showConfirmDialog(Main.mainFrame, "Reset model", "Are you sure you want to reset the model?", new ModelOperations.Reset(Library.model)))
+        if (Dialogs.showConfirmDialog(Main.mainFrame, "Reset model", "Are you sure you want to reset the model?", new ModelOperations.Reset(Main.sketch.getModel())))
         {
           Main.sketch.requestFocus();
         }
       }
       else if (builder != null)
       {
-        UndoableTask task = builder.build(Library.model);
+        UndoableTask task = builder.build(Main.sketch.getModel());
         task.execute();
       }
       else if (task != null)
@@ -235,6 +238,13 @@ public enum Item
   public static void setLevelOperationsEnabled(boolean enabled)
   {
     Item[] items = { Item.MODEL_INSERT_LEVEL_ABOVE, Item.MODEL_INSERT_LEVEL_BELOW, Item.MODEL_SHIFT_LEVEL_UP, Item.MODEL_SHIFT_LEVEL_DOWN, Item.MODEL_DELETE_LEVEL };
+    for (Item i : items)
+      i.setEnabled(enabled);
+  }
+  
+  public static void setLibraryModelOperationsEnabled(boolean enabled)
+  {
+    Item[] items = { Item.LIBRARY_MODEL_DELETE, Item.LIBRARY_MODEL_DUPLICATE, Item.LIBRARY_MODEL_OPEN_IN_EDITOR, Item.FILE_EXPORT_IMAGE, Item.FILE_EXPORT_INSTRUCTIONS, Item.FILE_EXPORT_MODEL };
     for (Item i : items)
       i.setEnabled(enabled);
   }

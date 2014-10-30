@@ -61,8 +61,13 @@ public class ExportImageFrame extends BaseDialog
     finalizeDialog();
   }
   
-  public static void showMe(JFrame parent, Model model)
+  public static void showMe(Model model)
   {
+    JFrame parent = Main.mainFrame; 
+    
+    if (Main.libraryFrame.isVisible())
+      parent = Main.libraryFrame;
+    
     ExportImageFrame frame = new ExportImageFrame(parent, model);
     frame.setLocationRelativeTo(parent);
     frame.setVisible(true);

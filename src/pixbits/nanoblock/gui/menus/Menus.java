@@ -147,11 +147,15 @@ public class Menus
   };
   
   private final static Item[] LIBRARY_ITEMS = {
+    Item.LIBRARY_MODEL_OPEN_IN_EDITOR,
+    Item.SEPARATOR,
     Item.LIBRARY_MODEL_NEW,
     Item.LIBRARY_MODEL_DUPLICATE,
+    Item.LIBRARY_MODEL_DELETE,
     Item.SEPARATOR,
-    Item.LIBRARY_MODEL_DELETE
-    
+    Item.FILE_EXPORT_IMAGE,
+    Item.FILE_EXPORT_INSTRUCTIONS,
+    Item.FILE_EXPORT_MODEL
   };
   
   

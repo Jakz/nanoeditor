@@ -11,7 +11,6 @@ public class Library
 {
   private final List<LibraryModel> models;
 
-  public static Model model;
   private LibraryModel libraryModel;
   
   Library()

@@ -13,6 +13,7 @@ import java.util.*;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.files.*;
+import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.gui.menus.Menus;
 import pixbits.nanoblock.tasks.Tasks;
 
@@ -77,6 +78,8 @@ public class LibraryFrame extends JFrame
     @Override
     public void valueChanged(ListSelectionEvent e)
     {
+
+      
       if (!e.getValueIsAdjusting())
       {
         int index = list.getSelectedIndex();
@@ -85,14 +88,15 @@ public class LibraryFrame extends JFrame
         {
           Library.i().setLibraryModel(null);
           infoPanel.clear();
+          Item.setLibraryModelOperationsEnabled(false);
           
         }
         else
         {
-          //System.out.println("VALUE CHANGEDDDD!!!!");
           LibraryModel lmodel = model.get(index);
           Library.i().setLibraryModel(lmodel);
           infoPanel.update(lmodel);
+          Item.setLibraryModelOperationsEnabled(true);
         }
       }
     }
@@ -111,7 +115,7 @@ public class LibraryFrame extends JFrame
         
         list.clearSelection();
         
-        Tasks.loadModelFromLibrary(lmodel);
+        Tasks.LIBRARY_OPEN_IN_EDITOR.execute(lmodel);
       }
     }
   };
@@ -137,11 +141,13 @@ public class LibraryFrame extends JFrame
     else list.setSelectedIndex(index);
   }
   
-  public void refreshLibrary()
+  public void refreshLibrary(LibraryModel selected)
   {
     model.clear();
     model.add(Library.i().getModels());
     model.refresh();
+    if (selected != null)
+      list.setSelectedValue(selected, true);
   }
   
   public class LibraryTableModel extends AbstractListModel
@@ -219,6 +225,7 @@ public class LibraryFrame extends JFrame
   
   public void showMe()
   {
+    Item.setLibraryModelOperationsEnabled(false);
     this.setLocationRelativeTo(Main.mainFrame);
     this.toFront();
     this.infoPanel.clear();
