@@ -45,7 +45,7 @@ public enum Setting
   
   public static class HoverSetter implements EnumSetter {
     public void set(Enum<?> piece) { Settings.values.hoverPiece = (HoverPiece)piece; }
-    public HoverPiece get() { return (HoverPiece)Settings.values.hoverPiece; }
+    public HoverPiece get() { return (HoverPiece)Settings.values.getHoverPiece(); }
     public final static HoverSetter INSTANCE = new HoverSetter();
   }
   

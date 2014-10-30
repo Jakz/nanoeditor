@@ -31,7 +31,6 @@ public class ExportImageFrame extends BaseDialog
     
   private ExportImageFrame(JFrame parent, Model model)
   {
-    //TODO: not library but main
     super(parent, "Export Image", new String[] {"Cancel", "Export"});
     
     this.model = model;

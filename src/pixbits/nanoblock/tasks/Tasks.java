@@ -292,7 +292,15 @@ public class Tasks
   {
     Log.i("Saving model.");
     ModelLoader.saveModel(Library.i().getLibraryModel());
-    // TODO: update thumbnail
+    
+    try
+    {
+      Library.i().getLibraryModel().refreshThumbnail();
+    }
+    catch (IOException e)
+    {
+      Log.e(e);
+    }
   }
   
   public static void saveSettings()

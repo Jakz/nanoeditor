@@ -1,6 +1,7 @@
 package pixbits.nanoblock.files;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
@@ -69,6 +70,11 @@ public class LibraryModel implements Comparable<LibraryModel>
     unload();
   }
   
+  public void refreshThumbnail() throws IOException
+  {
+    thumbnail = Thumbnails.generateThumbnail(this);
+  }
+  
   public void loadThumbnail() 
   {
     try
@@ -76,7 +82,7 @@ public class LibraryModel implements Comparable<LibraryModel>
       ImageIcon icon = Icon.loadIcon(new File(thumbnailName()));
       
       if (icon == null)
-        icon = Thumbnails.generateThumbnail(this);
+        refreshThumbnail();
       
       thumbnail = icon;
     }

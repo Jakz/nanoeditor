@@ -10,6 +10,8 @@ public class Settings
   private boolean[] bvalues = new boolean[Setting.values().length];
   private String[] paths = new String[Setting.Path.values().length];
   
+  Setting.HoverPiece hoverPiece;
+  
   public void set(Setting setting) { set(setting, true); }
   public void unset(Setting setting) { set(setting, false); }
   public void toggle(Setting setting) { set(setting, !bvalues[setting.ordinal()]); }
@@ -19,9 +21,26 @@ public class Settings
   public void setPath(Setting.Path path, String value) { paths[path.ordinal()] = value; }
   public String getPath(Setting.Path path) { return paths[path.ordinal()]; }
     
-  Setting.HoverPiece hoverPiece;
   
   public Setting.HoverPiece getHoverPiece() { return hoverPiece; }
+  
+  private Dimension thumbnailSize = new Dimension(200,200);
+  private int thumbnailPadding = 10;
+  
+  public boolean updateThumbnailSpec(int w, int h, int p)
+  { 
+    if (thumbnailSize.width != w || thumbnailSize.height != h || thumbnailPadding != p)
+    {
+      thumbnailSize = new Dimension(w,h);
+      thumbnailPadding = p;
+      return true;
+    }
+    else
+      return false;
+  }
+  
+  public Dimension getThumbnailSize() { return thumbnailSize; }
+  public int getThumbnailPadding() { return thumbnailPadding; }
 
   Settings()
   {    
@@ -46,10 +65,7 @@ public class Settings
     setPath(Setting.Path.LIBRARY, "./library");
     setPath(Setting.Path.CACHE, "./cache");
   }
-  
-  public Dimension getThumbnailSize() { return new Dimension(200,200); }
-  public int getThumbnailPadding() { return 10; }
-  
+    
   public static Settings values;
   
   public static final String SETTINGS_PATH = "./settings/settings.json";

@@ -7,7 +7,7 @@ import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 
-public class Library
+public class Library implements Iterable<LibraryModel>
 {
   private final List<LibraryModel> models;
 
@@ -18,6 +18,8 @@ public class Library
     models = new ArrayList<LibraryModel>();
     libraryModel = null;
   }
+  
+  public Iterator<LibraryModel> iterator() { return models.iterator(); }
   
   public List<LibraryModel> getModels() { return Collections.unmodifiableList(models); }
   

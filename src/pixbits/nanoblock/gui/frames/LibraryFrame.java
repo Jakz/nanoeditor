@@ -223,6 +223,11 @@ public class LibraryFrame extends JFrame
     public void refresh() { this.fireTableDataChanged(); }
   }*/
   
+  public void refreshList()
+  {
+    model.refresh();
+  }
+  
   public void showMe()
   {
     Item.setLibraryModelOperationsEnabled(false);

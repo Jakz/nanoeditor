@@ -16,13 +16,31 @@ import javax.swing.ImageIcon;
 
 public class Thumbnails
 {
+  public static void refreshAllThumbnails()
+  {
+    try
+    {
+      for (LibraryModel lm : Library.i())
+        lm.refreshThumbnail();
+    }
+    catch (Exception e)
+    {
+      Log.e(e);
+    }
+  }
+
   public static ImageIcon generateThumbnail(LibraryModel lmodel) throws IOException
   {
     Log.i("Generating thumbnail for "+lmodel.info.name+" ("+lmodel.info.author+")");
     
-    lmodel.load();
     Model model = lmodel.model;
-    lmodel.unload();
+    
+    if (model == null)
+    {
+      lmodel.load();
+      model = lmodel.model;
+      lmodel.unload();
+    }
     
     Dimension size = Settings.values.getThumbnailSize();
     int padding = Settings.values.getThumbnailPadding();

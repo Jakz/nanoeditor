@@ -21,8 +21,10 @@ public class Main
   public static Sketch sketch;
   public static MainFrame mainFrame;
   public static LibraryFrame libraryFrame;
+  
   public static ResizeModelFrame resizeModelFrame;
   public static ReplaceColorFrame replaceColorFrame;
+  public static PreferencesFrame preferencesFrame;
   
   public static void main(String[] args)
   {
@@ -65,7 +67,9 @@ public class Main
     
     resizeModelFrame = new ResizeModelFrame();
     replaceColorFrame = new ReplaceColorFrame();
-
+    preferencesFrame = new PreferencesFrame();
+    
+    preferencesFrame.showMe();
     //Main.mainFrame.setVisible(true);
   }
   
