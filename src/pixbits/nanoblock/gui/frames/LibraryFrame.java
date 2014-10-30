@@ -53,6 +53,7 @@ public class LibraryFrame extends JFrame
   }
   
   public LibraryTableModel getModel() { return model; }
+  public LibraryInfoPanel getInfoPanel() { return infoPanel; }
   
   
   private class LibraryModelRenderer extends DefaultListCellRenderer/*JLabel implements ListCellRenderer*/
@@ -226,6 +227,8 @@ public class LibraryFrame extends JFrame
   public void refreshList()
   {
     model.refresh();
+    if (list.getSelectedValue() != null)
+      infoPanel.update((LibraryModel)list.getSelectedValue());
   }
   
   public void showMe()

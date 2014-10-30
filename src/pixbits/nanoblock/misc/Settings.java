@@ -24,8 +24,8 @@ public class Settings
   
   public Setting.HoverPiece getHoverPiece() { return hoverPiece; }
   
-  private Dimension thumbnailSize = new Dimension(200,200);
-  private int thumbnailPadding = 10;
+  private Dimension thumbnailSize;
+  private int thumbnailPadding;
   
   public boolean updateThumbnailSpec(int w, int h, int p)
   { 

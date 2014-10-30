@@ -7,6 +7,7 @@ import javax.swing.*;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.files.Thumbnails;
 import pixbits.nanoblock.misc.Settings;
+import pixbits.nanoblock.tasks.Tasks;
 
 import java.awt.event.*;
 
@@ -104,8 +105,11 @@ public class PreferencesFrame extends BaseDialog
         {
           Thumbnails.refreshAllThumbnails();
           Main.libraryFrame.refreshList();
+          Main.libraryFrame.getInfoPanel().updateThumbnailSize();
         }
         
+        // TODO: mey be to be removed later
+        Tasks.saveSettings();
         setVisible(false);
       }
       catch (NumberFormatException e)

@@ -29,7 +29,7 @@ public class LibraryInfoPanel extends JPanel
   {
     lmodel = null;
     
-    this.setPreferredSize(new Dimension(300,600));
+    //this.setPreferredSize(new Dimension(300,600));
     
     thumbnail = new JLabel();
     thumbnail.setAlignmentX(Component.CENTER_ALIGNMENT);
