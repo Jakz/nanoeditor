@@ -291,7 +291,7 @@ public class Level implements Iterable<Piece>
     
     boolean stuck = false;
     //System.out.println("Build topological sort");
-    while (!deps.isEmpty())
+    while (!deps.isEmpty() && !stuck)
     {
       Piece toRemove = null;
       for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())

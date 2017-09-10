@@ -1,6 +1,8 @@
 package pixbits.nanoblock.misc;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.awt.Dimension;
 
 import pixbits.nanoblock.files.FileUtils;
@@ -62,6 +64,8 @@ public class Settings
     
     Setting.HoverSetter.INSTANCE.set(Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL);
     
+    thumbnailSize = new Dimension(128,128);
+    
     setPath(Setting.Path.LIBRARY, "./library");
     setPath(Setting.Path.CACHE, "./cache");
   }
@@ -75,12 +79,16 @@ public class Settings
     if (new File(SETTINGS_PATH).exists())
       Settings.values = FileUtils.readJson(SETTINGS_PATH, Settings.class);
     else
+    {
       Settings.values = new Settings();
+      saveSettings();
+    }
   }
   
   public static void saveSettings() throws IOException
   {
-    FileUtils.writeJson(SETTINGS_PATH, Settings.class, Settings.values);
+    Files.createDirectories(Paths.get(SETTINGS_PATH).getParent());
+    FileUtils.writeJson(SETTINGS_PATH, Settings.class, Settings.values, true);
   }
 
 }

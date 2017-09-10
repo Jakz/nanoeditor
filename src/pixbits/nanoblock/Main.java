@@ -52,7 +52,7 @@ public class Main
     mainFrame.setLocationRelativeTo(null);
     
     try {
-    Library.i().scan();
+      Library.i().scan();
     } catch (Exception e) { e.printStackTrace(); }
     
     Library.i().computeMissingHashes();
