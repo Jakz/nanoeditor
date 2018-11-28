@@ -169,7 +169,7 @@ public class PiecePaletteView extends Drawable
     PieceColor color = Brush.color;
     
     Rectangle rectc = Brush.tileset.rectFor(PieceType.CAP, color);
-    PImage texture = Brush.tileset.imageForColor(color);
+    PImage texture = Brush.tileset.imageForTypeAndColor(Brush.type(), color);
     int orx = Brush.tileset.spec(PieceType.CAP).ox, ory = Brush.tileset.spec(PieceType.CAP).oy;
     
     for (int i = 0; i < cellCount; ++i)

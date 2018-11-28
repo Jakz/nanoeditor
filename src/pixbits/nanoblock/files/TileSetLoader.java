@@ -6,6 +6,7 @@ import pixbits.nanoblock.gui.*;
 import processing.core.PImage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
@@ -15,6 +16,7 @@ import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 
 import com.google.gson.*;
+import com.pixbits.lib.ui.color.Color;
 
 public class TileSetLoader
 {
@@ -29,7 +31,7 @@ public class TileSetLoader
   private static class JsonColorSpec
   {
     String name;
-    ArrayList<Integer[]> colors;
+    ArrayList<int[]> colors;
   }
   
   private static class JsonTilesetSpec
@@ -94,9 +96,16 @@ public class TileSetLoader
         tileset.addSpec(PieceType.forName(piece.name), piece.offset[0], piece.offset[1], piece.size[0], piece.size[1], piece.pivot[0], piece.pivot[1]);
       
       for (JsonColorSpec color : json.colors)
-        tileset.addColor(PieceColor.forName(color.name), color.colors);
+      {
+        PieceColor pcolor = PieceColor.forName(color.name);
+        
+        List<Color> colors = color.colors.stream().map(a -> new Color(a)).collect(Collectors.toList());
+        tileset.addColor(pcolor, new ColorMap(colors.toArray(new Color[colors.size()])));
+        
+        pcolor.setColors(colors.get(3).toAWT(), colors.get(0).toAWT());
+      }
       
-        return tileset;
+      return tileset;
     }
     catch (Exception e)
     {

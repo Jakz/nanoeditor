@@ -43,7 +43,7 @@ public class PieceDrawer
     Tileset.PieceSpec spec = ts.spec(piece.type);
     Point p = positionForPiece(baseX, baseY, piece, l);
 
-    PImage texture = ts.imageForColor(piece.color);
+    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
     
     gfx.fill(0);
     gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
@@ -58,7 +58,7 @@ public class PieceDrawer
     Tileset.PieceSpec spec = ts.spec(piece.type);
     Point p = positionForPiece(baseX, baseY, piece, l);
     
-    PImage texture = ts.imageForColor(piece.color);
+    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
     gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
   }
   
