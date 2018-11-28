@@ -5,18 +5,19 @@ import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.LibraryModel;
 
-public abstract class ModelTask implements Task {
+public abstract class ModelTask implements Task
+{
   public abstract boolean execute(Model model);
   
-  public boolean execute() { 
+  public boolean execute()
+  { 
     Model model = Main.sketch.getModel();
     
     if (model == null)
     {
       LibraryModel lmodel = Library.i().getLibraryModel();
       boolean wasNull = false;
-      
-      
+
       if (lmodel.model == null)
       {
         lmodel.load();

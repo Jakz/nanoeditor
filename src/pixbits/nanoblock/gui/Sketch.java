@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.*;
 import java.awt.event.*;
+import java.nio.file.Paths;
 
 import javax.swing.event.*;
 
@@ -23,7 +24,7 @@ import processing.core.*;
 
 /*
  * 
- * Ê1,1,44,48 Ê 46,1,66,59 Ê Ê113,1,66,59 Ê Ê180,1,88,70
+ *  1,1,44,48  46,1,66,59   113,1,66,59   180,1,88,70
  *  1,72,44,48
  */
 
@@ -48,7 +49,7 @@ public class Sketch extends PApplet implements ChangeListener
     size(Main.SW, Main.SH, Sketch.P2D);
     
     PieceType.initMapping();
-    Brush.tileset = TileSetLoader.loadAndBuild("tileset.json");
+    Brush.tileset = TileSetLoader.loadAndBuild(Paths.get("tileset.json"));
 
     font = createFont("Helvetica", 16);
 

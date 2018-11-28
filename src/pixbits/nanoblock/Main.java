@@ -12,6 +12,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import com.pixbits.lib.ui.UIUtils;
+
 public class Main
 {
   public static final int SW = 1440;
@@ -28,23 +30,10 @@ public class Main
   
   public static void main(String[] args)
   {
-    if (System.getProperty("os.name").indexOf("Mac") == -1)
-    {
-      try {
-          for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-              if ("Nimbus".equals(info.getName())) {
-                  UIManager.setLookAndFeel(info.getClassName());
-                  break;
-              }
-          }
-      } catch (Exception e) {
-          // If Nimbus is not available, you can set the GUI to another look and feel.
-      }
-    }
+    UIUtils.setNimbusLNF();
     
     JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
-    
     Tasks.loadSettings();
     
     sketch = new Sketch();
@@ -55,10 +44,17 @@ public class Main
       Library.i().scan();
     } catch (Exception e) { e.printStackTrace(); }
     
-    Library.i().computeMissingHashes();
-    Library.i().fixModelFileNames();
-    Library.i().cacheThumbnails();
-    Library.i().deleteUselessThumbnails();
+    try
+    {
+      Library.i().computeMissingHashes();
+      Library.i().fixModelFileNames();
+      Library.i().cacheThumbnails();
+      Library.i().deleteUselessThumbnails();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
     
     libraryFrame = new LibraryFrame();
     libraryFrame.getModel().add(Library.i().getModels());
@@ -69,7 +65,7 @@ public class Main
     replaceColorFrame = new ReplaceColorFrame();
     preferencesFrame = new PreferencesFrame();
     
-    preferencesFrame.showMe();
+    //preferencesFrame.showMe();
     //Main.mainFrame.setVisible(true);
   }
   

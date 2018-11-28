@@ -1,7 +1,13 @@
 package pixbits.nanoblock.files;
 
 import java.util.*;
+
+import com.pixbits.lib.functional.StreamException;
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.misc.Setting;
@@ -134,16 +140,20 @@ public class Library implements Iterable<LibraryModel>
     }
   }
   
-  public void deleteUselessThumbnails()
+  public void deleteUselessThumbnails() throws IOException
   {
-    File[] files = new File(Settings.values.getPath(Setting.Path.CACHE)).listFiles();
+    Path cachePath = Paths.get(Settings.values.getPath(Setting.Path.CACHE));
     
-    for (File file : files)
-    {
+    if (!Files.exists(cachePath))
+      return;
+    
+    Files.list(cachePath).forEach(StreamException.rethrowConsumer(file -> {
       //TODO: use file filter?
-      if (file.getName().endsWith(".png") && !file.isDirectory())
+      String fileName = file.getFileName().toString();
+      
+      if (fileName.endsWith(".png") && !Files.isDirectory(file))
       {
-        String hashCode = file.getName().substring(0, file.getName().length()-4);
+        String hashCode = fileName.substring(0, fileName.length()-4);
         boolean found = false;
         
         for (LibraryModel model : models)
@@ -157,11 +167,11 @@ public class Library implements Iterable<LibraryModel>
         
         if (!found)
         {
-          Log.i("Deleting thumbnail "+file.getName()+" not paired with any model.");
-          file.delete();
+          Log.i("Deleting thumbnail "+fileName+" not paired with any model.");
+          Files.delete(file);
         }
       }
-    }
+    }));
   }
 
   private final static class ModelFileFilter implements FileFilter

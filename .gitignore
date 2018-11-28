@@ -1,3 +1,8 @@
+library/**
+cache/**
+settings/**
 bin
 bin/*
 authors.txt
+/target/
+

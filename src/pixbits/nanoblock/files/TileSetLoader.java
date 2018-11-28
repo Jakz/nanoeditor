@@ -8,6 +8,9 @@ import processing.core.PImage;
 import java.util.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -41,25 +44,22 @@ public class TileSetLoader
     JsonPieceSpec[] pieces;
     JsonColorSpec[] colors;
   }
-  
-  final static String TILESET_PATH = "pixbits/nanoblock/tileset/";
-  
-  public static Tileset loadAndBuild(String filename)
+    
+  public static Tileset loadAndBuild(Path path)
   {
-    JsonTilesetSpec spec = loadTileset(filename);
-    return buildTileset(spec);
+    JsonTilesetSpec spec = loadTileset(path);
+    return buildTileset(path.toAbsolutePath().getParent(), spec);
   }
   
-  public static JsonTilesetSpec loadTileset(String fileName)
+  public static JsonTilesetSpec loadTileset(Path path)
   {
     
     
     try
     {      
-      Log.i("Loading tileset from "+fileName+".");
+      Log.i("Loading tileset from "+path+".");
       
-      File file = new File(fileName);
-      BufferedReader rdr = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(TILESET_PATH+fileName)));
+      BufferedReader rdr = Files.newBufferedReader(path); //new BufferedReader( new InputStreamReader( /*ClassLoader.getSystemResourceAsStream(TILESET_PATH+fileName))*/);
       
       GsonBuilder builder = new GsonBuilder();
       Gson gson = builder.create();
@@ -78,11 +78,11 @@ public class TileSetLoader
     return null;
   }
   
-  public static Tileset buildTileset(JsonTilesetSpec json)
+  public static Tileset buildTileset(Path path, JsonTilesetSpec json)
   {
     try 
     {
-      BufferedImage image = ImageIO.read(ClassLoader.getSystemResource(TILESET_PATH+json.image));
+      BufferedImage image = ImageIO.read(path.resolve(json.image).toFile());
     
       PImage pimage = new PImage(image.getWidth(),image.getHeight(), Sketch.ARGB);
       image.getRGB(0, 0, pimage.width, pimage.height, pimage.pixels, 0, pimage.width);

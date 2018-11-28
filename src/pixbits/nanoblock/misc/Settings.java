@@ -75,7 +75,7 @@ public class Settings
   public static final String SETTINGS_PATH = "./settings/settings.json";
   
   public static void loadSettings() throws FileNotFoundException, IOException
-  {
+  {    
     if (new File(SETTINGS_PATH).exists())
       Settings.values = FileUtils.readJson(SETTINGS_PATH, Settings.class);
     else
@@ -83,6 +83,8 @@ public class Settings
       Settings.values = new Settings();
       saveSettings();
     }
+
+    Files.createDirectories(Paths.get(Settings.values.getPath(Setting.Path.CACHE)));
   }
   
   public static void saveSettings() throws IOException

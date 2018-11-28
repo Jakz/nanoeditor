@@ -7,7 +7,8 @@ import java.util.*;
 import java.awt.Rectangle;
 import java.awt.Color;
 
-public class Tileset {
+public class Tileset
+{
   final private PImage image;
   final public int hOffset;
   final public int xOffset;
@@ -107,7 +108,11 @@ public class Tileset {
   
   public Rectangle rectFor(PieceType type, PieceColor color)
   {
-    PieceSpec spec = specs.get(type);    
+    PieceSpec spec = specs.get(type);  
+    
+    if (spec == null)
+      throw new IllegalArgumentException("Missing piece spec for "+type);
+    
     return new Rectangle(spec.x, spec.y, spec.w, spec.h);
   }
   
