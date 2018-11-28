@@ -2,6 +2,7 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.Main;
+import processing.core.PApplet;
 import processing.core.PImage;
 import java.util.*;
 
@@ -20,15 +21,17 @@ public class Tileset
   final private Map<PieceType, PieceSpec> specs;
   final private Map<PieceColor, ColorMap> colors;
   
-  
-  final private Map<PieceType, Map<PieceColor, PImage>> cache;
+  final private Map<PieceType, PImage> baseCache;
+  final private Map<PieceColor, Map<PieceType, PImage>> cache;
   
   public Tileset(PImage image, int hOffset,int xOffset, int yOffset, ArrayList<Integer[]> baseCols)
   {
     specs = new HashMap<>();
     colors = new HashMap<>();
     
+    baseCache =new HashMap<>();
     cache = new HashMap<>();
+    
     this.image = image;
     this.xOffset = xOffset;
     this.yOffset = yOffset;
@@ -49,9 +52,13 @@ public class Tileset
   
   public PImage imageForTypeAndColor(PieceType type, PieceColor color)
   {
-    Map<PieceColor, PImage> entry = cache.computeIfAbsent(PieceType.CAP, t -> new HashMap<>());
-    PImage image = entry.computeIfAbsent(color, c -> createColoredCopy(this.image, baseColors, colors.get(c)));
-    printStatistics();
+    Map<PieceType, PImage> entry = cache.computeIfAbsent(color, c -> new HashMap<>());
+    
+    PImage image = entry.computeIfAbsent(type, t -> { 
+      PImage base = getBasePieceGfx(t);
+      return createColoredCopy(base, baseColors, colors.get(color));
+    });
+    
     return image;
   }
 
@@ -74,14 +81,19 @@ public class Tileset
     }
   }
   
-  public Rectangle rectFor(PieceType type, PieceColor color)
+  private PImage getBasePieceGfx(PieceType type)
   {
-    PieceSpec spec = specs.get(type);  
-    
-    if (spec == null)
-      throw new IllegalArgumentException("Missing piece spec for "+type);
-    
-    return new Rectangle(spec.x, spec.y, spec.w, spec.h);
+    return baseCache.computeIfAbsent(type, t -> {
+      PieceSpec spec = specs.get(t);
+      
+      PImage gfx = Main.sketch.createImage(spec.w, spec.h, Sketch.ARGB);
+      
+      for (int y = 0; y < spec.h; ++y)
+        for (int x = 0; x < spec.w; ++x)
+          gfx.set(x, y, image.get(spec.x+x, spec.y+y));
+      
+      return gfx;
+    });
   }
   
   private static PImage createColoredCopy(PImage source, ColorMap base, ColorMap replacement)
@@ -103,7 +115,7 @@ public class Tileset
           found = true;
         }
       }
-      
+
       if (!found)
         tex.pixels[i] = source.pixels[i];
     }

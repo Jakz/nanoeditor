@@ -46,7 +46,7 @@ public class PieceDrawer
     PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
     
     gfx.fill(0);
-    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
+    gfx.blend(texture, 0, 0, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
     
     if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
       gfx.text(""+level.indexOfPiece(piece),p.x+spec.w/2,p.y+spec.oy+spec.h/2);
@@ -59,7 +59,7 @@ public class PieceDrawer
     Point p = positionForPiece(baseX, baseY, piece, l);
     
     PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
-    gfx.blend(texture, spec.x, spec.y, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
+    gfx.blend(texture, 0, 0, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
   }
   
   public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model, boolean showCaps)

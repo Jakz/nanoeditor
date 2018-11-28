@@ -168,9 +168,9 @@ public class PiecePaletteView extends Drawable
     
     PieceColor color = Brush.color;
     
-    Rectangle rectc = Brush.tileset.rectFor(PieceType.CAP, color);
-    PImage texture = Brush.tileset.imageForTypeAndColor(Brush.type(), color);
     int orx = Brush.tileset.spec(PieceType.CAP).ox, ory = Brush.tileset.spec(PieceType.CAP).oy;
+    
+    PImage capGfx = Brush.tileset.imageForTypeAndColor(PieceType.CAP, color);
     
     for (int i = 0; i < cellCount; ++i)
     {
@@ -187,17 +187,17 @@ public class PiecePaletteView extends Drawable
         p.stroke(0);
       }
 
-      Rectangle rect = Brush.tileset.rectFor(type, color);
+      PImage pieceGfx = Brush.tileset.imageForTypeAndColor(type, color);
       
-      int maxW = rect.width;//Math.min(cellSize, rect.width);
-      int maxH = rect.height;//Math.min(cellSize, rect.height);
+      int maxW = pieceGfx.width;//Math.min(cellSize, rect.width);
+      int maxH = pieceGfx.height;//Math.min(cellSize, rect.height);
       
       int opx = cellSize+cellSize/2-maxW/2, opy = cellSize+cellSize/2-maxH/2;
             
       buffer.beginDraw();
       buffer.fill(220);
       buffer.rect(0,0,cellSize*2,cellSize*2);
-      buffer.blend(texture, rect.x, rect.y, rect.width, rect.height, opx, opy, maxW, maxH, Sketch.BLEND);
+      buffer.blend(pieceGfx, 0, 0, pieceGfx.width, pieceGfx.height, opx, opy, maxW, maxH, Sketch.BLEND);
       
       if (!type.monocap)
       {
@@ -206,23 +206,21 @@ public class PiecePaletteView extends Drawable
           {
             int rx = opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*(ix-iy);
             int ry = opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.yOffset*(ix+iy) - Brush.tileset.hOffset;
-            
-            
-            buffer.blend(texture, rectc.x, rectc.y, rectc.width, rectc.height, rx, ry, rectc.width, rectc.height, Sketch.BLEND);
+
+            buffer.blend(capGfx, 0, 0, capGfx.width, capGfx.height, rx, ry, capGfx.width, capGfx.height, Sketch.BLEND);
           }
       }
       else
       {
         float ix = 0.5f - (type.width > type.height ? 0.0f : 1.0f);
         float iy = 0.0f;
-        
-        
+
         int rx = (int) (opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*(ix-iy));
         int ry = (int) (opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.yOffset*(ix+iy)) - Brush.tileset.hOffset;
         
         if (type.width < type.height) ry += Brush.tileset.yOffset;
         
-        buffer.blend(texture, rectc.x, rectc.y, rectc.width, rectc.height, rx, ry, rectc.width, rectc.height, Sketch.BLEND);
+        buffer.blend(capGfx, 0, 0, capGfx.width, capGfx.height, rx, ry, capGfx.width, capGfx.height, Sketch.BLEND);
       }
       
       buffer.endDraw();
