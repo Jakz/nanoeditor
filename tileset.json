@@ -25,9 +25,9 @@
     },
     {
       "name": "1x1r",
-      "offset": [1398, 0],
-      "size": [32, 37],
-      "pivot": [-16, -30]
+      "offset": [22, 44],
+      "size": [44, 43],
+      "pivot": [-22, -33]
     },
     {
       "name": "2x1",
@@ -72,21 +72,21 @@
     },
     {
       "name": "4x1",
-      "offset": [468, 0],
+      "offset": [312, 0],
       "size": [110, 76],
       "pivot": [-22,-33],
       "flippableX": true
     },
     {
       "name": "4x2",
-      "offset": [690, 0],
+      "offset": [423, 0],
       "size": [132, 87],
       "pivot": [-44, -33],
       "flippableX": true
     },
     {
       "name": "8x2",
-      "offset": [956, 0],
+      "offset": [556, 0],
       "size": [220, 131],
       "pivot": [-44, -33],
       "flippableX": true

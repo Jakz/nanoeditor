@@ -26,9 +26,7 @@ public class PieceDrawer
   public static Point positionForPiece(int baseX, int baseY, Piece piece, int l)
   {
     Tileset ts = Brush.tileset;
-    Tileset.PieceSpec spec = ts.spec(piece.type);
 
-    
     int fx = (int) (baseX + (piece.x - piece.y)/2.0f * ts.xOffset);
     int fy = (int) (baseY + (piece.x + piece.y)/2.0f * ts.yOffset);
     
@@ -91,6 +89,7 @@ public class PieceDrawer
   
   public static Rectangle computeLayerBounds(Model model, int l)
   {
+    /* compute the bounds for the whole isometric rectangle of the model */
     int sx = -model.getWidth()*Brush.tileset.xOffset, sw = model.getWidth()*Brush.tileset.xOffset*2;
     int sh = model.getHeight()*Brush.tileset.yOffset*2;
 
@@ -103,16 +102,9 @@ public class PieceDrawer
   
   public static Rectangle computeLayerBoundsWithPiece(Model model, int l)
   {    
-    int sx = -model.getWidth()*Brush.tileset.xOffset, sw = model.getWidth()*Brush.tileset.xOffset*2;
-    int sh = model.getHeight()*Brush.tileset.yOffset*2;
-    
-    sh += Brush.tileset.hOffset;
-    
-    Point base = basePositionForLayer(0,0,l);
-    
-    int sy = base.y - Brush.tileset.hOffset - 2;
-    
-    return new Rectangle(sx+base.x,sy,sw,sh);
+    /* add one level to take the piece into account */
+    Rectangle b = computeLayerBounds(model, l);
+    return new Rectangle(b.x, b.y - Brush.tileset.hOffset, b.width, b.height + Brush.tileset.hOffset);
   }
   
   public static Rectangle computeRealBounds(Model model, boolean withCaps)
