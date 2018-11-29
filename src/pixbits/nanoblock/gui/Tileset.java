@@ -40,9 +40,9 @@ public class Tileset
     baseColors = new ColorMap(baseCols.stream().map(Color::new).toArray(i -> new Color[i]));
   }
   
-  public void addSpec(PieceType piece, int x, int y, int w, int h, int ox, int oy)
+  public void addSpec(PieceType piece, int x, int y, int w, int h, int ox, int oy, boolean flipX)
   {
-    specs.put(piece, new PieceSpec(x,y,w,h,ox,oy));
+    specs.put(piece, new PieceSpec(x,y,w,h,ox,oy,flipX));
   }
   
   public void addColor(PieceColor color, ColorMap map)
@@ -56,7 +56,7 @@ public class Tileset
     
     PImage image = entry.computeIfAbsent(type, t -> { 
       PImage base = getBasePieceGfx(t);
-      return createColoredCopy(base, baseColors, colors.get(color));
+      return createColoredCopy(specs.get(type), base, baseColors, colors.get(color));
     });
     
     return image;
@@ -69,15 +69,17 @@ public class Tileset
     public final int x, y;
     public final int w, h;
     public final int ox, oy;
+    public final boolean flipX;
     
-    PieceSpec(int x, int y, int w, int h, int ox, int oy)
+    PieceSpec(int x, int y, int w, int h, int ox, int oy, boolean flipX)
     {
       this.x = x;
       this.y = y;
       this.w = w;
       this.h = h;
-      this.ox = ox;
+      this.ox = flipX ? -(w + ox) : ox;
       this.oy = oy;
+      this.flipX = flipX;
     }
   }
   
@@ -88,20 +90,32 @@ public class Tileset
       
       PImage gfx = Main.sketch.createImage(spec.w, spec.h, Sketch.ARGB);
       
-      for (int y = 0; y < spec.h; ++y)
-        for (int x = 0; x < spec.w; ++x)
-          gfx.set(x, y, image.get(spec.x+x, spec.y+y));
+      if (!spec.flipX)
+      {
+        for (int y = 0; y < spec.h; ++y)
+          for (int x = 0; x < spec.w; ++x)
+            gfx.set(x, y, image.get(spec.x+x, spec.y+y));
+      }
+      else
+      {
+        for (int y = 0; y < spec.h; ++y)
+          for (int x = 0; x < spec.w; ++x)
+            gfx.set(spec.w - x - 1, y, image.get(spec.x+x, spec.y+y));
+      }
       
       return gfx;
     });
   }
   
-  private static PImage createColoredCopy(PImage source, ColorMap base, ColorMap replacement)
+  private static PImage createColoredCopy(PieceSpec spec, PImage source, ColorMap baseColors, ColorMap replacement)
   {
     PImage tex = Main.sketch.createImage(source.width, source.height, Sketch.ARGB);
 
     tex.loadPixels();
     source.loadPixels();
+    
+    //TODO: hardcoded for now
+    ColorMap base = spec.flipX ? new ColorMap(baseColors.get(0), baseColors.get(2), baseColors.get(1), baseColors.get(3)) : baseColors;
 
     for (int i = 0; i < tex.width*tex.height; ++i)
     {

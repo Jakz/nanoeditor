@@ -20,7 +20,7 @@ import pixbits.nanoblock.tasks.Tasks;
 public class LibraryFrame extends JFrame
 {
   private static final long serialVersionUID = 1L;
-  private final JList list;
+  private final JList<LibraryModel> list;
   private final LibraryTableModel model;
   private final JScrollPane scrollpane;
   
@@ -31,7 +31,7 @@ public class LibraryFrame extends JFrame
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
     model = new LibraryTableModel();
-    list = new JList(model);
+    list = new JList<>(model);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setCellRenderer(new LibraryModelRenderer());
     list.addListSelectionListener(selectionListener);
@@ -151,7 +151,7 @@ public class LibraryFrame extends JFrame
       list.setSelectedValue(selected, true);
   }
   
-  public class LibraryTableModel extends AbstractListModel
+  public class LibraryTableModel extends AbstractListModel<LibraryModel>
   {
     private static final long serialVersionUID = 1L;
     
@@ -163,7 +163,7 @@ public class LibraryFrame extends JFrame
     }
     
     @Override
-    public Object getElementAt(int i) { return data.get(i); }
+    public LibraryModel getElementAt(int i) { return data.get(i); }
     
     @Override
     public int getSize() { return data.size(); }

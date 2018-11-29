@@ -26,6 +26,9 @@ public class TileSetLoader
     int[] offset;
     int[] size;
     int[] pivot;
+    boolean flipX;
+    
+    boolean flippableX;
   }
   
   private static class JsonColorSpec
@@ -93,7 +96,16 @@ public class TileSetLoader
       Tileset tileset = new Tileset(pimage, json.hOffset, json.xOffset, json.yOffset, json.baseColors);
       
       for (JsonPieceSpec piece : json.pieces)
-        tileset.addSpec(PieceType.forName(piece.name), piece.offset[0], piece.offset[1], piece.size[0], piece.size[1], piece.pivot[0], piece.pivot[1]);
+      {
+        if (piece.flippableX && piece.flipX) throw new IllegalArgumentException("If flippableX is enabled for a piece spec then flipX must be false");
+        
+        PieceType type = PieceType.forName(piece.name);
+        
+        tileset.addSpec(type, piece.offset[0], piece.offset[1], piece.size[0], piece.size[1], piece.pivot[0], piece.pivot[1], piece.flipX);
+        
+        if (piece.flippableX)
+          tileset.addSpec(PieceType.getRotation(type), piece.offset[0], piece.offset[1], piece.size[0], piece.size[1], piece.pivot[0], piece.pivot[1], !piece.flipX);
+      }
       
       for (JsonColorSpec color : json.colors)
       {

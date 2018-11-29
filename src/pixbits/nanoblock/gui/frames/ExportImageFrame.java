@@ -2,6 +2,8 @@ package pixbits.nanoblock.gui.frames;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.pixbits.lib.ui.elements.ComponentBorder;
+
 import java.io.File;
 import java.awt.*;
 

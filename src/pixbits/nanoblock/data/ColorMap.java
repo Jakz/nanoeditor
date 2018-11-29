@@ -14,6 +14,13 @@ public class ColorMap
     this.colors = colors;
   }
   
+  public ColorMap(int... colors)
+  {
+    this.colors = Arrays.stream(colors)
+      .mapToObj(Color::new)
+      .toArray(i -> new Color[i]);
+  }
+  
   public int size() { return colors.length; }
   
   public Color getAsColor(int index) { return colors[index]; }  

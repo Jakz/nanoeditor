@@ -28,7 +28,7 @@ public enum Item
   EDIT_USE_TAB_TO_ROTATE("Use TAB to rotate", "Use TAB to rotate", Icon.USE_TAB_ROTATION, Setting.USE_TAB_TO_ROTATE),
   EDIT_RESET("Reset"),
   EDIT_RESIZE("Resize", "Resize", Icon.MODEL_RESIZE, Tasks.MODEL_SHOW_RESIZE),
-  EDIT_REPLACE_COLOR("Replace Color", "Replace Colore", Icon.MODEL_REPLACE_COLOR, Tasks.MODEL_SHOW_REPLACE_COLOR),
+  EDIT_REPLACE_COLOR("Replace Color", "Replace Color", Icon.MODEL_REPLACE_COLOR, Tasks.MODEL_SHOW_REPLACE_COLOR),
 
   
   VIEW_HIDE_CAPS("Draw caps", Setting.DRAW_CAPS),
@@ -48,10 +48,10 @@ public enum Item
   VIEW_HOVER_PIECE_FILL("Front stroke with back fill", Setting.HoverSetter.INSTANCE, Setting.HoverPiece.GROUP, Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL),
   VIEW_HOVER_PIECE_MENU("Isometric Piece", new Item[] {VIEW_HOVER_PIECE_DISABLE, VIEW_HOVER_PIECE_STROKE_BACK, VIEW_HOVER_PIECE_STROKE_FRONT, VIEW_HOVER_PIECE_FILL}),
   
-  MODEL_SHIFT_NORTH("North ^", "Shift North", Icon.SHIFT_NORTH, ModelOperations.buildShift(Direction.NORTH)),
-  MODEL_SHIFT_SOUTH("South v", "Shift South", Icon.SHIFT_SOUTH, ModelOperations.buildShift(Direction.SOUTH)),
-  MODEL_SHIFT_WEST("West <-", "Shift West", Icon.SHIFT_WEST, ModelOperations.buildShift(Direction.WEST)),
-  MODEL_SHIFT_EAST("East ->", "Shift East", Icon.SHIFT_EAST, ModelOperations.buildShift(Direction.EAST)),
+  MODEL_SHIFT_NORTH("North ↑", "Shift North", Icon.SHIFT_NORTH, ModelOperations.buildShift(Direction.NORTH)),
+  MODEL_SHIFT_SOUTH("South ↓", "Shift South", Icon.SHIFT_SOUTH, ModelOperations.buildShift(Direction.SOUTH)),
+  MODEL_SHIFT_WEST("West ←", "Shift West", Icon.SHIFT_WEST, ModelOperations.buildShift(Direction.WEST)),
+  MODEL_SHIFT_EAST("East →", "Shift East", Icon.SHIFT_EAST, ModelOperations.buildShift(Direction.EAST)),
   MODEL_SHIFT_MENU("Shift", new Item[] {MODEL_SHIFT_NORTH, MODEL_SHIFT_SOUTH, MODEL_SHIFT_WEST, MODEL_SHIFT_EAST} ),
   
   MODEL_ROTATE_LEFT("Left", "Rotate Left", Icon.ROTATE_LEFT, ModelOperations.buildRotate(Direction.WEST)),

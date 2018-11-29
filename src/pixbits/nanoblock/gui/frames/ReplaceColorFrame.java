@@ -15,10 +15,10 @@ import pixbits.nanoblock.tasks.*;
 
 public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
 {
-  private final JComboBox fromColor;
-  private final JComboBox toColor;
+  private final JComboBox<PieceColor> fromColor;
+  private final JComboBox<PieceColor> toColor;
   private final JCheckBox onlyLockedLayer;
-  private final JList pieces;
+  private final JList<PieceSelection> pieces;
 
   private final Map<PieceColor, ImageIcon> colorIcons;
   
@@ -48,8 +48,8 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
     
     colorIcons = new HashMap<PieceColor, ImageIcon>();
     
-    fromColor = new JComboBox();
-    toColor = new JComboBox();
+    fromColor = new JComboBox<>();
+    toColor = new JComboBox<>();
     
     for (PieceColor c : PieceColor.values())
     {
@@ -63,7 +63,7 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
     onlyLockedLayer = new JCheckBox("Limit to selected level");
     
     top.add(fromColor);
-    top.add(new JLabel(" -> "));
+    top.add(new JLabel(" ⇒ "));
     top.add(toColor);
     top.setBorder(BorderFactory.createTitledBorder("Colors"));
     
@@ -71,9 +71,10 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
     types[0] = new PieceSelection(null);
     for (int i = 0; i < PieceType.count(); ++i) types[i+1] = new PieceSelection(PieceType.at(i));
     
-    pieces = new JList(types);
+    pieces = new JList<>(types);
     pieces.setCellRenderer(new PieceCellRenderer());
     pieces.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    pieces.setLayoutOrientation(JList.HORIZONTAL_WRAP);
     pieces.addMouseListener(listListener);
     
     JScrollPane listPane = new JScrollPane(pieces);
@@ -107,10 +108,11 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
     return icon;
   }
   
-  private final MouseListener listListener = new MouseAdapter() {
+  private final MouseListener listListener = new MouseAdapter()
+  {
     public void mouseReleased(MouseEvent e)
     {
-      JList list = (JList)e.getSource();
+      JList<PieceSelection> list = (JList<PieceSelection>)e.getSource();
       
       int index = list.locationToIndex(e.getPoint());
       PieceSelection piece = (PieceSelection)list.getModel().getElementAt(index);
@@ -145,15 +147,10 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
       }
       else
       {
-        if (piece.isSelected)
-        {
-          for (PieceSelection ps : types)
-            ps.isSelected = true;
-          list.repaint();
-        }
-        else
-          list.repaint(list.getCellBounds(0, 0));
+        for (PieceSelection ps : types)
+          ps.isSelected = piece.isSelected;
 
+        list.repaint();
       }
     }
   };
@@ -190,10 +187,13 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
       
       Task task = null;
       
+      PieceColor from = fromColor.getItemAt(fromColor.getSelectedIndex());
+      PieceColor to = toColor.getItemAt(toColor.getSelectedIndex());
+      
       if (onlyLockedLayer.isSelected())
-        task = new ModelOperations.ReplaceColor(model, Main.sketch.levelStackView.getLocked(), (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
+        task = new ModelOperations.ReplaceColor(model, Main.sketch.levelStackView.getLocked(), from, to, set);
       else
-        task = new ModelOperations.ReplaceColor(model, (PieceColor)fromColor.getSelectedItem(), (PieceColor)toColor.getSelectedItem(), set);
+        task = new ModelOperations.ReplaceColor(model, from, to, set);
       
       task.execute();
       Main.sketch.redraw();
@@ -201,22 +201,19 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
     }
   }
   
-  private class PieceCellRenderer extends JCheckBox implements ListCellRenderer
+  private class PieceCellRenderer extends JCheckBox implements ListCellRenderer<PieceSelection>
   {
     private static final long serialVersionUID = 1L;
     
     @Override
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+    public Component getListCellRendererComponent(JList<? extends PieceSelection> list, PieceSelection piece, int index, boolean isSelected, boolean cellHasFocus)
     {      
-      
-      PieceSelection piece = (PieceSelection)value;
-
       setEnabled(list.isEnabled());
       setSelected(piece.isSelected);
       setFont(list.getFont());
       setBackground(list.getBackground());
       setForeground(list.getForeground());
-      setText(value.toString());
+      setText(piece.toString());
       return this;
     }
   }
@@ -226,7 +223,7 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
     private static final long serialVersionUID = 1L;
     
     @Override
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus)
     {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       
