@@ -62,7 +62,7 @@ public class Sketch extends PApplet implements ChangeListener
       Library.model.allocateLevels(12);
     }*/
         
-    ColorPaletteView paletteView = new ColorPaletteView(this, 320,700,30,7);
+    ColorPaletteView paletteView = new ColorPaletteView(this, 320, 700, 30, 10);
     drawables.add(paletteView);
     
     updatePiecePalette();

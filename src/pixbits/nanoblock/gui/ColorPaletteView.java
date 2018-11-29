@@ -39,9 +39,12 @@ public class ColorPaletteView extends Drawable
     y -= oy;
     
     x /= cellSize;
-    Brush.color = PieceColor.at(offset+x);
     
-    Main.sketch.redraw();
+    if (offset + x < PieceColor.count())
+    {
+      Brush.color = PieceColor.at(offset+x);
+      Main.sketch.redraw();
+    }
   }
   
   public void mouseMoved(int x, int y) { }
@@ -112,9 +115,9 @@ public class ColorPaletteView extends Drawable
   {
     p.rectMode(Sketch.CORNER);
     
-    for (int i = 0; i < cellCount; ++i)
+    for (int i = 0; i < cellCount && offset + i < PieceColor.count(); ++i)
     {
-      PieceColor color = PieceColor.at(offset+i);
+      PieceColor color = PieceColor.at(offset + i);
       
       if (color == Brush.color)
       {
