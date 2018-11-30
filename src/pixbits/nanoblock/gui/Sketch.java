@@ -12,13 +12,14 @@ import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.TileSetLoader;
 
-import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.*;
 import java.awt.event.*;
 import java.nio.file.Paths;
 
 import javax.swing.event.*;
+
+import com.pixbits.lib.ui.color.Color;
 
 import processing.core.*;
 
@@ -191,12 +192,9 @@ public class Sketch extends PApplet implements ChangeListener
     
     if (hoveredIndex != -1)
     {
-      //Rectangle bounds = PieceDrawer.computeRealBounds(model, Settings.values.get(Setting.DRAW_CAPS));
-      
-      Rectangle bounds = PieceDrawer.computeLayerBoundsWithPiece(model, hoveredIndex);
-      
       this.strokeWeight(2.0f);
 
+      Rectangle bounds = PieceDrawer.computeLayerBoundsWithPiece(model, hoveredIndex);
       
       if (bounds != null)
       {
@@ -615,14 +613,9 @@ public class Sketch extends PApplet implements ChangeListener
 
   }
   
-  public void fill(Color c)
-  {
-  	fill(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
-  }
-  
-  public void stroke(Color c)
-  {
-    stroke(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
-  }
+  public void fill(java.awt.Color c) { fill(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()); }
+  public void stroke(java.awt.Color c) { stroke(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()); }
 
+  public void fill(Color c) { fill(c.r(), c.g(), c.b(), c.a()); }
+  public void stroke(Color c) { stroke(c.r(), c.g(), c.b(), c.a()); }
 }

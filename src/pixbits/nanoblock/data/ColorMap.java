@@ -1,8 +1,6 @@
 package pixbits.nanoblock.data;
 
 import java.util.Arrays;
-import java.util.Collection;
-
 import com.pixbits.lib.ui.color.Color;
 
 public class ColorMap

@@ -1,15 +1,18 @@
 package pixbits.nanoblock.data;
 
-import java.awt.Color;
+import com.pixbits.lib.ui.color.Color;
 
 public enum PieceColor {
   WHITE("White"),
+  CREAM("Cream"),
+  GRAY("Gray"),
+  DARK_GRAY("Dark Gray"),
   BLACK("Black"),
   GREEN_LIME("Green Lime"),
   YELLOW("Yellow"),
   ORANGE("Orange"),
   PINK("Pink"),
-  BROWN("Brown")
+  BROWN("Brown"),
   ;
   
   public Color fillColor;

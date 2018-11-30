@@ -3,14 +3,9 @@ package pixbits.nanoblock;
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
 import pixbits.nanoblock.gui.frames.*;
-import pixbits.nanoblock.gui.menus.Item;
 import pixbits.nanoblock.tasks.Tasks;
 
-import java.io.*;
-
 import javax.swing.JPopupMenu;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 import com.pixbits.lib.ui.UIUtils;
 

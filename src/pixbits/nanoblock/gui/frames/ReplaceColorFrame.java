@@ -96,9 +96,9 @@ public class ReplaceColorFrame extends BaseDialog implements ModelOperationFrame
       BufferedImage image = new BufferedImage(16,16,BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = (Graphics2D)image.getGraphics();
       
-      g.setColor(color.fillColor);
+      g.setColor(color.fillColor.toAWT());
       g.fillRect(0, 0, 16, 16);
-      g.setColor(color.strokeColor);
+      g.setColor(color.strokeColor.toAWT());
       g.drawRect(0, 0, 15, 15);
       
       icon = new ImageIcon(image);

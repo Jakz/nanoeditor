@@ -40,7 +40,7 @@ public class ColorPaletteView extends Drawable
     
     x /= cellSize;
     
-    if (offset + x < PieceColor.count())
+    if (offset+x < PieceColor.count())
     {
       Brush.color = PieceColor.at(offset+x);
       Main.sketch.redraw();
@@ -117,7 +117,7 @@ public class ColorPaletteView extends Drawable
     
     for (int i = 0; i < cellCount && offset + i < PieceColor.count(); ++i)
     {
-      PieceColor color = PieceColor.at(offset + i);
+      PieceColor color = PieceColor.at(offset+i);
       
       if (color == Brush.color)
       {

@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Iterator;
 
+import com.pixbits.lib.ui.color.Color;
+
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.menus.Item;
@@ -277,17 +279,16 @@ public class LevelView extends Drawable
     
     Level locked = parent.getLocked();
     
+    /* draw border of locked level */
     if (locked == level)
     {
       p.strokeWeight(3.0f);
       p.stroke(220,0,0);
-      p.line(ox, oy+cellSize*0, ox+model.getWidth()*cellSize, oy+cellSize*0);
-      p.line(ox, oy+cellSize*model.getHeight(), ox+model.getWidth()*cellSize, oy+cellSize*model.getHeight());
-      p.line(ox+cellSize*0, oy, ox+cellSize*0, oy+model.getHeight()*cellSize);
-      p.line(ox+cellSize*model.getWidth(), oy, ox+cellSize*model.getWidth(), oy+model.getHeight()*cellSize);
+      p.noFill();
+      p.rect(ox, oy+cellSize*0, cellSize*model.getWidth(), model.getHeight()*cellSize);
     }
     
-    // draw pieces
+    /* draw pieces */
     p.noStroke();
     p.strokeWeight(2.0f);
     p.fill(255.0f,0f,0f);
@@ -305,10 +306,10 @@ public class LevelView extends Drawable
         
         if (piece.type != PieceType.CAP)
         {
-          java.awt.Color f = piece.color.fillColor, s = piece.color.strokeColor;
+          Color f = piece.color.fillColor, s = piece.color.strokeColor;
           
-          p.fill(f.getRed(),f.getGreen(),f.getBlue(),100);
-          p.stroke(s.getRed(),s.getGreen(),s.getBlue(),150);
+          p.fill(f.withAlpha(100));
+          p.stroke(s.withAlpha(150));
           
           p.rect(ox+piece.x*cellSize/2+2, oy+piece.y*cellSize/2+2, piece.type.width*cellSize-3, piece.type.height*cellSize-3);
           

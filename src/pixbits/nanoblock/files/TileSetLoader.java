@@ -114,7 +114,7 @@ public class TileSetLoader
         List<Color> colors = color.colors.stream().map(a -> new Color(a)).collect(Collectors.toList());
         tileset.addColor(pcolor, new ColorMap(colors.toArray(new Color[colors.size()])));
         
-        pcolor.setColors(colors.get(3).toAWT(), colors.get(0).toAWT());
+        pcolor.setColors(colors.get(3), colors.get(0));
       }
       
       return tileset;
