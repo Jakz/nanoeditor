@@ -3,8 +3,11 @@ package pixbits.nanoblock.gui;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.ui.*;
-
+import pixbits.nanoblock.misc.Setting;
+import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
+
+import java.awt.Point;
 import java.awt.Rectangle;
 
 public class PiecePaletteView extends Drawable
@@ -20,6 +23,7 @@ public class PiecePaletteView extends Drawable
     
     public abstract PieceType brushAt(int i);
     public abstract PieceType at(int i);
+    public final int size() { return size; }
   };
   
   private static class NormalPiecesWrapper extends PiecesPaletteWrapper
@@ -69,6 +73,8 @@ public class PiecePaletteView extends Drawable
       p.addDrawable(scrollBar);
     }
   }
+  
+  public int brushCount() { return wrapper.size(); }
   
   void dispose(Sketch p)
   {
@@ -168,71 +174,63 @@ public class PiecePaletteView extends Drawable
     
     PieceColor color = Brush.color;
     
-    int orx = Brush.tileset.spec(PieceType.CAP).ox, ory = Brush.tileset.spec(PieceType.CAP).oy;
     
     PImage capGfx = Brush.tileset.imageForTypeAndColor(PieceType.CAP, color);
+    
+    int selectedIndex = -1;
     
     for (int i = 0; i < cellCount; ++i)
     {
       PieceType type = wrapper.at(offset+i);
             
       if (type == Brush.type())
-      {
-        p.strokeWeight(3.0f);
-        p.stroke(255,0,0);
-      }
-      else
-      {
-        p.strokeWeight(1.0f);
-        p.stroke(0);
-      }
+        selectedIndex = i;
 
       PImage pieceGfx = Brush.tileset.imageForTypeAndColor(type, color);
       
-      int maxW = pieceGfx.width;//Math.min(cellSize, rect.width);
-      int maxH = pieceGfx.height;//Math.min(cellSize, rect.height);
+      int maxW = pieceGfx.width;
+      int maxH = pieceGfx.height;
       
-      int opx = cellSize+cellSize/2-maxW/2, opy = cellSize+cellSize/2-maxH/2;
+      int opx = cellSize+cellSize/2 - maxW/2, opy = cellSize+cellSize/2 - maxH/2;
             
       buffer.beginDraw();
       buffer.fill(220);
       buffer.rect(0,0,cellSize*2,cellSize*2);
       buffer.blend(pieceGfx, 0, 0, pieceGfx.width, pieceGfx.height, opx, opy, maxW, maxH, Sketch.BLEND);
-      
-      if (!type.monocap)
-      {
-        for (int ix = 0; ix < type.width; ++ix)
-          for (int iy = 0; iy < type.height; ++iy)
-          {
-            int rx = opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*(ix-iy);
-            int ry = opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.yOffset*(ix+iy) - Brush.tileset.hOffset;
-
-            buffer.blend(capGfx, 0, 0, capGfx.width, capGfx.height, rx, ry, capGfx.width, capGfx.height, Sketch.BLEND);
-          }
-      }
-      else
-      {
-        float ix = 0.5f - (type.width > type.height ? 0.0f : 1.0f);
-        float iy = 0.0f;
-
-        int rx = (int) (opx - Brush.tileset.spec(type).ox + orx + Brush.tileset.xOffset*(ix-iy));
-        int ry = (int) (opy - Brush.tileset.spec(type).oy + ory + Brush.tileset.yOffset*(ix+iy)) - Brush.tileset.hOffset;
         
-        if (type.width < type.height) ry += Brush.tileset.yOffset;
-        
-        buffer.blend(capGfx, 0, 0, capGfx.width, capGfx.height, rx, ry, capGfx.width, capGfx.height, Sketch.BLEND);
+      /* draw caps on piece */
+      if (Settings.values.get(Setting.DRAW_CAPS))
+      {
+        final int capOffsetX = Brush.tileset.spec(PieceType.CAP).ox, capOffsetY = Brush.tileset.spec(PieceType.CAP).oy;
+  
+        type.forEachCap((x,y) -> {
+          final Point pt = PieceDrawer.positionForPiece(
+              opx - Brush.tileset.spec(type).ox, 
+              opy - Brush.tileset.spec(type).oy, 
+              new Piece(PieceType.CAP, color, x, y), 
+              1
+              );
+          
+          buffer.blend(capGfx, 0, 0, capGfx.width, capGfx.height, pt.x + capOffsetX, pt.y + capOffsetY, capGfx.width, capGfx.height, Sketch.BLEND);
+        });
       }
-      
+
       buffer.endDraw();
-      
       p.blend(buffer, cellSize, cellSize, cellSize, cellSize, ox+i*cellSize, oy, cellSize, cellSize, Sketch.BLEND);
       
-      p.rectMode(Sketch.CORNER);
+      p.strokeWeight(1.0f);
+      p.stroke(0);
       p.rect(ox+i*cellSize,oy,cellSize,cellSize);
+    }
+    
+    if (selectedIndex >= 0)
+    {
+      p.strokeWeight(3.0f);
+      p.stroke(255,0,0);
+      p.rect(ox + selectedIndex*cellSize,oy,cellSize,cellSize);
     }
   }
   
   public int offset() { return offset; }
   public void setOffset(int value) { offset = value; }
-
 }

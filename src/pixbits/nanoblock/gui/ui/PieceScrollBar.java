@@ -16,7 +16,7 @@ public class PieceScrollBar extends UIScrollBar
   public int min() { return 0; }
   
   public int max() {
-    return PieceType.count() - view.cellCount;
+    return view.brushCount() - view.cellCount;
   }
   
   public void progressChanged(int value)

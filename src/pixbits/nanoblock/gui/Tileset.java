@@ -9,6 +9,7 @@ import java.util.*;
 import com.pixbits.lib.lang.Pair;
 import com.pixbits.lib.ui.color.Color;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 public class Tileset
@@ -80,7 +81,7 @@ public class Tileset
       this.ox = flipX ? -(w + ox) : ox;
       this.oy = oy;
       this.flipX = flipX;
-    }
+    }   
   }
   
   private PImage getBasePieceGfx(PieceType type)

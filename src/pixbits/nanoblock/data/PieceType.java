@@ -1,6 +1,9 @@
 package pixbits.nanoblock.data;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+
+import com.pixbits.lib.functional.IntBiConsumer;
 
 public class PieceType
 {
@@ -14,6 +17,18 @@ public class PieceType
     this.height = height;
     this.rounded = rounded;
     this.monocap = monocap;
+  }
+  
+  public void forEachCap(IntBiConsumer consumer)
+  {
+    if (!monocap)
+    {
+      for (int i = 0; i < width; ++i)
+        for (int j = 0; j < height; ++j)
+          consumer.accept(i*2, j*2);
+    }
+    else
+      consumer.accept(width/2, height/2);
   }
   
   public final static PieceType CAP = new PieceType(1,1,false,false);

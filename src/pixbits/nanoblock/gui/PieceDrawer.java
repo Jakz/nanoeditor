@@ -26,8 +26,6 @@ public class PieceDrawer
   public static Point positionForPiece(int baseX, int baseY, Piece piece, int l)
   {
     Tileset ts = Brush.tileset;
-    Tileset.PieceSpec spec = ts.spec(piece.type);
-
     
     int fx = (int) (baseX + (piece.x - piece.y)/2.0f * ts.xOffset);
     int fy = (int) (baseY + (piece.x + piece.y)/2.0f * ts.yOffset);
