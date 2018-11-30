@@ -112,6 +112,7 @@ public class IsometricView extends Drawable
   {
     p.strokeWeight(2.0f);
     p.stroke(40,40,40,128);
+    p.noFill();
     
     int w = model.getWidth(), h = model.getHeight();
     
@@ -124,17 +125,13 @@ public class IsometricView extends Drawable
   
   public void drawFilledGrid(int l)
   {
-    p.strokeWeight(2.0f);
-    p.fill(220,220,220,150);
-    p.stroke(40,40,40,128);
-    
     int w = model.getWidth(), h = model.getHeight();
+
+    p.noStroke();
+    p.fill(220,220,220,150);    
+    drawIsoSquare(0, 0, w*2, h*2, l);
     
-    for (int i = 0; i < w; ++i)
-      for (int j = 0; j < h; ++j)
-      {
-        drawIsoSquare(i*2,j*2, 2, 2, l);
-      }
+    drawGrid(l);
   }
   
   public void drawGridHoverFill(int h, Rectangle r)
@@ -215,8 +212,6 @@ public class IsometricView extends Drawable
   @Override
   public boolean isInside(int x, int y)
   {
-    Tileset ts = Brush.tileset;
-    
     Level locked = p.levelStackView.getLocked();
     if (locked != null)
     {
@@ -229,6 +224,8 @@ public class IsometricView extends Drawable
     else
       return false;
     /*
+     *     Tileset ts = Brush.tileset;
+
     final int width = (model.getWidth()+model.getHeight())*ts.xOffset;
     final int baseHeight = (model.getHeight()+model.getWidth())*ts.yOffset;
     final int layersHeight = model.levelCount()*ts.hOffset;
@@ -350,9 +347,6 @@ public class IsometricView extends Drawable
         {
           if (hover == null || hover.x != ix*2 || hover.y != iy*2 || hover.width != bw || hover.height != bh)
           {            
-            p.strokeWeight(4.0f);
-            p.stroke(180,0,0,220);
-
             p.levelStackView.setHover(new Rectangle(ix*2, iy*2, bw, bh));
           }
         }
