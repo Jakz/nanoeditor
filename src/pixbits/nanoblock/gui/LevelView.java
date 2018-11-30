@@ -219,9 +219,9 @@ public class LevelView extends Drawable
     }
   }
   
-  public void mouseWheelMoved(int x)
+  public void mouseWheelMoved(int x, int y, int v)
   { 
-    parent.scrollbar.mouseWheelMoved(x);
+    parent.scrollbar.mouseWheelMoved(x, y, v);
   }
   
   public void draw()

@@ -116,9 +116,9 @@ public abstract class UIScrollBar extends Drawable
     progressChanged(progressReal);
   }
   
-  public void mouseWheelMoved(int x)
+  public void mouseWheelMoved(int ___, int __, int v)
   {
-    if (x < 0)
+    if (v < 0)
       upArrow();
     else
       downArrow();

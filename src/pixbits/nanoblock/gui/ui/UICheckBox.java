@@ -31,7 +31,7 @@ public class UICheckBox extends Drawable
   public void mouseDragged(int x, int y, int b) { }
   public void mouseMoved(int x, int y) { }
   public void mouseExited() { }
-  public void mouseWheelMoved(int x) { }
+  public void mouseWheelMoved(int x, int y, int v) { }
   
   public void draw()
   {

@@ -86,7 +86,7 @@ public class ColorPaletteView extends Drawable
   
   public void mouseExited() { }
 
-  public void mouseWheelMoved(int x) 
+  public void mouseWheelMoved(int ___, int __, int v) 
   {
     int i = 0;
     for (i = 0; i < PieceColor.count(); ++i)
@@ -95,13 +95,13 @@ public class ColorPaletteView extends Drawable
         break;
     }
     
-    if (x > 0 && i + 1 < PieceColor.count())
+    if (v > 0 && i + 1 < PieceColor.count())
     {
       Brush.color = PieceColor.at(i+1);
       if (scrollBar != null && i >= offset + cellCount - 1)
         scrollBar.downArrow();
     }
-    else if (x < 0 && i > 0)
+    else if (v < 0 && i > 0)
     {
       Brush.color = PieceColor.at(i-1);
       if (scrollBar != null && i < offset + 1)

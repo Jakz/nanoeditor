@@ -25,7 +25,7 @@ public class UIButton extends Drawable
   public void mouseDragged(int x, int y, int b) { }
   public void mouseMoved(int x, int y) { hover = true; }
   public void mouseExited() { hover = false;}
-  public void mouseWheelMoved(int x) { }
+  public void mouseWheelMoved(int x, int y, int v) { }
   
   public void draw()
   {

@@ -37,6 +37,7 @@ public class Sketch extends PApplet implements ChangeListener
   	
 	public LevelStackView levelStackView;
 	public PiecePaletteView pieceView;
+	public IsometricView isometricView;
 	
 	public PFont font;
 	
@@ -53,19 +54,10 @@ public class Sketch extends PApplet implements ChangeListener
     Brush.tileset = TileSetLoader.loadAndBuild(Paths.get("tileset.json"));
 
     font = createFont("Helvetica", 16);
-
-
-    /*Library.model = ModelLoader.loadModel(new File("model.nblock"));
-    
-    if (Library.model == null)
-    { 
-      Library.model = new Model(20,20);
-      Library.model.allocateLevels(12);
-    }*/
         
     ColorPaletteView paletteView = new ColorPaletteView(this, 320, 700, 30, 10);
     drawables.add(paletteView);
-    
+        
     updatePiecePalette();
 
     /*UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
@@ -80,6 +72,10 @@ public class Sketch extends PApplet implements ChangeListener
   {
     if (levelStackView != null) levelStackView.dispose(this);
     levelStackView = new LevelStackView(this, 3, 0, 0, 14, 20, model);
+    
+    if (isometricView != null) drawables.remove(isometricView);
+    isometricView = new IsometricView(this, model);
+    drawables.add(isometricView);
     
     this.model = model;
   }
@@ -119,8 +115,8 @@ public class Sketch extends PApplet implements ChangeListener
     drawables.remove(d);
   }
   
-  public int baseX = 750;
-  public int baseY = 300;
+  //public int baseX = 750;
+  //public int baseY = 300;
   
   public int hoveredIndex = -1;
   
@@ -128,214 +124,13 @@ public class Sketch extends PApplet implements ChangeListener
   {
   	if (model == null)
   	  return;
-    
-    
+
     background(220);
-  	
-  	Level hovered = levelStackView.getHoveredLevel();
-  	hoveredIndex = -1;
-  	Rectangle hoverRect = levelStackView.hover();
-  	
-  	if (levelStackView.getLocked() != null)
-  	  hovered = levelStackView.getLocked();
-  	
-  	int rx = baseX;
-  	int ry = baseY;// + Brush.tileset.yOffset;
-  	
-  	for (int l = 0; l < model.levelCount(); ++l)
-  	{
-  	  Level level = model.levelAt(l);
-  	  Iterator<Piece> pieces = level.iterator();
-
-  	  if (hovered == level)
-  	  {
-  	    hoveredIndex = l;
-  	    
-  	    if (Settings.values.get(Setting.VIEW_SHOW_LAYER_GRID))
-  	    {
-  	      if (Settings.values.get(Setting.VIEW_LAYER_GRID_ALPHA))
-  	        drawFilledGrid(l);
-  	      else
-  	        drawGrid(l);
-  	    }
-  	     	    
-  	    if (Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL)
-  	    {
-  	      drawGridHover(hoveredIndex, hoverRect);
-  	      drawGridHoverFill(hoveredIndex, hoverRect);
-  	    }
-  	    else if (Settings.values.getHoverPiece() == Setting.HoverPiece.BACK_STROKE)
-  	    {
-          drawGridHover(hoveredIndex, hoverRect);
-  	    }
-  	    
-  	  }
-
-  	  
-  	  while (pieces.hasNext())
-      {
-        Piece piece = pieces.next();
-
-        if (piece.type != PieceType.CAP || Settings.values.get(Setting.DRAW_CAPS))
-        PieceDrawer.drawPiece(this, rx, ry, piece, piece.x, piece.y, l, level);
-      }
-  	}
-  	
+    	
   	for (Drawable d : drawables)
   	  d.draw();
-
-    if (Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL || Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE)
-    {
-      if (hoveredIndex != -1)
-        drawGridHover(hoveredIndex, hoverRect);
-    }
-    
-    if (hoveredIndex != -1)
-    {
-      this.strokeWeight(2.0f);
-
-      Rectangle bounds = PieceDrawer.computeLayerBoundsWithPiece(model, hoveredIndex);
-      
-      if (bounds != null)
-      {
-        this.stroke(255,0,0,200);
-        this.noFill();
-        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
-      }
-      
-      bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-
-      if (bounds != null)
-      {
-        this.stroke(255,128,0,200);
-        this.noFill();
-        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
-      }
-      
-      bounds = PieceDrawer.computeRealBounds(model, hoveredIndex, Settings.values.get(Setting.DRAW_CAPS));
-      
-      if (bounds != null)
-      {
-        this.stroke(0,0,180,200);
-        this.noFill();
-        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
-      }
-      
-      bounds = PieceDrawer.computeRealBounds(model, Settings.values.get(Setting.DRAW_CAPS));
-      
-      if (bounds != null)
-      {
-        this.stroke(0,180,0,200);
-        this.noFill();
-        this.rect(rx+bounds.x, ry+bounds.y, bounds.width, bounds.height);
-      }
-    }
   }
-  
-  public void drawGrid(int l)
-  {
-    this.strokeWeight(2.0f);
-    this.stroke(40,40,40,128);
     
-    int w = model.getWidth(), h = model.getHeight();
-    
-    for (int i = 0; i < w+1; ++i)
-      drawGridLine(0,i*2,h*2,i*2,l);
-    
-    for (int i = 0; i < h+1; ++i)
-      drawGridLine(i*2,0,i*2,w*2,l);
-  }
-  
-  public void drawFilledGrid(int l)
-  {
-    this.strokeWeight(2.0f);
-    this.fill(220,220,220,150);
-    this.stroke(40,40,40,128);
-    
-    int w = model.getWidth(), h = model.getHeight();
-    
-    for (int i = 0; i < w; ++i)
-      for (int j = 0; j < h; ++j)
-      {
-        drawIsoSquare(i*2,j*2, 2, 2, l);
-      }
-  }
-  
-  public void drawGridHoverFill(int h, Rectangle r)
-  {    
-    if (r != null)
-    {
-      this.fill(220,0,0,180);
-      this.strokeWeight(1.0f);
-      this.stroke(0);
-      this.drawIsoSquare(r.x, r.y, r.width*2, r.height*2, h);
-    }
-
-  }
-  
-  public void drawGridHover(int h, Rectangle r)
-  {    
-    if (r != null)
-    {
-      this.strokeWeight(4.0f);
-      this.stroke(180,0,0,220);
-    
-      drawGridLine(r.x, r.y, r.x+r.width*2, r.y, h);
-      drawGridLine(r.x, r.y+r.height*2, r.x+r.width*2, r.y+r.height*2, h);
-      drawGridLine(r.x, r.y, r.x, r.y+r.height*2, h);
-      drawGridLine(r.x+r.width*2, r.y, r.x+r.width*2, r.y+r.height*2, h);
-    }
-  }
-  
-  public void drawIsoSquare(int x, int y, int w, int h, int l)
-  {
-    int baseX = this.baseX;
-    int baseY = this.baseY - 1;
-    
-    Tileset ts = Brush.tileset;
-
-    int fx1 = (int) (baseX + (x - y)/2.0f * ts.xOffset);
-    int fy1 = (int) (baseY + (x + y)/2.0f * ts.yOffset);
-
-    int fx2 = (int) (baseX + ((x+w) - (y+h))/2.0f * ts.xOffset);
-    int fy2 = (int) (baseY + ((x+w) + (y+h))/2.0f * ts.yOffset);
-
-    int fx3 = (int) (baseX + (x - (y+h))/2.0f * ts.xOffset);
-    int fy3 = (int) (baseY + (x + (y+h))/2.0f * ts.yOffset);
-
-    int fx4 = (int) (baseX + ((x+w) - y)/2.0f * ts.xOffset);
-    int fy4 = (int) (baseY + ((x+w) + y)/2.0f * ts.yOffset);
-    
-    fy1 -= Brush.tileset.hOffset*l;
-    fy2 -= Brush.tileset.hOffset*l;
-    fy3 -= Brush.tileset.hOffset*l;
-    fy4 -= Brush.tileset.hOffset*l;
-    
-    beginShape();
-    vertex(fx1, fy1);
-    vertex(fx3, fy3);
-    vertex(fx2, fy2);
-    vertex(fx4, fy4);
-    vertex(fx1, fy1);
-    endShape();
-  }
-  
-  public void drawGridLine(int x1, int y1, int x2, int y2, int h)
-  {
-    int baseX = this.baseX;
-    int baseY = this.baseY - 1;
-    
-    int fx1 = (int) (baseX + (x1 - y1)/2.0f * Brush.tileset.xOffset);
-    int fy1 = (int) (baseY + (x1 + y1)/2.0f * Brush.tileset.yOffset);
-    int fx2 = (int) (baseX + (x2 - y2)/2.0f * Brush.tileset.xOffset);
-    int fy2 = (int) (baseY + (x2 + y2)/2.0f * Brush.tileset.yOffset);
-    
-    fy1 -= Brush.tileset.hOffset*h;
-    fy2 -= Brush.tileset.hOffset*h;
-
-    this.line(fx1, fy1, fx2, fy2);
-  }
-  
   public boolean tabPressed = false;
 
   @Override
@@ -388,20 +183,11 @@ public class Sketch extends PApplet implements ChangeListener
     redraw();
   }
   
-  int lockX = -1, lockY = -1;
-  boolean draggingLock = false;
-
   public void mouseReleased()
   {    	
     int x = mouseX;
     int y = mouseY;
-    
-    if (draggingLock)
-    {
-      draggingLock = false;
-      return;
-    }
-        
+
     for (Drawable d : drawables)
     {
       boolean dragLocked = d.draggingLock(); 
@@ -411,31 +197,6 @@ public class Sketch extends PApplet implements ChangeListener
       {
         d.mouseReleased(x, y, mouseButton);
         return;
-      }
-    }
-    
-    Level locked = levelStackView.getLocked();
-    if (locked != null)
-    {
-      Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-      bounds.x += baseX;
-      bounds.y += baseY;
-      
-      Rectangle hover = levelStackView.hover();
-
-      if (x >= bounds.x && x < bounds.x+bounds.width && y >= bounds.y && y < bounds.y+bounds.height && hover != null)
-      {
-        Piece piece = locked.pieceAt(hover.x,hover.y);
-        
-        if (!locked.isFreeAt(hover.x, hover.y))
-        {
-          new ModelOperations.Remove(model, hoveredIndex, hover.x, hover.y).execute();
-          levelStackView.clearToBeDeleted();
-        }
-        else if (locked.canPlace(Brush.type(), hover.x, hover.y))
-          new ModelOperations.Place(model, hoveredIndex, Brush.type(), Brush.color, hover.x, hover.y).execute();
-        
-        Main.sketch.redraw();
       }
     }
   }
@@ -450,59 +211,21 @@ public class Sketch extends PApplet implements ChangeListener
   {
     int x = mouseX;
     int y = mouseY;
-    
-    if (!draggingLock)
-    {
-      for (Drawable d : drawables)
-        if (d.draggingLock())
-        {
-          d.mouseDragged(x, y, mouseButton);
-          return;
-        }
-      
-      for (Drawable d : drawables)
-      {
-        if (d.isInside(x, y))
-        {
-          d.mouseDragged(x, y, mouseButton);
-          return;
-        }
-      }
-    }
-    
-    if (mouseButton == PConstants.RIGHT)
-    {
-      if (!draggingLock)
-      {        
-        Level locked = levelStackView.getLocked();
 
-        if (locked == null)
-        {
-          Rectangle bounds = PieceDrawer.computeRealBounds(model, false);
-          bounds.x += baseX;
-          bounds.y += baseY;
-          
-        if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
-        {
-          draggingLock = true;
-          lockX = x;
-          lockY = y;
-        }
-        else
-          return;
-          
-        }
-        else
-          return;
+    for (Drawable d : drawables)
+      if (d.draggingLock())
+      {
+        d.mouseDragged(x, y, mouseButton);
+        return;
       }
-      
-      this.baseX += x - lockX;
-      this.baseY += y - lockY;
-      
-      lockX = x;
-      lockY = y;
-      
-      redraw();
+    
+    for (Drawable d : drawables)
+    {
+      if (d.isInside(x, y))
+      {
+        d.mouseDragged(x, y, mouseButton);
+        return;
+      }
     }
   }
   
@@ -518,52 +241,6 @@ public class Sketch extends PApplet implements ChangeListener
       else
         d.mouseExited();
     }
-    
-    Level locked = levelStackView.getLocked();
-
-    if (locked != null)
-    {
-      Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-      bounds.x += baseX;
-      bounds.y += baseY;
-      
-      Rectangle hover = levelStackView.hover();
-      
-      if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
-      {
-        x -= bounds.x + bounds.width/2 ;
-        y -= bounds.y;
-        
-        int ix = (x / Brush.tileset.xOffset + y / Brush.tileset.yOffset) / 2;
-        int iy = (y / Brush.tileset.yOffset - x / Brush.tileset.xOffset) / 2;
-        
-        
-        //ix -= Library.model.getWidth()/2;
-        //iy += Library.model.getHeight()/2;
-        
-        
-        int bw = Brush.type().width;
-        int bh = Brush.type().height;
-        
-        Log.i("Hover: "+ix+", "+iy);
-
-        
-        if (ix >= 0 && ix+bw <= model.getWidth() && iy >= 0 && iy+bh <= model.getHeight())
-        {
-          if (hover == null || hover.x != ix*2 || hover.y != iy*2 || hover.width != bw || hover.height != bh)
-          {            
-            this.strokeWeight(4.0f);
-            this.stroke(180,0,0,220);
-
-            levelStackView.setHover(new Rectangle(ix*2, iy*2, bw, bh));
-          }
-        }
-        else
-          levelStackView.setHover(null);
-        
-      }
-    }
-
   }
   
   public void mouseWheelMoved(int amount)
@@ -574,35 +251,10 @@ public class Sketch extends PApplet implements ChangeListener
     for (Drawable d : drawables)
     {
       if (d.isInside(x, y))
-        d.mouseWheelMoved(amount);
-    }
-    
-    Level locked = levelStackView.getLocked();
-
-    if (locked != null)
-    {
-      Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-      bounds.x += baseX;
-      bounds.y += baseY;
-      
-      if (x >= bounds.x && x < bounds.x + bounds.width && y >= bounds.y && y < bounds.y + bounds.height)
-      {
-        if (amount > 0 && locked.previous() != null)
-        {
-          levelStackView.setLocked(locked.previous());
-          mouseMoved();
-        }
-        else if (amount < 0 && locked.next() != null)
-        {
-          levelStackView.setLocked(locked.next());
-          mouseMoved();
-        }   
-      }
+        d.mouseWheelMoved(x, y, amount);
     }
   }
   
-  int lx = -1, ly = -1;
-
   public void stateChanged(ChangeEvent e)
   {
   	
@@ -611,6 +263,13 @@ public class Sketch extends PApplet implements ChangeListener
   void reset()
   {
 
+  }
+  
+  public void rect(int r, int g, int b, int a, int x, int y, int w, int h)
+  {
+    noFill();
+    stroke(r,g,b,a);
+    rect(x, y, w, h);
   }
   
   public void fill(java.awt.Color c) { fill(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()); }

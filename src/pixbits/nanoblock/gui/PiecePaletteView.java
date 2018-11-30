@@ -142,7 +142,7 @@ public class PiecePaletteView extends Drawable
 
   public void mouseExited() { }
   
-  public void mouseWheelMoved(int x) 
+  public void mouseWheelMoved(int ___, int __, int v) 
   {
     int i = 0;
     for (i = 0; i < wrapper.size; ++i)
@@ -151,13 +151,13 @@ public class PiecePaletteView extends Drawable
         break;
     }
     
-    if (x > 0 && i + 1 < wrapper.size)
+    if (v > 0 && i + 1 < wrapper.size)
     {
       Brush.setType(wrapper.brushAt(i+1));
       if (scrollBar != null && i >= offset + cellCount - 1)
         scrollBar.downArrow();
     }
-    else if (x < 0 && i > 0)
+    else if (v < 0 && i > 0)
     {
       Brush.setType(wrapper.brushAt(i-1));
       if (scrollBar != null && i < offset + 1)
