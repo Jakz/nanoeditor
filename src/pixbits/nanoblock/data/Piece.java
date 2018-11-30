@@ -1,5 +1,7 @@
 package pixbits.nanoblock.data;
 
+import java.util.Objects;
+
 public class Piece
 {
   public PieceType type;
@@ -19,6 +21,7 @@ public class Piece
     return new Piece(type, color, x, y);
   }
   
+  @Override
   public boolean equals(Object o)
   {
     if (o != null && o instanceof Piece)
@@ -28,6 +31,9 @@ public class Piece
     }
     return false;
   }
+  
+  @Override
+  public int hashCode() { return Objects.hash(type, color, x, y); }
   
   public boolean overlaps(Piece piece)
   {

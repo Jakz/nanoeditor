@@ -58,25 +58,32 @@ public class Level implements Iterable<Piece>
     /* add caps to current level */
     if (previous != null && piece.type != PieceType.CAP)
     {
+      Set<Piece> coveredPieces = new HashSet<>();
+      
+      /* find all pieces covered by the one that is going to be removed */
       for (int i = piece.x-1; i <= piece.x+piece.type.width*2; ++i)
         for (int j = piece.y-1; j <= piece.y+piece.type.height*2; ++j)
         {
           if (i >= 0 && j >= 0)
           {
             Piece piece2 = previous.pieceAt(i, j);
-            
             if (piece2 != null && piece2.type != PieceType.CAP)
-            {              
-              if (!piece2.type.monocap && i%2 == piece2.x%2 && j%2 == piece2.y%2 && isReallyFreeAt(i, j))
-              {
-                Log.i("Adding cap for removal at "+i+", "+j+" thanks to "+piece2);
-                addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
-              }
-              else if (piece2.type.monocap && ((i == piece2.x+1 && j == piece2.y && piece2.type.width > piece2.type.height) || (i == piece2.x && j == piece2.y+1 && piece2.type.width < piece2.type.height)))
-                addPiece(new Piece(PieceType.CAP, piece2.color, i, j));
-            }
+              coveredPieces.add(piece2);
           }
         }
+      
+      //TODO: verify behavior
+      coveredPieces.stream().forEach(coveredPiece -> {
+       coveredPiece.type.forEachCap((i, j) -> {
+         int xx = coveredPiece.x + i, yy = coveredPiece.y + j;
+         if (isReallyFreeAt(xx, yy) && xx >= piece.x-1 && yy >= piece.y-1 && xx <= piece.x+piece.type.width*2 && yy <= piece.y+piece.type.height*2)
+         {
+           Log.i("Adding cap for removal at "+xx+", "+yy+" thanks to "+coveredPiece);
+           addPiece(new Piece(PieceType.CAP, coveredPiece.color, xx, yy));
+         }
+       });
+          
+      });
     }
     
     /* remove caps to next level */
@@ -109,24 +116,10 @@ public class Level implements Iterable<Piece>
     /* add caps to next level */
     if (next != null && piece.type != PieceType.CAP)
     {
-      if (!piece.type.monocap)
-      {
-        //System.out.println("Check for caps to add");
-        
-        for (int i = 0; i < piece.type.width*2; i += 2)
-          for (int j = 0; j < piece.type.height*2; j += 2)
-          {
-            if (next.isFreeAt(piece.x+i,piece.y+j))
-              next.addPiece(new Piece(PieceType.CAP, piece.color, piece.x+i, piece.y+j));
-          }
-      }
-      else
-      {
-        int i = piece.type.width/2 + piece.x;
-        int j = piece.type.height/2 + piece.y;
-        if (next.isFreeAt(i,j))
-          next.addPiece(new Piece(PieceType.CAP, piece.color, i, j));
-      }
+      piece.type.forEachCap((i, j) -> {
+        if (next.isFreeAt(piece.x+i,piece.y+j))
+          next.addPiece(new Piece(PieceType.CAP, piece.color, piece.x+i, piece.y+j));
+      });
     }
     
     resortPieces();
