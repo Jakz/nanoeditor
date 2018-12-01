@@ -14,6 +14,10 @@ public abstract class Drawable
     this.dragging = false;
   }
   
+  public int x() { return ox; }
+  public int y() { return oy; }
+  public void setOffset(int x, int y) { ox = x; oy = y; }
+  
   public abstract boolean isInside(int x, int y);
   public abstract void mouseReleased(int x, int y, int b);
   public abstract void mouseDragged(int x, int y, int b);

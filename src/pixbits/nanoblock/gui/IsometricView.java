@@ -22,7 +22,12 @@ public class IsometricView extends Drawable
   
   IsometricView(Sketch p, Model model)
   {
-    super(p, 750, 250);
+    super(p, 0, 0);
+    
+    Rectangle bounds = PieceDrawer.computeLayerBounds(model, 0);
+        
+    ox = p.levelStackView.gridWidth() + p.levelStackView.scrollbar.width() + GUI.margin + bounds.width/2;
+    oy = p.colorPaletteView.y() - GUI.margin - bounds.width/2;
     
     this.model = model;
     this.hoveredIndex = -1;

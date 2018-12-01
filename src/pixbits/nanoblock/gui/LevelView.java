@@ -223,13 +223,13 @@ public class LevelView extends Drawable
   { 
     parent.scrollbar.mouseWheelMoved(x, y, v);
   }
-  
+    
   public void draw()
   {
     p.strokeWeight(1.0f);
     p.stroke(0);
 
-    // draw grid
+    /* draw point grid */
     if (Settings.values.get(Setting.VIEW_SHOW_HALF_GRID_POINTS))
     {
       for (int x = 0; x < model.getWidth()*2+1; ++x)
@@ -239,6 +239,7 @@ public class LevelView extends Drawable
         }
     }
       
+    /* draw vertical line grid */
     if (Settings.values.get(Setting.VIEW_SHOW_GRID_LINES))
     {
       for (int x = 0; x < model.getWidth()+1; ++x)
@@ -258,6 +259,7 @@ public class LevelView extends Drawable
       p.line(ox+cellSize*x, oy, ox+cellSize*x, oy+model.getHeight()*cellSize);
     }
 
+    /* draw horizontal line grid */
     if (Settings.values.get(Setting.VIEW_SHOW_GRID_LINES))
     {
       for (int y = 0; y < model.getHeight()+1; ++y)

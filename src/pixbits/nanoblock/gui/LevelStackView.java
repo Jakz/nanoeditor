@@ -17,10 +17,16 @@ public class LevelStackView
   
   private Rectangle hover;
   private Level hoverLayer;
+  
+  private final Model model;
+  private final int cellSize;
     
   LevelStackView(Sketch p, int count, int ox, int oy, int cellSize, int margin, Model model)
   {
     views = new LevelView[count];
+    
+    this.cellSize = cellSize;
+    this.model = model;
     
     for (int i = 0; i < count && i < model.levelCount(); ++i)
     {
@@ -33,6 +39,9 @@ public class LevelStackView
     
     locked = null;
   }
+  
+  int totalWidth() { return gridWidth() + scrollbar.width(); }
+  int gridWidth() { return cellSize*model.getWidth(); }
   
   void dispose(Sketch p)
   {

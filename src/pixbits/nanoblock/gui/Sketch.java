@@ -34,9 +34,10 @@ public class Sketch extends PApplet implements ChangeListener
   private static final long serialVersionUID = 1L;
 
   final List<Drawable> drawables = new ArrayList<Drawable>();
-  	
+    	
 	public LevelStackView levelStackView;
 	public PiecePaletteView pieceView;
+	public ColorPaletteView colorPaletteView;
 	public IsometricView isometricView;
 	
 	public PFont font;
@@ -55,8 +56,8 @@ public class Sketch extends PApplet implements ChangeListener
 
     font = createFont("Helvetica", 16);
         
-    ColorPaletteView paletteView = new ColorPaletteView(this, 320, 700, 30, 10);
-    drawables.add(paletteView);
+    colorPaletteView = new ColorPaletteView(this, 320, 700, 30, 10);
+    drawables.add(colorPaletteView);
         
     updatePiecePalette();
 
@@ -76,6 +77,9 @@ public class Sketch extends PApplet implements ChangeListener
     if (isometricView != null) drawables.remove(isometricView);
     isometricView = new IsometricView(this, model);
     drawables.add(isometricView);
+    
+    colorPaletteView.setOffset(levelStackView.totalWidth() + GUI.margin, colorPaletteView.y());
+    pieceView.setOffset(levelStackView.totalWidth() + GUI.margin, pieceView.y());
     
     this.model = model;
   }

@@ -69,9 +69,17 @@ public class PiecePaletteView extends Drawable
     
     if (cellCount < wrapper.size)
     {
-      scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, 20, 20);
+      scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
       p.addDrawable(scrollBar);
     }
+  }
+  
+  @Override
+  public void setOffset(int x, int y)
+  {
+    if (scrollBar != null)
+      scrollBar.setOffset(x, y + cellSize);
+    super.setOffset(x, y);
   }
   
   public int brushCount() { return wrapper.size(); }

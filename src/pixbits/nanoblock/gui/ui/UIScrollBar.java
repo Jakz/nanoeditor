@@ -13,12 +13,12 @@ public abstract class UIScrollBar extends Drawable
   final int height;
   final boolean smoothScroll = false;
   
-  final Point length;
-  final Point base;
-  final Dimension scrollButton;
+  Point length;
+  Point base;
+  Dimension scrollButton;
   
-  final Rectangle button1, button2;
-  final Rectangle scroll;
+  Rectangle button1, button2;
+  Rectangle scroll;
   
   final boolean horizontal;
   
@@ -33,7 +33,13 @@ public abstract class UIScrollBar extends Drawable
     this.height = height;
     this.buttonSize = buttonSize;
     horizontal = width > height;
+    computeParts();
 
+
+  }
+  
+  private void computeParts()
+  {
     if (horizontal)
     {
       button1 = new Rectangle(ox, oy, buttonSize, height);
@@ -55,10 +61,18 @@ public abstract class UIScrollBar extends Drawable
       
       length = new Point(0,height - buttonSize*3);
       base = new Point(ox, oy + buttonSize);
-
     }
-
   }
+  
+  @Override
+  public void setOffset(int x, int y)
+  {
+    super.setOffset(x, y);
+    computeParts();
+  }
+  
+  public int width() { return width; }
+  public int height() { return height; }
   
   public void shift(int x, int y)
   {

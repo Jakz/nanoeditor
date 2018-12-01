@@ -175,7 +175,7 @@ public class ResizeModelFrame extends BaseDialog implements ModelOperationFrame
             ha = buttons[y][x].hor;
           }
       
-      if (new ModelOperations.Resize(model, bounds, nw, nh, va, ha, keepCentered.isSelected()).execute())
+      if (!new ModelOperations.Resize(model, bounds, nw, nh, va, ha, keepCentered.isSelected()).execute())
         Dialogs.showErrorDialog(ResizeModelFrame.this, "Error", "Final size must be at least equal to model bounds!");
       else
       {
