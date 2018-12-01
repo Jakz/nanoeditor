@@ -68,18 +68,15 @@ public class PiecePaletteView extends Drawable
     buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, Sketch.P2D);
     
     if (cellCount < wrapper.size)
-    {
       scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
-      p.addDrawable(scrollBar);
-    }
   }
   
   @Override
-  public void setOffset(int x, int y)
+  public void setPosition(int x, int y)
   {
     if (scrollBar != null)
-      scrollBar.setOffset(x, y + cellSize);
-    super.setOffset(x, y);
+      scrollBar.setPosition(x, y + cellSize);
+    super.setPosition(x, y);
   }
   
   public int brushCount() { return wrapper.size(); }
@@ -177,6 +174,9 @@ public class PiecePaletteView extends Drawable
 
   public void draw()
   {
+    if (scrollBar != null)
+      scrollBar.draw();
+    
     p.stroke(0);
     p.noFill();
     

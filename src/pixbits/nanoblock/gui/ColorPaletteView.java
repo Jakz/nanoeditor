@@ -29,11 +29,11 @@ public class ColorPaletteView extends Drawable
   }
   
   @Override
-  public void setOffset(int x, int y)
+  public void setPosition(int x, int y)
   {
     if (scrollBar != null)
-      scrollBar.setOffset(x, y + cellSize);
-    super.setOffset(x, y);
+      scrollBar.setPosition(x, y + cellSize);
+    super.setPosition(x, y);
   }
   
   public boolean isInside(int x, int y)

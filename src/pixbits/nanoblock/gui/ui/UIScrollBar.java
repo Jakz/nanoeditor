@@ -9,8 +9,8 @@ import java.awt.Dimension;
 public abstract class UIScrollBar extends Drawable
 {
   final int buttonSize;
-  final int width;
-  final int height;
+  int width;
+  int height;
   final boolean smoothScroll = false;
   
   Point length;
@@ -59,15 +59,22 @@ public abstract class UIScrollBar extends Drawable
       scroll = new Rectangle(ox, oy + buttonSize, width, height - buttonSize*2);
       scrollButton = new Dimension(width, buttonSize);
       
-      length = new Point(0,height - buttonSize*3);
+      length = new Point(0, height - buttonSize*3);
       base = new Point(ox, oy + buttonSize);
     }
   }
   
   @Override
-  public void setOffset(int x, int y)
+  public void setPosition(int x, int y)
   {
-    super.setOffset(x, y);
+    super.setPosition(x, y);
+    computeParts();
+  }
+  
+  public void setSize(int w, int h)
+  {
+    this.width = w;
+    this.height = h;
     computeParts();
   }
   

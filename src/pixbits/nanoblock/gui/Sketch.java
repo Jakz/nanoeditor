@@ -12,6 +12,7 @@ import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.TileSetLoader;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.*;
 import java.awt.event.*;
@@ -19,6 +20,7 @@ import java.nio.file.Paths;
 
 import javax.swing.event.*;
 
+import com.pixbits.lib.collections.LockableList;
 import com.pixbits.lib.ui.color.Color;
 
 import processing.core.*;
@@ -33,10 +35,12 @@ public class Sketch extends PApplet implements ChangeListener
 {
   private static final long serialVersionUID = 1L;
 
-  final List<Drawable> drawables = new ArrayList<Drawable>();
+  boolean hasInit = false;
+
+  final LockableList<Drawable> drawables = new LockableList<>(new ArrayList<>());
     	
 	public LevelStackView levelStackView;
-	public PiecePaletteView pieceView;
+	public Drawable.Wrapper<PiecePaletteView> pieceView;
 	public ColorPaletteView colorPaletteView;
 	public IsometricView isometricView;
 	
@@ -45,9 +49,12 @@ public class Sketch extends PApplet implements ChangeListener
 	private Model model;
 	
 	public Model getModel() { return model; }
+	
   
   public void setup()
   {
+    noLoop();
+
     //smooth();
     size(Main.SW, Main.SH, Sketch.P2D);
     
@@ -58,6 +65,9 @@ public class Sketch extends PApplet implements ChangeListener
         
     colorPaletteView = new ColorPaletteView(this, 320, 700, 30, 10);
     drawables.add(colorPaletteView);
+    
+    pieceView = new Drawable.Wrapper<>(null);
+    drawables.add(pieceView);
         
     updatePiecePalette();
 
@@ -65,8 +75,7 @@ public class Sketch extends PApplet implements ChangeListener
     addDrawable(checkBox);
     
     addDrawable(new UIButton(this,500,20,20,20));*/
-    
-    noLoop();
+    hasInit = true;
   }
   
   public void initForModel(Model model)
@@ -78,10 +87,20 @@ public class Sketch extends PApplet implements ChangeListener
     isometricView = new IsometricView(this, model);
     drawables.add(isometricView);
     
-    colorPaletteView.setOffset(levelStackView.totalWidth() + GUI.margin, colorPaletteView.y());
-    pieceView.setOffset(levelStackView.totalWidth() + GUI.margin, pieceView.y());
-    
+    colorPaletteView.setPosition(levelStackView.totalWidth() + GUI.margin, colorPaletteView.y());
+        
     this.model = model;
+    
+    updatePiecePalette();
+  }
+  
+  public void onResize()
+  {
+    if (hasInit)
+    {
+      updatePiecePalette();
+      redraw();
+    }
   }
   
   public void hideMe()
@@ -104,9 +123,11 @@ public class Sketch extends PApplet implements ChangeListener
     if (!found)
       Brush.setType(PieceType.getRotation(brush));
     
-    if (pieceView != null) pieceView.dispose(this);
-    pieceView = new PiecePaletteView(this, 320,760,100,10, Settings.values.get(Setting.USE_TAB_TO_ROTATE));
-    drawables.add(pieceView);
+    int baseX = levelStackView != null ? levelStackView.totalWidth() + GUI.margin : 0;
+    int availableWidth = getWidth() - baseX - GUI.margin;
+    int availableCells = availableWidth / GUI.piecePaletteCellSize;
+    
+    pieceView.set(new PiecePaletteView(this, baseX, 760, GUI.piecePaletteCellSize, availableCells, Settings.values.get(Setting.USE_TAB_TO_ROTATE)));
   }
   
   public void addDrawable(Drawable d)
@@ -129,10 +150,12 @@ public class Sketch extends PApplet implements ChangeListener
   	if (model == null)
   	  return;
 
-    background(220);
+    background(GUI.theme.background);
     	
+    drawables.setLocked(true);
   	for (Drawable d : drawables)
   	  d.draw();
+  	drawables.setLocked(false);
   }
     
   public boolean tabPressed = false;
@@ -281,4 +304,6 @@ public class Sketch extends PApplet implements ChangeListener
 
   public void fill(Color c) { fill(c.r(), c.g(), c.b(), c.a()); }
   public void stroke(Color c) { stroke(c.r(), c.g(), c.b(), c.a()); }
+  
+  public void background(Color c) { super.background(c.toInt()); }
 }

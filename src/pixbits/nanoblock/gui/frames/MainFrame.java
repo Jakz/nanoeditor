@@ -23,6 +23,9 @@ public class MainFrame extends JFrame implements MouseWheelListener
     add(embed, BorderLayout.CENTER);
     add(Menus.buildEditorToolbar(), BorderLayout.NORTH);
     embed.init();
+    
+    setMinimumSize(new Dimension(300,300));
+
 
     this.addComponentListener(componentListener);
     this.addWindowListener(windowListener);
@@ -43,7 +46,8 @@ public class MainFrame extends JFrame implements MouseWheelListener
   
   private final ComponentListener componentListener = new ComponentAdapter() {
     public void componentResized(ComponentEvent e) {
-      Main.sketch.redraw();
+      Main.sketch.onResize();
+      //Main.sketch.redraw();
     }
   };
 
