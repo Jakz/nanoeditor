@@ -59,7 +59,7 @@ import javax.imageio.ImageIO;
  * @see processing.core.PGraphics#imageMode(int)
  * @see processing.core.PApplet#createImage(int, int)
  */
-public class PImage implements PConstants, Cloneable {
+public class PImage implements PConstants, PGfx, Cloneable {
 
   /**
    * Format for this image, one of RGB, ARGB or ALPHA.

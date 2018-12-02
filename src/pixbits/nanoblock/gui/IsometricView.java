@@ -76,7 +76,9 @@ public class IsometricView extends Drawable
       for (Piece piece : level)
       {
         if (piece.type != PieceType.CAP || Settings.values.get(Setting.DRAW_CAPS))
-        PieceDrawer.drawPiece(p, ox, oy, piece, piece.x, piece.y, l, level);
+        {
+          PieceDrawer.drawPiece(p, ox, oy, piece, piece.x, piece.y, l, level);
+        }
       }
     }
     

@@ -163,7 +163,7 @@ import processing.core.PShape;
  * @usage Web &amp; Application
  */
 public class PApplet extends JPanel
-  implements PConstants, Runnable,
+  implements PConstants, PGfx, Runnable,
              MouseListener, MouseMotionListener, KeyListener, FocusListener
 {
   /**

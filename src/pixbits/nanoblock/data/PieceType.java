@@ -9,69 +9,79 @@ public class PieceType
 {
   public final int width, height;
   public final boolean rounded;
-  public final boolean monocap;
+  private final int[][] caps;
 
-  PieceType(int width, int height, boolean rounded, boolean monocap)
+  PieceType(int width, int height, boolean rounded, int[][] caps)
   {
     this.width = width;
     this.height = height;
     this.rounded = rounded;
-    this.monocap = monocap;
+    this.caps = caps;
+  }
+  
+  PieceType(int width, int height, boolean rounded)
+  {
+    this(width, height, rounded, null);
   }
   
   public void forEachCap(IntBiConsumer consumer)
   {
-    if (!monocap)
+    if (caps != null)
+    {
+      for (int[] coords : caps)
+        consumer.accept(coords[0], coords[1]);
+    }
+    else
     {
       for (int i = 0; i < width; ++i)
         for (int j = 0; j < height; ++j)
           consumer.accept(i*2, j*2);
     }
-    else
-      consumer.accept(width/2, height/2);
   }
   
-  public final static PieceType CAP = new PieceType(1,1,false,false);
+  public final static PieceType CAP    = new PieceType(1, 1, false);
   
-  public final static PieceType P1x1 = new PieceType(1,1,false,false);
-  public final static PieceType P1x1r = new PieceType(1,1,true,false);
+  public final static PieceType P1x1   = new PieceType(1, 1, false);
+  public final static PieceType P1x1r  = new PieceType(1, 1, true);
   
-  public final static PieceType P2x1 = new PieceType(2,1,false,false);
-  public final static PieceType P1x2 = new PieceType(1,2,false,false);
+  public final static PieceType P2x1   = new PieceType(2, 1, false);
+  public final static PieceType P1x2   = new PieceType(1, 2, false);
   
-  public final static PieceType P2x1c = new PieceType(2,1,false,true);
-  public final static PieceType P1x2c = new PieceType(1,2,false,true);
+  public final static PieceType P2x1c  = new PieceType(2, 1, false, new int[][] { { 1, 0 } });
+  public final static PieceType P1x2c  = new PieceType(1, 2, false, new int[][] { { 0, 1 } });
   
-  public final static PieceType P2x1r = new PieceType(2,1,true, false);
-  public final static PieceType P1x2r = new PieceType(1,2,true, false);
+  public final static PieceType P2x1r  = new PieceType(2, 1, true);
+  public final static PieceType P1x2r  = new PieceType(1, 2, true);
   
-  public final static PieceType P3x1 = new PieceType(3,1,false,false);
-  public final static PieceType P1x3 = new PieceType(1,3,false,false);
+  public final static PieceType P3x1   = new PieceType(3, 1, false);
+  public final static PieceType P1x3   = new PieceType(1, 3, false);
   
-  public final static PieceType P3x1r = new PieceType(3,1,true,false);
-  public final static PieceType P1x3r = new PieceType(1,3,true,false);
+  public final static PieceType P3x1r  = new PieceType(3, 1, true);
+  public final static PieceType P1x3r  = new PieceType(1, 3, true);
 
   
-  public final static PieceType P4x1 = new PieceType(4,1,false,false);
-  public final static PieceType P4x1r = new PieceType(4,1,true,false);
-  public final static PieceType P1x4 = new PieceType(1,4,false,false);
-  public final static PieceType P1x4r = new PieceType(1,4,true,false);
+  public final static PieceType P4x1   = new PieceType(4, 1, false);
+  public final static PieceType P4x1r  = new PieceType(4, 1, true);
+  public final static PieceType P1x4   = new PieceType(1, 4, false);
+  public final static PieceType P1x4r  = new PieceType(1, 4, true);
   
-  public final static PieceType P2x2 = new PieceType(2,2,false,false);
-  public final static PieceType P2x2c = new PieceType(2,2,false,true);
+  public final static PieceType P2x2   = new PieceType(2, 2, false);
+  public final static PieceType P2x2c  = new PieceType(2, 2, false, new int[][] { { 1, 1 } });
   
-  public final static PieceType P4x2 = new PieceType(4,2,false,false);
-  public final static PieceType P2x4 = new PieceType(2,4,false,false);
+  public final static PieceType P2x2lt = new PieceType(2, 2, false, new int[][] { { 0, 0 }, { 2, 0 }, { 0, 2 } });
   
-  public final static PieceType P8x2 = new PieceType(8,2,false,false);
-  public final static PieceType P2x8 = new PieceType(2,8,false,false);
+  public final static PieceType P4x2   = new PieceType(4, 2, false);
+  public final static PieceType P2x4   = new PieceType(2, 4, false);
+  
+  public final static PieceType P8x2   = new PieceType(8, 2, false);
+  public final static PieceType P2x8   = new PieceType(2, 8, false);
   
   public final static PieceType[] pieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P4x2, P2x4, P8x2, P2x8
+    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P4x2, P2x4, P8x2, P2x8
   };
   
   public final static PieceType[] spieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P3x1, P3x1r, P4x1, P4x2, P8x2
+    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P2x2lt, P3x1, P3x1r, P4x1, P4x2, P8x2
   };
   
   public static int count() { return pieces.length; }
@@ -130,6 +140,8 @@ public class PieceType
     
     mapping.put("2x2", P2x2);
     mapping.put("2x2c", P2x2c);
+    
+    mapping.put("2x2lt", P2x2lt);
     
     mapping.put("4x2", P4x2);
     mapping.put("2x4", P2x4);

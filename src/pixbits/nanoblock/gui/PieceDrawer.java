@@ -35,29 +35,18 @@ public class PieceDrawer
     return new Point(fx, fy);
   }
   
-  public static void drawPiece(PApplet gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
+  public static void drawPiece(PGfx gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
   {    
     Tileset ts = Brush.tileset;
     Tileset.PieceSpec spec = ts.spec(piece.type);
     Point p = positionForPiece(baseX, baseY, piece, l);
-
-    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
     
-    gfx.fill(0);
+    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
     gfx.blend(texture, 0, 0, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
     
+    //TODO: move, no sense here and it's called when drawing on image from drawModelOnImage which is wrong
     if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
-      gfx.text(""+level.indexOfPiece(piece),p.x+spec.w/2,p.y+spec.oy+spec.h/2);
-  }
-  
-  public static void drawPiece(PImage gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
-  {    
-    Tileset ts = Brush.tileset;
-    Tileset.PieceSpec spec = ts.spec(piece.type);
-    Point p = positionForPiece(baseX, baseY, piece, l);
-    
-    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
-    gfx.blend(texture, 0, 0, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
+      gfx.text(""+level.indexOfPiece(piece), p.x+spec.w/2, p.y+spec.oy+spec.h/2);
   }
   
   public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model, boolean showCaps)

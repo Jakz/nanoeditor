@@ -180,24 +180,11 @@ public class ModelOperations
     {
       if (next != null)
       {
-        if (!piece.type.monocap)
-        {        
-          for (int i = 0; i < piece.type.width*2; i += 2)
-            for (int j = 0; j < piece.type.height*2; j += 2)
-            {
-              Piece cap = next.pieceAt(piece.x+i, piece.y+j);
-              if (cap.type == PieceType.CAP)
-                cap.color = piece.color;
-            }
-        }
-        else
-        {
-          int i = piece.type.width/2 + piece.x;
-          int j = piece.type.height/2 + piece.y;
-          Piece cap = next.pieceAt(i, j);
+        piece.type.forEachCap((x,y) -> {
+          Piece cap = next.pieceAt(piece.x+x, piece.y+y);
           if (cap.type == PieceType.CAP)
             cap.color = piece.color;
-        }
+        });
       }
     }
     
