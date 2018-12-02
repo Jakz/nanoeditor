@@ -14,7 +14,8 @@ import java.awt.Rectangle;
 
 public class Tileset
 {
-  final private PImage image;
+  final public PImage image;
+  
   final public int hOffset;
   final public int xOffset;
   final public int yOffset;
@@ -108,7 +109,8 @@ public class Tileset
     });
   }
   
-  private static PImage createColoredCopy(PieceSpec spec, PImage source, ColorMap baseColors, ColorMap replacement)
+  //TODO: make private again
+  public static PImage createColoredCopy(PieceSpec spec, PImage source, ColorMap baseColors, ColorMap replacement)
   {
     PImage tex = Main.sketch.createImage(source.width, source.height, Sketch.ARGB);
 

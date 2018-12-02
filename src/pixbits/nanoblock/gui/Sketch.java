@@ -3,6 +3,7 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.gui.Tileset.PieceSpec;
 import pixbits.nanoblock.gui.ui.*;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
@@ -21,6 +22,8 @@ import java.nio.file.Paths;
 import javax.swing.event.*;
 
 import com.pixbits.lib.collections.LockableList;
+import com.pixbits.lib.lang.Point;
+import com.pixbits.lib.lang.Size;
 import com.pixbits.lib.ui.color.Color;
 
 import processing.core.*;
@@ -45,6 +48,8 @@ public class Sketch extends PApplet implements ChangeListener
 	public IsometricView isometricView;
 	
 	public PFont font;
+  PImage tmp = null;
+
 	
 	private Model model;
 	
@@ -70,6 +75,8 @@ public class Sketch extends PApplet implements ChangeListener
     drawables.add(pieceView);
         
     updatePiecePalette();
+    
+    tmp = loadImage("tileset.png");
 
     /*UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
     addDrawable(checkBox);
@@ -145,17 +152,112 @@ public class Sketch extends PApplet implements ChangeListener
   
   public int hoveredIndex = -1;
   
+  List<Sprite> sprites = new ArrayList<>();
+  
+  void generateSprites()
+  {
+    Piece piece = new Piece(PieceType.P2x4, PieceColor.CREAM, 0, 0);
+    Tileset ts = Brush.tileset;
+
+    int l = 0;
+    
+    {
+      /*piece.type.forEachCap((xx, yy) -> {
+        final int isoX = piece.x + xx;
+        final int isoY = piece.y + yy; 
+        java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l+1);
+      
+        sprites.add(new Sprite(
+            new Sprite.Key(isoX, isoY, l+1, Sprite.Type.TOP), 
+            new java.awt.Point(getWidth()/2 + position.x - ts.xOffset, getHeight()/2 + position.y - ts.yOffset + 4),
+            new Rectangle(1, 121, 44, 27)
+            )
+        );
+      });*/
+
+      Atlas atlas = new Atlas(1, 149,  45, 24, 8);
+      for (int yy = 0; yy < piece.type.height; ++yy)
+        for (int xx = 0; xx < piece.type.width; ++xx)
+        {
+          final int isoX = piece.x + xx*2;
+          final int isoY = piece.y + yy*2; 
+          java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
+        
+          int mask = piece.type.mask(xx, yy);     
+          sprites.add(new Sprite(
+              new Sprite.Key(isoX, isoY, l, Sprite.Type.TOP), 
+              new java.awt.Point(getWidth()/2 + position.x - ts.xOffset, getHeight()/2 + position.y - ts.yOffset*2),
+              atlas.get(mask)
+              )
+          );
+        }
+    }
+    
+    {
+      Atlas atlas = new Atlas(1, 197,  22, 32,  45, 33);
+      for (int xx = 0; xx < piece.type.width; ++xx)
+      {
+        final int isoX = piece.x + xx*2;
+        final int isoY = piece.y + (piece.type.height - 1)*2; 
+        
+        java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY + 2, l); //TODO: +2 is an hack to adjust the value directly as coordinate
+        int mask = piece.type.maskSouth(xx, piece.type.height - 1); 
+        
+        sprites.add(new Sprite(
+            new Sprite.Key(isoX, isoY, l, Sprite.Type.WALL), 
+            new java.awt.Point(getWidth()/2 + position.x, getHeight()/2 + position.y - ts.yOffset*2),
+            atlas.get(mask)
+            )
+        );
+      }
+    }
+
+    {
+      Atlas atlas = new Atlas(181, 197,  22, 32,  45, 33);
+      for (int yy = 0; yy < piece.type.height; ++yy)
+      {
+        final int isoX = piece.x + (piece.type.width - 1)*2;
+        final int isoY = piece.y + yy*2;
+        
+        java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
+        int mask = piece.type.maskEast(piece.type.width - 1, yy);   
+        
+        sprites.add(new Sprite(
+            new Sprite.Key(isoX, isoY, l, Sprite.Type.WALL), 
+            new java.awt.Point(getWidth()/2 + position.x, getHeight()/2 + position.y - ts.yOffset),
+            atlas.get(mask)
+            )
+        );
+      }
+    }
+    
+    Collections.sort(sprites);
+  }
+      
   public void draw()
   {
   	if (model == null)
   	  return;
 
     background(GUI.theme.background);
-    	
+
+    if (sprites.isEmpty())
+      generateSprites();
+    
+    for (Sprite sprite : sprites)
+      sprite.draw(this);
+  
+    //PieceDrawer.drawPiece(this, getWidth()/2, getHeight()/2, piece.type, piece.color, 0, 0, 0);
+    //PieceDrawer.drawPiece(this, getWidth()/2, getHeight()/2, piece.type, piece.color, 4, 0, 0);
+
+
+
+   
+    /*
     drawables.setLocked(true);
   	for (Drawable d : drawables)
   	  d.draw();
-  	drawables.setLocked(false);
+  	drawables.setLocked(false);*/ 
   }
     
   public boolean tabPressed = false;

@@ -212,13 +212,12 @@ public class PiecePaletteView extends Drawable
         final int capOffsetX = Brush.tileset.spec(PieceType.CAP).ox, capOffsetY = Brush.tileset.spec(PieceType.CAP).oy;
   
         type.forEachCap((x,y) -> {
-          final Point pt = PieceDrawer.positionForPiece(
+          final Point pt = PieceDrawer.isometricPositionForCoordinate(x, y, 1);
+          pt.translate(
               opx - Brush.tileset.spec(type).ox, 
-              opy - Brush.tileset.spec(type).oy, 
-              new Piece(PieceType.CAP, color, x, y), 
-              1
-              );
-          
+              opy - Brush.tileset.spec(type).oy
+          );
+
           buffer.blend(capGfx, 0, 0, capGfx.width, capGfx.height, pt.x + capOffsetX, pt.y + capOffsetY, capGfx.width, capGfx.height, Sketch.BLEND);
         });
       }

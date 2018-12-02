@@ -107,7 +107,6 @@ public class Level implements Iterable<Piece>
       if (piece2.type == PieceType.CAP)
         if (piece2.x >= piece.x-1 && piece2.x < piece.x+piece.type.width*2 && piece2.y >= piece.y-1 && piece2.y < piece.y+piece.type.height*2)
           lpieces.remove();
-       
     }
     
     //System.out.println("Add "+piece);

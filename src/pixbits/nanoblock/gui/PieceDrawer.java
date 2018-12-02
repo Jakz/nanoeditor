@@ -10,43 +10,37 @@ import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
 
 public class PieceDrawer
-{
-  public static Point basePositionForLayer(int x, int y, int l)
+{  
+  public static Point isometricPositionForCoordinate(int x, int y, int l)
   {
     Tileset ts = Brush.tileset;
 
     int fx = (int) ((x - y)/2.0f * ts.xOffset);
     int fy = (int) ((x + y)/2.0f * ts.yOffset);
-    
+        
     fy -= ts.hOffset * l;
 
     return new Point(fx, fy);
   }
-  
-  public static Point positionForPiece(int baseX, int baseY, Piece piece, int l)
-  {
-    Tileset ts = Brush.tileset;
-    
-    int fx = (int) (baseX + (piece.x - piece.y)/2.0f * ts.xOffset);
-    int fy = (int) (baseY + (piece.x + piece.y)/2.0f * ts.yOffset);
-    
-    fy -= ts.hOffset * l;
 
-    return new Point(fx, fy);
-  }
-  
-  public static void drawPiece(PGfx gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
+  public static void drawPiece(PGfx gfx, int baseX, int baseY, PieceType type, PieceColor color, int x, int y, int l)
   {    
     Tileset ts = Brush.tileset;
-    Tileset.PieceSpec spec = ts.spec(piece.type);
-    Point p = positionForPiece(baseX, baseY, piece, l);
+    Tileset.PieceSpec spec = ts.spec(type);
+    Point p = isometricPositionForCoordinate(x, y, l);
+    p.translate(baseX, baseY);
     
-    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
+    PImage texture = ts.imageForTypeAndColor(type, color);
     gfx.blend(texture, 0, 0, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
     
     //TODO: move, no sense here and it's called when drawing on image from drawModelOnImage which is wrong
-    if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
-      gfx.text(""+level.indexOfPiece(piece), p.x+spec.w/2, p.y+spec.oy+spec.h/2);
+    //if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
+    //  gfx.text(""+level.indexOfPiece(piece), p.x+spec.w/2, p.y+spec.oy+spec.h/2);
+  }
+  
+  public static void drawPiece(PGfx gfx, int baseX, int baseY, Piece piece, int l, Level level)
+  {    
+    drawPiece(gfx, baseX, baseY, piece.type, piece.color, piece.x, piece.y, l);
   }
   
   public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model, boolean showCaps)
@@ -61,7 +55,7 @@ public class PieceDrawer
         Piece piece = pieces.next();
 
         if (piece.type != PieceType.CAP || showCaps)
-        PieceDrawer.drawPiece(gfx, baseX, baseY, piece, piece.x, piece.y, l, level);
+        PieceDrawer.drawPiece(gfx, baseX, baseY, piece.type, piece.color, piece.x, piece.y, l);
       }
     }
   }
@@ -82,7 +76,7 @@ public class PieceDrawer
     int sx = -model.getWidth()*Brush.tileset.xOffset, sw = model.getWidth()*Brush.tileset.xOffset*2;
     int sh = model.getHeight()*Brush.tileset.yOffset*2;
 
-    Point base = basePositionForLayer(0,0,l);
+    Point base = isometricPositionForCoordinate(0,0,l);
     
     int sy = base.y - 2;
     
@@ -152,15 +146,15 @@ public class PieceDrawer
     System.out.println("top: "+topMost);
     System.out.println("bottom: "+bottomMost);*/
     
-    Point left = positionForPiece(0, 0, leftMost, l);
+    Point left = isometricPositionForCoordinate(leftMost.x, leftMost.y, l);
     left.x -= ts.xOffset*(leftMost.type.height-1);
     
-    Point right = positionForPiece(0, 0, rightMost, l);
+    Point right = isometricPositionForCoordinate(rightMost.x, rightMost.y, l);
     right.x += ts.xOffset*(rightMost.type.width-1);
     
-    Point top = positionForPiece(0, 0, topMost, l);
+    Point top = isometricPositionForCoordinate(topMost.x, topMost.y, l);
     
-    Point bottom = positionForPiece(0, 0, bottomMost, l);
+    Point bottom = isometricPositionForCoordinate(bottomMost.x, bottomMost.y, l);
     bottom.y += ts.yOffset*(bottomMost.type.height-1 + bottomMost.type.width-1);
 
     return new Rectangle(

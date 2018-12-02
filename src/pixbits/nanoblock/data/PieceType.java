@@ -10,6 +10,7 @@ public class PieceType
   public final int width, height;
   public final boolean rounded;
   private final int[][] caps;
+  private final int[][][] masks;
 
   PieceType(int width, int height, boolean rounded, int[][] caps)
   {
@@ -17,6 +18,21 @@ public class PieceType
     this.height = height;
     this.rounded = rounded;
     this.caps = caps;
+    
+    this.masks = new int[3][width][height];
+    
+    for (int i = 0; i < width; ++i)
+      for (int j = 0; j < height; ++j)
+      {
+        masks[0][i][j] = 0;
+        masks[0][i][j] |= j > 0 ? Direction.NORTH.mask : 0;
+        masks[0][i][j] |= i > 0 ? Direction.WEST.mask : 0;
+        masks[0][i][j] |= j < height - 1 ? Direction.SOUTH.mask : 0;
+        masks[0][i][j] |= i < width - 1 ? Direction.EAST.mask : 0;
+        
+        masks[1][i][j] = (i > 0 ? 1 : 0) | (i < width - 1 ? 2 : 0);
+        masks[2][i][j] = (j > 0 ? 2 : 0) | (j < height - 1 ? 1 : 0);
+      }
   }
   
   PieceType(int width, int height, boolean rounded)
@@ -38,6 +54,10 @@ public class PieceType
           consumer.accept(i*2, j*2);
     }
   }
+  
+  public int mask(int ox, int oy) { return masks[0][ox][oy]; }
+  public int maskSouth(int ox, int oy) { return masks[1][ox][oy]; }
+  public int maskEast(int ox, int oy) { return masks[2][ox][oy]; }
   
   public final static PieceType CAP    = new PieceType(1, 1, false);
   
@@ -76,7 +96,7 @@ public class PieceType
   public final static PieceType P8x2   = new PieceType(8, 2, false);
   public final static PieceType P2x8   = new PieceType(2, 8, false);
   
-  public final static PieceType[] pieces = new PieceType[] {
+  private final static PieceType[] pieces = new PieceType[] {
     P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P4x2, P2x4, P8x2, P2x8
   };
   
@@ -86,6 +106,7 @@ public class PieceType
   
   public static int count() { return pieces.length; }
   public static PieceType at(int index) { return pieces[index]; }
+  public static Iterable<PieceType> pieces() { return Arrays.asList(pieces); }
   
   private static final Map<String, PieceType> mapping = new HashMap<String, PieceType>();
   private static final Map<PieceType, String> mapping2 = new HashMap<PieceType, String>();

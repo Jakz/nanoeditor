@@ -2,6 +2,8 @@ package pixbits.nanoblock.data;
 
 import java.util.Objects;
 
+import pixbits.nanoblock.gui.Tileset.PieceSpec;
+
 public class Piece
 {
   public PieceType type;
@@ -15,7 +17,7 @@ public class Piece
     this.x = x;
     this.y = y;
   }
-  
+
   public Piece dupe()
   {
     return new Piece(type, color, x, y);
