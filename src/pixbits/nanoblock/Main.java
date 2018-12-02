@@ -1,9 +1,12 @@
 package pixbits.nanoblock;
 
+import pixbits.nanoblock.data.PieceType;
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
 import pixbits.nanoblock.gui.frames.*;
 import pixbits.nanoblock.tasks.Tasks;
+
+import java.nio.file.Paths;
 
 import javax.swing.JPopupMenu;
 
@@ -30,6 +33,9 @@ public class Main
     JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
     Tasks.loadSettings();
+    
+    PieceType.initMapping();
+    Brush.tileset = TileSetLoader.loadAndBuild(Paths.get("tileset.json"));
     
     sketch = new Sketch();
     mainFrame = new MainFrame();

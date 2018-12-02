@@ -1,26 +1,29 @@
 package pixbits.nanoblock.data;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import pixbits.nanoblock.files.Log;
+import pixbits.nanoblock.gui.PieceDrawer;
+import pixbits.nanoblock.gui.SpriteBatch;
 
 public class Level implements Iterable<Piece>
 {
   final List<Piece> pieces;
-  /*final int width;
-  final int height;*/
-  
+
   private final Model model;
   
   private Level previous;
   private Level next;
   
-  //final int index;
-  
+  private boolean dirty; //TODO: not logic related, move
+
   Level(Model model, Level previous)
   {
     this(model);
     this.previous = previous;
+    
+    this.dirty = false;
   }
   
   Level(Model model)
@@ -42,6 +45,8 @@ public class Level implements Iterable<Piece>
   public Level previous() { return previous; }
   public Level next() { return next; }
   
+  public boolean dirty() { return dirty; }
+  public void setDirty(boolean dirty) { this.dirty = dirty; }
   
   void removeAllPieces()
   {
@@ -92,7 +97,7 @@ public class Level implements Iterable<Piece>
       next.removeCaps(piece.x, piece.y, piece.type.width*2, piece.type.height*2);
     }
     
-    resortPieces();
+    dirty = true;
   }
     
   void addPiece(Piece piece)
@@ -121,7 +126,7 @@ public class Level implements Iterable<Piece>
       });
     }
     
-    resortPieces();
+    dirty = true;
   }
   
   public boolean isReallyFreeAt(int x, int y)
@@ -182,24 +187,16 @@ public class Level implements Iterable<Piece>
   
   public Set<Piece> findAllCaps()
   {
-    Set<Piece> caps = new HashSet<Piece>();
-    
-    for (Piece p : pieces)
-      if (p.type == PieceType.CAP)
-        caps.add(p);
-    
-    return caps;
+    return pieces.stream()
+      .filter(p -> p.type == PieceType.CAP)
+      .collect(Collectors.toSet());
   }
   
   public Set<Piece> findAllRealPieces()
   {
-    Set<Piece> caps = new HashSet<Piece>();
-    
-    for (Piece p : pieces)
-      if (p.type != PieceType.CAP)
-        caps.add(p);
-    
-    return caps;
+    return pieces.stream()
+      .filter(p -> p.type != PieceType.CAP)
+      .collect(Collectors.toSet());
   }
   
   Set<Piece> findAllPieces() { return new HashSet<Piece>(pieces); }
@@ -241,130 +238,5 @@ public class Level implements Iterable<Piece>
     }
    
     return i;
-  }
-  
-  public void resortPieces()
-  {
-    Map<Piece, Set<Piece>> deps = new HashMap<Piece, Set<Piece>>();
-    
-    // create the empty dependancy graph
-    for (Piece p : pieces) deps.put(p, new HashSet<Piece>());
-
-    //System.out.println("Populate dependency");
-    // populate the dependency graph
-    for (int i = 0; i < pieces.size(); ++i)
-      for (int j = 0; j < pieces.size(); ++j)
-      {
-        if (i != j)
-        {
-          // i is in front of j
-          if (pieces.get(i).overlaps(pieces.get(j)))
-          {
-            deps.get(pieces.get(i)).add(pieces.get(j));
-          }
-  
-          // j is in front of i
-          if (pieces.get(j).overlaps(pieces.get(i)))
-          {
-            deps.get(pieces.get(j)).add(pieces.get(i));
-          }
-        }
-      }
-    
-    /*for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
-    {
-      System.out.println(e.getKey()+":");
-      for (Piece p : e.getValue())
-        System.out.println("  > "+p);
-    }*/
-    
-    List<Piece> newPieces = new ArrayList<Piece>();
-    
-    
-    boolean stuck = false;
-    //System.out.println("Build topological sort");
-    while (!deps.isEmpty() && !stuck)
-    {
-      Piece toRemove = null;
-      for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
-      {
-        // current piece doesn't depend on anything, we can add it to the list
-        if (e.getValue().isEmpty()) 
-        {
-          toRemove = e.getKey();
-          break;
-        }
-      }
-      
-      if (toRemove != null)
-      {
-        // add new piece to the ordered list of pieces
-        newPieces.add(toRemove);
-        //System.out.println("Adding "+toRemove+" still to add "+(deps.size()-1));
-        
-        // remove piece from constraints in the graph
-        for (Map.Entry<Piece, Set<Piece>> e : deps.entrySet())
-          e.getValue().remove(toRemove);
-        
-        // remove element for the piece from the graph
-          deps.remove(toRemove);
-      }
-      else
-      {
-        if (!stuck)
-        {
-          Log.e("[LAYOUT ERROR] Unable to find topological sort, remaining pieces: ");
-          for (Piece p : deps.keySet())
-            Log.e(" > "+p);
-        }
-        stuck = true;
-      }
-    }
-    
-    pieces.clear();
-    pieces.addAll(newPieces);
-  }
-  
-  
-  
-  public static class PieceComparator implements Comparator<Piece>
-  {
-    public int compare(Piece p1, Piece p2)
-    {
-      if (p1.equals(p2))
-        return 0;
-      else
-      {
-        int sum1x = p1.x + (p1.type.width - 1)*2;
-        int sum2x = p2.x + (p2.type.width - 1)*2;
-        int sum1y = p1.y + (p1.type.height - 1)*2;
-        int sum2y = p2.y + (p2.type.height - 1)*2;
-        
-        if ((sum1x < p2.x || sum1y < p2.y) && (sum2x < p1.x || sum2y < p1.y))
-        {
-          int sum1 = sum1x+sum1y;
-          int sum2 = sum2x+sum2y;
-          
-          if (sum1 < sum2) return -1;
-          else if (sum1 > sum2) return 1;
-          else
-          {
-            if (p1.x < p2.x) return -1;
-            else if (p1.x > p2.x) return 1;
-            else
-            {
-              if (p1.y < p2.y) return -1;
-              else if (p1.y > p2.y) return 1;
-              else return 0;
-            }
-          }
-        }
-        else if (sum1x < p2.x || sum1y < p2.y)
-          return -1;
-        else if (sum2x < p1.x || sum2y < p1.y)
-          return 1;
-        else return 0;
-      }
-    }
   }
 }

@@ -31,10 +31,18 @@ public class Sprite implements Comparable<Sprite>
     
     @Override
     public int compareTo(Key o) 
-    { 
-      if (x < o.x || y < o.y || z < o.z) return -1;
-      else return type.compareTo(o.type);
+    {       
+      if (z != o.z)
+        return Integer.compare(z, o.z);
+      else if (y != o.y)
+        return Integer.compare(y, o.y);
+      else if (x != o.x)
+        return Integer.compare(x, o.x);
+      else 
+        return type.compareTo(o.type);
     }
+    
+    public String toString() { return String.format("(%d, %d, %d, %s)", x, y, z, type.toString()); }
   }
   
   private final Key key;
@@ -48,9 +56,10 @@ public class Sprite implements Comparable<Sprite>
     this.rect = rect;
   }
   
-  public void draw(PGfx gfx)
+  public void draw(PGfx gfx) { draw(gfx, 0, 0); }
+  public void draw(PGfx gfx, int offsetX, int offsetY)
   {
-    gfx.blend(Brush.tileset.image, rect, position.x, position.y, PConstants.BLEND);
+    gfx.blend(Brush.tileset.image, rect, position.x + offsetX, position.y + offsetY, PConstants.BLEND);
   }
 
   @Override
