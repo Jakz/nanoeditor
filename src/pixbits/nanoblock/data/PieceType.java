@@ -23,7 +23,7 @@ public class PieceType
     
     for (int i = 0; i < width; ++i)
       for (int j = 0; j < height; ++j)
-      {
+      {      
         masks[0][i][j] = 0;
         masks[0][i][j] |= j > 0 ? Direction.NORTH.mask : 0;
         masks[0][i][j] |= i > 0 ? Direction.WEST.mask : 0;
@@ -31,7 +31,45 @@ public class PieceType
         masks[0][i][j] |= i < width - 1 ? Direction.EAST.mask : 0;
         
         masks[1][i][j] = (i > 0 ? 1 : 0) | (i < width - 1 ? 2 : 0);
-        masks[2][i][j] = (j > 0 ? 2 : 0) | (j < height - 1 ? 1 : 0);
+        masks[2][i][j] = 4 + (j > 0 ? 2 : 0) | (j < height - 1 ? 1 : 0);
+        
+        if (rounded)
+        {
+          if (width == 1 && height == 1)
+          {
+            masks[0][i][j] = 20;
+            masks[1][i][j] = 10;
+            masks[2][i][j] = 12;
+          }
+          else
+          {
+            if (masks[0][i][j] == Direction.WEST.mask)
+            {
+              masks[0][i][j] = 16;
+              
+              masks[1][i][j] = 9;
+              masks[2][i][j] = 12;
+            }           
+            else if (masks[0][i][j] == Direction.NORTH.mask)
+            {
+              masks[0][i][j] = 17;
+              
+              masks[1][i][j] = 10;
+              masks[2][i][j] = 13;
+
+            }
+            else if (masks[0][i][j] == Direction.EAST.mask)
+            {
+              masks[0][i][j] = 18;
+              masks[1][i][j] = 8;
+            }
+            else if (masks[0][i][j] == Direction.SOUTH.mask) 
+            {
+              masks[0][i][j] = 19;
+              masks[2][i][j] = 11;
+            }
+          }
+        }
       }
   }
   

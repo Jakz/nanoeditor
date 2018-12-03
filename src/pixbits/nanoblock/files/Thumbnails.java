@@ -14,6 +14,8 @@ import processing.core.*;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import org.imgscalr.Scalr;
+
 public class Thumbnails
 {
   public static void refreshAllThumbnails()
@@ -92,7 +94,9 @@ public class Thumbnails
 
   public static BufferedImage scaleImage(BufferedImage src, float factor)
   {
-    BufferedImage dst = new BufferedImage((int)(src.getWidth(null)*factor), (int)(src.getHeight(null)*factor), BufferedImage.TYPE_INT_ARGB);
+    return Scalr.resize(src, Scalr.Method.ULTRA_QUALITY, (int)(src.getWidth(null)*factor), (int)(src.getHeight(null)*factor));
+    
+    /*BufferedImage dst = new BufferedImage((int)(src.getWidth(null)*factor), (int)(src.getHeight(null)*factor), BufferedImage.TYPE_INT_ARGB);
     AffineTransform at = new AffineTransform();
 
     at.scale(factor, factor);
@@ -104,7 +108,7 @@ public class Thumbnails
     //  scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
 
     dst = scaleOp.filter(src, dst);
-    return dst;
+    return dst;*/
   }
   
   public static BufferedImage gaussianBlur(BufferedImage image,double sigma) {

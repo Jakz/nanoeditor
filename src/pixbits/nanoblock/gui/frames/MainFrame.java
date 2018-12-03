@@ -53,6 +53,7 @@ public class MainFrame extends JFrame implements MouseWheelListener
 
   public void mouseWheelMoved(MouseWheelEvent e)
   {
+    e.consume();
     Main.sketch.mouseWheelMoved(e.getWheelRotation());
   }
 }

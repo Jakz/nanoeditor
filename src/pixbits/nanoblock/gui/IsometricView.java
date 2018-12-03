@@ -82,7 +82,6 @@ public class IsometricView extends Drawable
       
       if (level.dirty())
       {
-        System.out.println("Resorting sprites of level "+l);
         batch.clear();
         for (Piece piece : level)
           PieceDrawer.generateSprites(piece, batch);

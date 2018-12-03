@@ -164,6 +164,7 @@ public class Level implements Iterable<Piece>
       if (piece.type == PieceType.CAP && piece.x >= x && piece.x < x+w && piece.y >= y && piece.y < y+h)
       {
         pieces.remove();
+        dirty = true;
       }
     }
   }
@@ -226,6 +227,7 @@ public class Level implements Iterable<Piece>
   public void clear()
   {
     pieces.clear();
+    dirty = true;
   }
   
   public int indexOfPiece(Piece piece)

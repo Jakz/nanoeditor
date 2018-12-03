@@ -3,6 +3,8 @@ package pixbits.nanoblock.gui;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import pixbits.nanoblock.data.Piece;
+import pixbits.nanoblock.data.PieceType;
 import processing.core.PConstants;
 import processing.core.PGfx;
 
@@ -16,13 +18,16 @@ public class Sprite implements Comparable<Sprite>
   
   public static class Key implements Comparable<Key>
   {
+    private final Piece piece;
     private final int x;
     private final int y;
     private final int z;
     private final Type type;
     
-    public Key(int x, int y, int z, Type type)
+    public Key(Piece piece, int x, int y, int z, Type type)
     {
+      this.piece = piece;
+      
       this.x = x;
       this.y = y;
       this.z = z;
@@ -31,7 +36,7 @@ public class Sprite implements Comparable<Sprite>
     
     @Override
     public int compareTo(Key o) 
-    {       
+    {             
       if (z != o.z)
         return Integer.compare(z, o.z);
       else if (y != o.y)
@@ -42,7 +47,18 @@ public class Sprite implements Comparable<Sprite>
         return type.compareTo(o.type);
     }
     
-    public String toString() { return String.format("(%d, %d, %d, %s)", x, y, z, type.toString()); }
+    @Override
+    public boolean equals(Object o) {
+      if (o instanceof Key)
+      {
+        Key k = (Key)o;
+        return x == k.x && y == k.y && z == k.z && type == k.type;
+      }
+      else
+        return false;
+    }
+    
+    public String toString() { return String.format("(%s, %d, %d, %d, %s)", piece.type, x, y, z, type.toString()); }
   }
   
   private final Key key;
@@ -63,5 +79,11 @@ public class Sprite implements Comparable<Sprite>
   }
 
   @Override
-  public int compareTo(Sprite o) { return key.compareTo(o.key); }
+  public int compareTo(Sprite o) 
+  { 
+    /*if (key.piece.type != PieceType.CAP && o.key.piece.type != PieceType.CAP)
+      System.out.println("comparing "+this.key+" with "+o.key+" : "+key.compareTo(o.key));*/
+
+    return key.compareTo(o.key); 
+  }
 }

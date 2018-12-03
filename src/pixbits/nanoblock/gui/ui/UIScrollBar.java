@@ -24,7 +24,7 @@ public abstract class UIScrollBar extends Drawable
   
   float progress = 0.0f;
   int progressReal = 0;
-  int progressStep = 1;
+  final int progressStep = 1;
     
   public UIScrollBar(Sketch p, int ox, int oy, int width, int height, int buttonSize)
   {

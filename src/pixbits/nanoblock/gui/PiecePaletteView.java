@@ -157,7 +157,7 @@ public class PiecePaletteView extends Drawable
     }
     
     if (v > 0 && i + 1 < wrapper.size)
-    {
+    {    
       Brush.setType(wrapper.brushAt(i+1));
       if (scrollBar != null && i >= offset + cellCount - 1)
         scrollBar.downArrow();
