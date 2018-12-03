@@ -42,7 +42,11 @@ public class IsometricView extends Drawable
   
   public void dispose() { }
 
-  
+  public void invalidate()
+  {
+    for (Level level : model)
+      level.setDirty(true);
+  }
   
   public void draw()
   {

@@ -203,10 +203,13 @@ public enum Item
       {
         UndoableTask task = builder.build(Main.sketch.getModel());
         task.execute();
+        Main.sketch.isometricView.invalidate();
+
       }
       else if (task != null)
       {
         task.execute();
+        Main.sketch.isometricView.invalidate();
       }
     }
     else if (type == ItemType.CHECKBOX)

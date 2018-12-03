@@ -63,6 +63,7 @@ public class Tasks
       //TODO: update level inside LevelView
       Main.sketch.levelStackView.setLocked(level.previous());
       Main.sketch.levelStackView.clearToBeDeleted();
+      Main.sketch.isometricView.invalidate();
       Main.sketch.redraw();
       return true;
     }

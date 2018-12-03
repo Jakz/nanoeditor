@@ -40,10 +40,8 @@ public class Sprite implements Comparable<Sprite>
     {             
       if (z != o.z)
         return Integer.compare(z, o.z);
-      else if (y != o.y)
-        return Integer.compare(y, o.y);
-      else if (x != o.x)
-        return Integer.compare(x, o.x);
+      else if (y != o.y || x != o.x)
+        return Integer.compare(y + x, o.y + o.x);
       else 
         return type.compareTo(o.type);
     }
@@ -86,8 +84,8 @@ public class Sprite implements Comparable<Sprite>
   @Override
   public int compareTo(Sprite o) 
   { 
-    /*if (key.piece.type != PieceType.CAP && o.key.piece.type != PieceType.CAP)
-      System.out.println("comparing "+this.key+" with "+o.key+" : "+key.compareTo(o.key));*/
+   //if (key.piece.type != PieceType.CAP && o.key.piece.type != PieceType.CAP)
+   //  System.out.println("comparing "+this.key+" with "+o.key+" : "+key.compareTo(o.key));
 
     return key.compareTo(o.key); 
   }

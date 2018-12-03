@@ -61,7 +61,7 @@ public class Main
     libraryFrame.getModel().add(Library.i().getModels());
     libraryFrame.getModel().refresh();
     /*libraryFrame.showMe();*/
-    Tasks.LIBRARY_OPEN_IN_EDITOR.execute(Library.i().getModels().get(1));
+    Tasks.LIBRARY_OPEN_IN_EDITOR.execute(Library.i().getModels().get(0));
 
     
     resizeModelFrame = new ResizeModelFrame();

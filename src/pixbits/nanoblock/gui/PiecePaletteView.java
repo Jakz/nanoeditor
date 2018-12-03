@@ -9,6 +9,8 @@ import processing.core.*;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PiecePaletteView extends Drawable
 {
@@ -51,6 +53,8 @@ public class PiecePaletteView extends Drawable
   
   private PieceScrollBar scrollBar;
   
+  private final Map<PieceColor, Map<PieceType, PImage>> cache;
+  
   PiecePaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount, boolean implicitRotations)
   {
     super(p,ox,oy);
@@ -69,6 +73,8 @@ public class PiecePaletteView extends Drawable
     
     if (cellCount < wrapper.size)
       scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
+    
+    cache = new HashMap<>();
   }
   
   @Override
@@ -171,26 +177,11 @@ public class PiecePaletteView extends Drawable
     
     Main.sketch.redraw();
   }
-
-  public void draw()
+  
+  public PImage getPieceGfx(PieceType type, PieceColor color)
   {
-    if (scrollBar != null)
-      scrollBar.draw();
-    
-    p.stroke(0);
-    p.noFill();
-    
-    PieceColor color = Brush.color;
-           
-    int selectedIndex = -1;
-    
-    for (int i = 0; i < cellCount; ++i)
-    {
-      PieceType type = wrapper.at(offset+i);
-      
-      if (type == Brush.type())
-        selectedIndex = i;
-      
+    Map<PieceType, PImage> byPiece = cache.computeIfAbsent(color, c -> new HashMap<>());
+    PImage image = byPiece.computeIfAbsent(type, t -> {
       SpriteBatch batch = new SpriteBatch();
       PieceDrawer.generateSprites(new Piece(type, color, 0, 0), batch);
       
@@ -213,7 +204,37 @@ public class PiecePaletteView extends Drawable
       batch.draw(buffer);
 
       buffer.endDraw();
-      p.blend(buffer, cellSize, cellSize, cellSize, cellSize, ox+i*cellSize, oy, cellSize, cellSize, Sketch.BLEND);
+      
+      PImage gfx = p.createGraphics(cellSize, cellSize, Sketch.P2D);
+      gfx.blend(buffer, cellSize, cellSize, cellSize, cellSize, 0, 0, cellSize, cellSize, Sketch.BLEND);
+      return gfx;
+    });
+    
+    return image;
+  }
+
+  public void draw()
+  {
+    if (scrollBar != null)
+      scrollBar.draw();
+    
+    p.stroke(0);
+    p.noFill();
+    
+    PieceColor color = Brush.color;
+           
+    int selectedIndex = -1;
+    
+    for (int i = 0; i < cellCount; ++i)
+    {
+      PieceType type = wrapper.at(offset+i);
+      
+      if (type == Brush.type())
+        selectedIndex = i;
+      
+      PImage image = getPieceGfx(type, color);
+
+      p.blend(image, 0, 0, cellSize, cellSize, ox+i*cellSize, oy, cellSize, cellSize, Sketch.BLEND);
       
       p.strokeWeight(1.0f);
       p.stroke(0);
