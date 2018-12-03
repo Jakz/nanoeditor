@@ -161,7 +161,7 @@ public class PieceDrawer
   }
   
   
-  final static Rectangle rectCap = new Rectangle(1, 121, 44, 27);
+  final static Rectangle rectCap = new Rectangle(45*8, 21, 44, 27);
   
   public static void generateSprites(Piece piece, SpriteBatch batch) { generateSprites(piece, batch, 0); }
   public static void generateSprites(Piece piece, SpriteBatch batch, int l)
@@ -182,21 +182,10 @@ public class PieceDrawer
             )
         );
       }
-    /*  else if (piece.type == PieceType.P1x1r)
-      {
-        Point position = PieceDrawer.isometricPositionForCoordinate(piece.x, piece.y, l);
-
-        batch.add(new Sprite(
-            new Sprite.Key(piece, piece.x, piece.y, l, Sprite.Type.TOP), 
-            new Point(position.x - ts.xOffset, position.y - ts.yOffset*2),
-            rect1x1r
-            )
-        );
-      }*/
       else
       {
         {
-          Atlas atlas = new Atlas(1, 149, 45, 24, 8);
+          Atlas atlas = new Atlas(0, 0, 45, 24, 8);
 
           for (int yy = 0; yy < piece.type.height; ++yy)
             for (int xx = 0; xx < piece.type.width; ++xx)
@@ -217,7 +206,7 @@ public class PieceDrawer
         }
         
         {
-          Atlas atlas = new Atlas(1, 197 + 48,  22, 32,  45, 33);
+          Atlas atlas = new Atlas(0, 24*4 + 11,  22, 32,  45, 33);
           for (int xx = 0; xx < piece.type.width; ++xx)
           {
             final int isoX = piece.x + xx*2;
@@ -237,7 +226,7 @@ public class PieceDrawer
         }
 
         {
-          Atlas atlas = new Atlas(1, 197 + 48,  45, 32,  45, 33);
+          Atlas atlas = new Atlas(0, 24*4 + 11,  45, 32,  45, 33);
           for (int yy = 0; yy < piece.type.height; ++yy)
           {
             final int isoX = piece.x + (piece.type.width - 1)*2;

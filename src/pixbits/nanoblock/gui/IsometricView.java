@@ -91,6 +91,7 @@ public class IsometricView extends Drawable
       batch.setPosition(ox, oy - l*Brush.tileset.hOffset);
       batch.draw(p);
   
+      //TODO: reimplement DRAW_CAPS setting for new renderer
       /*for (Piece piece : level)
       {
         if (piece.type != PieceType.CAP || Settings.values.get(Setting.DRAW_CAPS))
