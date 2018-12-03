@@ -18,7 +18,7 @@ import processing.core.PConstants;
 
 public class IsometricView extends Drawable
 {  
-  private final Map<Level, SpriteBatch> cache; //TODO: never emptied, finda better solution
+  private final Map<Level, SpriteBatch> cache; //TODO: never emptied, find a better solution
   private final Model model;
   
   private int hoveredIndex;
