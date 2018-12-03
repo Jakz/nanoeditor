@@ -226,13 +226,13 @@ public class ModelOperations
   {
     final int width;
     final int height;
-    final VerAttach va;
-    final HorAttach ha;
+    final Attach va;
+    final Attach ha;
     final boolean keepCentered;
     final Rectangle bounds;
     
     
-    public Resize(Model model, Rectangle bounds, int width, int height, VerAttach va, HorAttach ha, boolean keepCentered)
+    public Resize(Model model, Rectangle bounds, int width, int height, Attach va, Attach ha, boolean keepCentered)
     {
       super(model);
       this.bounds = bounds;

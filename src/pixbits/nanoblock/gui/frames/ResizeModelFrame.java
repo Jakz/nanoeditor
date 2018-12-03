@@ -6,20 +6,19 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import pixbits.nanoblock.Main;
-import pixbits.nanoblock.data.HorAttach;
 import pixbits.nanoblock.data.Model;
-import pixbits.nanoblock.data.VerAttach;
+import pixbits.nanoblock.data.Attach;
 import pixbits.nanoblock.tasks.ModelOperations;
 
 public class ResizeModelFrame extends BaseDialog implements ModelOperationFrame
 {
   private static class AttachSide
   {
-    public final HorAttach hor;
-    public final VerAttach ver;
+    public final Attach hor;
+    public final Attach ver;
     public final JToggleButton button;
     
-    AttachSide(JToggleButton button, HorAttach hor, VerAttach ver)
+    AttachSide(JToggleButton button, Attach hor, Attach ver)
     {
       this.button = button;
       this.hor = hor;
@@ -87,7 +86,7 @@ public class ResizeModelFrame extends BaseDialog implements ModelOperationFrame
         button.addActionListener(listener);
         
         group.add(button);
-        buttons[y][x] = new AttachSide(button, HorAttach.values()[x], VerAttach.values()[y]);
+        buttons[y][x] = new AttachSide(button, Attach.horizontal[x], Attach.vertical[y]);
         
         if (x == 1 && y == 1)
           button.setSelected(true);
@@ -164,8 +163,8 @@ public class ResizeModelFrame extends BaseDialog implements ModelOperationFrame
         return;
       }
       
-      VerAttach va = VerAttach.NONE;
-      HorAttach ha = HorAttach.NONE;
+      Attach va = Attach.NONE;
+      Attach ha = Attach.NONE;
       
       for (int y = 0; y < 3; ++y)
         for (int x = 0; x < 3; ++x)

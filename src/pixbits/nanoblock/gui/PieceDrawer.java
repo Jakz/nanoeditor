@@ -2,7 +2,9 @@ package pixbits.nanoblock.gui;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.misc.Setting;
@@ -162,7 +164,7 @@ public class PieceDrawer
   
   
   final static Rectangle rectCap = new Rectangle(45*8, 21, 44, 27);
-  
+    
   public static void generateSprites(Piece piece, SpriteBatch batch) { generateSprites(piece, batch, 0); }
   public static void generateSprites(Piece piece, SpriteBatch batch, int l)
   {
@@ -170,93 +172,93 @@ public class PieceDrawer
     PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
 
 
-      if (piece.type == PieceType.CAP)
+    if (piece.type == PieceType.CAP)
+    {
+      Point position = PieceDrawer.isometricPositionForCoordinate(piece.x, piece.y, l);
+    
+      batch.add(new Sprite(
+          new Sprite.Key(piece, piece.x, piece.y, l, Sprite.Type.TOP), 
+          texture,
+          new Point(position.x - ts.xOffset, position.y - 6),
+          rectCap
+          )
+      );
+    }
+    else
+    {
       {
-        Point position = PieceDrawer.isometricPositionForCoordinate(piece.x, piece.y, l);
-      
-        batch.add(new Sprite(
-            new Sprite.Key(piece, piece.x, piece.y, l, Sprite.Type.TOP), 
-            texture,
-            new Point(position.x - ts.xOffset, position.y - 6),
-            rectCap
-            )
-        );
-      }
-      else
-      {
-        {
-          Atlas atlas = new Atlas(0, 0, 45, 24, 8);
+        Atlas atlas = new Atlas(0, 0, 45, 24, 8);
 
-          for (int yy = 0; yy < piece.type.height; ++yy)
-            for (int xx = 0; xx < piece.type.width; ++xx)
-            {
-              final int isoX = piece.x + xx*2;
-              final int isoY = piece.y + yy*2; 
-              Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
-                   
-              int mask = piece.type.mask(xx, yy);    
-              batch.add(new Sprite(
-                  new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.TOP), 
-                  texture,
-                  new Point(position.x - ts.xOffset, position.y - ts.yOffset*2),
-                  atlas.get(mask)
-                  )
-              );
-            }
-        }
-        
-        {
-          Atlas atlas = new Atlas(0, 24*4 + 11,  22, 32,  45, 33);
+        for (int yy = 0; yy < piece.type.height; ++yy)
           for (int xx = 0; xx < piece.type.width; ++xx)
           {
             final int isoX = piece.x + xx*2;
-            final int isoY = piece.y + (piece.type.height - 1)*2; 
-            
-            Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY + 2, l); //TODO: +2 is an hack to adjust the value directly as coordinate
-            int mask = piece.type.maskSouth(xx, piece.type.height - 1); 
-            
-            batch.add(new Sprite(
-                new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
-                texture,
-                new Point(position.x, position.y - ts.yOffset*2),
-                atlas.get(mask)
-                )
-            );
-          }
-        }
-
-        {
-          Atlas atlas = new Atlas(0, 24*4 + 11,  45, 32,  45, 33);
-          for (int yy = 0; yy < piece.type.height; ++yy)
-          {
-            final int isoX = piece.x + (piece.type.width - 1)*2;
-            final int isoY = piece.y + yy*2;
-            
+            final int isoY = piece.y + yy*2; 
             Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
-            int mask = piece.type.maskEast(piece.type.width - 1, yy);   
-
+                 
+            int mask = piece.type.mask(xx, yy);    
             batch.add(new Sprite(
-                new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+                new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.TOP), 
                 texture,
-                new java.awt.Point(position.x - ts.xOffset, position.y - ts.yOffset*1),
+                new Point(position.x - ts.xOffset, position.y - ts.yOffset*2),
                 atlas.get(mask)
                 )
             );
           }
-        }
       }
       
-      /*piece.type.forEachCap((xx, yy) -> {
-        final int isoX = piece.x + xx;
-        final int isoY = piece.y + yy; 
-        java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l+1);
-      
-        sprites.add(new Sprite(
-            new Sprite.Key(isoX, isoY, l+1, Sprite.Type.TOP), 
-            new java.awt.Point(getWidth()/2 + position.x - ts.xOffset, getHeight()/2 + position.y - ts.yOffset + 4),
-            new Rectangle(1, 121, 44, 27)
-            )
-        );
-      });*/
+      {
+        Atlas atlas = new Atlas(0, 24*4 + 11,  22, 32,  45, 33);
+        for (int xx = 0; xx < piece.type.width; ++xx)
+        {
+          final int isoX = piece.x + xx*2;
+          final int isoY = piece.y + (piece.type.height - 1)*2; 
+          
+          Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY + 2, l); //TODO: +2 is an hack to adjust the value directly as coordinate
+          int mask = piece.type.maskSouth(xx, piece.type.height - 1); 
+          
+          batch.add(new Sprite(
+              new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+              texture,
+              new Point(position.x, position.y - ts.yOffset*2),
+              atlas.get(mask)
+              )
+          );
+        }
+      }
+
+      {
+        Atlas atlas = new Atlas(0, 24*4 + 11,  45, 32,  45, 33);
+        for (int yy = 0; yy < piece.type.height; ++yy)
+        {
+          final int isoX = piece.x + (piece.type.width - 1)*2;
+          final int isoY = piece.y + yy*2;
+          
+          Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
+          int mask = piece.type.maskEast(piece.type.width - 1, yy);   
+
+          batch.add(new Sprite(
+              new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+              texture,
+              new java.awt.Point(position.x - ts.xOffset, position.y - ts.yOffset*1),
+              atlas.get(mask)
+              )
+          );
+        }
+      }
+    }
+    
+    /*piece.type.forEachCap((xx, yy) -> {
+      final int isoX = piece.x + xx;
+      final int isoY = piece.y + yy; 
+      java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l+1);
+    
+      sprites.add(new Sprite(
+          new Sprite.Key(isoX, isoY, l+1, Sprite.Type.TOP), 
+          new java.awt.Point(getWidth()/2 + position.x - ts.xOffset, getHeight()/2 + position.y - ts.yOffset + 4),
+          new Rectangle(1, 121, 44, 27)
+          )
+      );
+    });*/
   } 
 }

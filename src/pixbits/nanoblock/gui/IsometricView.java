@@ -15,6 +15,7 @@ import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.ModelOperations;
 import processing.core.PConstants;
+import processing.core.PImage;
 
 public class IsometricView extends Drawable
 {  
@@ -22,6 +23,7 @@ public class IsometricView extends Drawable
   private final Model model;
   
   private int hoveredIndex;
+  
   
   IsometricView(Sketch p, Model model)
   {
@@ -34,15 +36,18 @@ public class IsometricView extends Drawable
     
     this.model = model;
     this.hoveredIndex = -1;
-    
+        
     cache = new HashMap<>();
   }
   
   public void dispose() { }
 
   
+  
   public void draw()
   {
+    int drawnSprites = 0;
+    
     Level hovered = p.levelStackView.getHoveredLevel();
     hoveredIndex = -1;
     Rectangle hoverRect = p.levelStackView.hover();
@@ -90,6 +95,7 @@ public class IsometricView extends Drawable
       
       batch.setPosition(ox, oy - l*Brush.tileset.hOffset);
       batch.draw(p);
+      drawnSprites += batch.size();
   
       //TODO: reimplement DRAW_CAPS setting for new renderer
       /*for (Piece piece : level)
@@ -100,6 +106,8 @@ public class IsometricView extends Drawable
         }
       }*/
     }
+    
+    p.text("Drawn Sprites: "+drawnSprites, 500, 30);
     
 
     if (Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL || Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE)

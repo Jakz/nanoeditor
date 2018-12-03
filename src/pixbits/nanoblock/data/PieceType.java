@@ -79,6 +79,8 @@ public class PieceType
     this(width, height, rounded, null);
   }
   
+  public boolean isConvex() { return true; }
+  
   public void forEachCap(IntBiConsumer consumer)
   {
     if (caps != null)

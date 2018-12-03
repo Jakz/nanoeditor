@@ -273,7 +273,7 @@ public class Model implements Iterable<Level>
     return new Rectangle(minX/2, minY/2, maxX/2, maxY/2);
   }
   
-  public boolean resize(Rectangle bounds, int w, int h, VerAttach va, HorAttach ha, boolean keepCentered)
+  public boolean resize(Rectangle bounds, int w, int h, Attach va, Attach ha, boolean keepCentered)
   {
     int minX = bounds.x, minY = bounds.y;
     int maxX = bounds.width, maxY = bounds.height;
@@ -293,9 +293,9 @@ public class Model implements Iterable<Level>
     Log.i("Resizing model");
     Log.i("Bounds X: "+minX+", "+maxX+"   Y: "+minY+", "+maxY);
     
-    if (ha == HorAttach.LEFT) deltaX = -minX;
-    else if (ha == HorAttach.RIGHT) deltaX = w - bwidth - minX;
-    else if (ha == HorAttach.NONE)
+    if (ha == Attach.LEFT) deltaX = -minX;
+    else if (ha == Attach.RIGHT) deltaX = w - bwidth - minX;
+    else if (ha == Attach.NONE)
     {
       int dw = w - bwidth;
       
@@ -309,9 +309,9 @@ public class Model implements Iterable<Level>
       deltaX = dw - minX;
     }
     
-    if (va == VerAttach.TOP) deltaY = -minY;
-    else if (va == VerAttach.BOTTOM) deltaY = h - bheight - minY;
-    else if (va == VerAttach.NONE)
+    if (va == Attach.TOP) deltaY = -minY;
+    else if (va == Attach.BOTTOM) deltaY = h - bheight - minY;
+    else if (va == Attach.NONE)
     {
       int dh = h - bheight;
       
