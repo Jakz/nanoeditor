@@ -162,11 +162,13 @@ public class PieceDrawer
   
   
   final static Rectangle rectCap = new Rectangle(1, 121, 44, 27);
-  final static Rectangle rect1x1r = new Rectangle(46, 101, 44, 40);
-  public static void generateSprites(Piece piece, SpriteBatch batch)
+  
+  public static void generateSprites(Piece piece, SpriteBatch batch) { generateSprites(piece, batch, 0); }
+  public static void generateSprites(Piece piece, SpriteBatch batch, int l)
   {
-    int l = 0;
     Tileset ts = Brush.tileset;
+    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
+
 
       if (piece.type == PieceType.CAP)
       {
@@ -174,6 +176,7 @@ public class PieceDrawer
       
         batch.add(new Sprite(
             new Sprite.Key(piece, piece.x, piece.y, l, Sprite.Type.TOP), 
+            texture,
             new Point(position.x - ts.xOffset, position.y - 6),
             rectCap
             )
@@ -205,6 +208,7 @@ public class PieceDrawer
               int mask = piece.type.mask(xx, yy);    
               batch.add(new Sprite(
                   new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.TOP), 
+                  texture,
                   new Point(position.x - ts.xOffset, position.y - ts.yOffset*2),
                   atlas.get(mask)
                   )
@@ -224,6 +228,7 @@ public class PieceDrawer
             
             batch.add(new Sprite(
                 new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+                texture,
                 new Point(position.x, position.y - ts.yOffset*2),
                 atlas.get(mask)
                 )
@@ -240,12 +245,10 @@ public class PieceDrawer
             
             Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
             int mask = piece.type.maskEast(piece.type.width - 1, yy);   
-            
-            if (piece.type.rounded)
-              System.out.println(0+" "+yy+" mask: "+mask+" rect: "+atlas.get(mask));
-            
+
             batch.add(new Sprite(
                 new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+                texture,
                 new java.awt.Point(position.x - ts.xOffset, position.y - ts.yOffset*1),
                 atlas.get(mask)
                 )

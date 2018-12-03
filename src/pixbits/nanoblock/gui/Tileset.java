@@ -24,7 +24,7 @@ public class Tileset
   final private Map<PieceColor, ColorMap> colors;
   
   final private Map<PieceType, PImage> baseCache;
-  final private Map<PieceColor, Map<PieceType, PImage>> cache;
+  final private Map<PieceColor, PImage> cache;
   
   public Tileset(PImage image, int hOffset,int xOffset, int yOffset, ArrayList<Integer[]> baseCols)
   {
@@ -53,12 +53,9 @@ public class Tileset
   }
   
   public PImage imageForTypeAndColor(PieceType type, PieceColor color)
-  {
-    Map<PieceType, PImage> entry = cache.computeIfAbsent(color, c -> new HashMap<>());
-    
-    PImage image = entry.computeIfAbsent(type, t -> { 
-      PImage base = getBasePieceGfx(t);
-      return createColoredCopy(specs.get(type), base, baseColors, colors.get(color));
+  {    
+    PImage image = cache.computeIfAbsent(color, t -> { 
+      return createColoredCopy(specs.get(type), this.image, baseColors, colors.get(color));
     });
     
     return image;
@@ -83,30 +80,6 @@ public class Tileset
       this.oy = oy;
       this.flipX = flipX;
     }   
-  }
-  
-  private PImage getBasePieceGfx(PieceType type)
-  {
-    return baseCache.computeIfAbsent(type, t -> {
-      PieceSpec spec = specs.get(t);
-      
-      PImage gfx = Main.sketch.createImage(spec.w, spec.h, Sketch.ARGB);
-      
-      if (!spec.flipX)
-      {
-        for (int y = 0; y < spec.h; ++y)
-          for (int x = 0; x < spec.w; ++x)
-            gfx.set(x, y, image.get(spec.x+x, spec.y+y));
-      }
-      else
-      {
-        for (int y = 0; y < spec.h; ++y)
-          for (int x = 0; x < spec.w; ++x)
-            gfx.set(spec.w - x - 1, y, image.get(spec.x+x, spec.y+y));
-      }
-      
-      return gfx;
-    });
   }
   
   //TODO: make private again
@@ -141,12 +114,6 @@ public class Tileset
     source.updatePixels();
     
     return tex;
-  }
-  
-  private void printStatistics()
-  {
-    long count = cache.values().stream().flatMap(m -> m.values().stream()).count();
-    System.out.println("Image cache size: "+count);
   }
   
   // WHITE 231 208 172 163

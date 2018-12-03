@@ -1,6 +1,7 @@
 package pixbits.nanoblock.gui;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,23 @@ public class SpriteBatch
   public boolean isEmpty() { return sprites.isEmpty(); }
   public void clear() { sprites.clear(); }
   public int size() { return sprites.size(); }
+  
+  public Rectangle bounds()
+  {
+    int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
+    int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
+    
+    for (Sprite sprite : sprites)
+    {
+      minX = Math.min(minX, sprite.position.x);
+      minY = Math.min(minY, sprite.position.y);
+      
+      maxX = Math.max(maxX, sprite.position.x + sprite.rect.width);
+      maxY = Math.max(maxY, sprite.position.y + sprite.rect.height);
+    }
+    
+    return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+  }
   
   public void draw(PGfx gfx)
   {

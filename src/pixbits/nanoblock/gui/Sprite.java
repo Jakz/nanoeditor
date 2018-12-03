@@ -7,6 +7,7 @@ import pixbits.nanoblock.data.Piece;
 import pixbits.nanoblock.data.PieceType;
 import processing.core.PConstants;
 import processing.core.PGfx;
+import processing.core.PImage;
 
 public class Sprite implements Comparable<Sprite>
 {
@@ -62,12 +63,16 @@ public class Sprite implements Comparable<Sprite>
   }
   
   private final Key key;
-  private final Point position;
-  private final Rectangle rect;
   
-  public Sprite(Key key, Point position, Rectangle rect)
+  public final PImage texture;
+  public final Point position;
+  public final Rectangle rect;
+
+  public Sprite(Key key, PImage texture, Point position, Rectangle rect)
   {
     this.key = key;
+    
+    this.texture = texture;
     this.position = position;
     this.rect = rect;
   }
@@ -75,7 +80,7 @@ public class Sprite implements Comparable<Sprite>
   public void draw(PGfx gfx) { draw(gfx, 0, 0); }
   public void draw(PGfx gfx, int offsetX, int offsetY)
   {
-    gfx.blend(Brush.tileset.image, rect, position.x + offsetX, position.y + offsetY, PConstants.BLEND);
+    gfx.blend(texture, rect, position.x + offsetX, position.y + offsetY, PConstants.BLEND);
   }
 
   @Override
