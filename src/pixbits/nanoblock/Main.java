@@ -1,9 +1,12 @@
 package pixbits.nanoblock;
 
+import pixbits.nanoblock.data.PieceType;
 import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
 import pixbits.nanoblock.gui.frames.*;
 import pixbits.nanoblock.tasks.Tasks;
+
+import java.nio.file.Paths;
 
 import javax.swing.JPopupMenu;
 
@@ -31,6 +34,9 @@ public class Main
 
     Tasks.loadSettings();
     
+    PieceType.initMapping();
+    Brush.tileset = TileSetLoader.loadAndBuild(Paths.get("tileset.json"));
+    
     sketch = new Sketch();
     mainFrame = new MainFrame();
     mainFrame.setLocationRelativeTo(null);
@@ -54,7 +60,9 @@ public class Main
     libraryFrame = new LibraryFrame();
     libraryFrame.getModel().add(Library.i().getModels());
     libraryFrame.getModel().refresh();
-    libraryFrame.showMe();
+    /*libraryFrame.showMe();*/
+    Tasks.LIBRARY_OPEN_IN_EDITOR.execute(Library.i().getModels().get(1));
+
     
     resizeModelFrame = new ResizeModelFrame();
     replaceColorFrame = new ReplaceColorFrame();

@@ -1,7 +1,9 @@
 package pixbits.nanoblock.gui;
 
 import java.awt.Rectangle;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.Level;
@@ -16,6 +18,7 @@ import processing.core.PConstants;
 
 public class IsometricView extends Drawable
 {  
+  private final Map<Level, SpriteBatch> cache; //TODO: never emptied, find a better solution
   private final Model model;
   
   private int hoveredIndex;
@@ -31,6 +34,8 @@ public class IsometricView extends Drawable
     
     this.model = model;
     this.hoveredIndex = -1;
+    
+    cache = new HashMap<>();
   }
   
   public void dispose() { }
@@ -72,14 +77,28 @@ public class IsometricView extends Drawable
         }
         
       }
+      
+      SpriteBatch batch = cache.computeIfAbsent(level, __ -> new SpriteBatch());   
+      
+      if (level.dirty())
+      {
+        batch.clear();
+        for (Piece piece : level)
+          PieceDrawer.generateSprites(piece, batch);
+        level.setDirty(false);
+      }
+      
+      batch.setPosition(ox, oy - l*Brush.tileset.hOffset);
+      batch.draw(p);
   
-      for (Piece piece : level)
+      //TODO: reimplement DRAW_CAPS setting for new renderer
+      /*for (Piece piece : level)
       {
         if (piece.type != PieceType.CAP || Settings.values.get(Setting.DRAW_CAPS))
         {
-          PieceDrawer.drawPiece(p, ox, oy, piece, piece.x, piece.y, l, level);
+          PieceDrawer.drawPiece(p, ox, oy, piece, l, level);
         }
-      }
+      }*/
     }
     
 

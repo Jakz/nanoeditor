@@ -128,7 +128,7 @@ public class Model implements Iterable<Level>
           p.x -= p.type.width*2 - 1;
         }
         
-        l.resortPieces();
+        l.setDirty(true);
       }
     }
     else if (dir == Direction.WEST)
@@ -145,7 +145,7 @@ public class Model implements Iterable<Level>
           p.y -= p.type.height*2 - 1;
         }
         
-        l.resortPieces();
+        l.setDirty(true);
       }
     }
     

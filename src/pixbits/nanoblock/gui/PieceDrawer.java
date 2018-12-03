@@ -10,79 +10,68 @@ import pixbits.nanoblock.misc.Settings;
 import processing.core.*;
 
 public class PieceDrawer
-{
-  public static Point basePositionForLayer(int x, int y, int l)
+{  
+  public static Point isometricPositionForCoordinate(int x, int y, int l)
   {
     Tileset ts = Brush.tileset;
 
     int fx = (int) ((x - y)/2.0f * ts.xOffset);
     int fy = (int) ((x + y)/2.0f * ts.yOffset);
-    
+        
     fy -= ts.hOffset * l;
 
     return new Point(fx, fy);
   }
-  
-  public static Point positionForPiece(int baseX, int baseY, Piece piece, int l)
-  {
-    Tileset ts = Brush.tileset;
-    
-    int fx = (int) (baseX + (piece.x - piece.y)/2.0f * ts.xOffset);
-    int fy = (int) (baseY + (piece.x + piece.y)/2.0f * ts.yOffset);
-    
-    fy -= ts.hOffset * l;
 
-    return new Point(fx, fy);
-  }
-  
-  public static void drawPiece(PGfx gfx, int baseX, int baseY, Piece piece, int x, int y, int l, Level level)
+  public static void drawPiece(PGfx gfx, int baseX, int baseY, PieceType type, PieceColor color, int x, int y, int l)
   {    
     Tileset ts = Brush.tileset;
-    Tileset.PieceSpec spec = ts.spec(piece.type);
-    Point p = positionForPiece(baseX, baseY, piece, l);
+    Tileset.PieceSpec spec = ts.spec(type);
+    Point p = isometricPositionForCoordinate(x, y, l);
+    p.translate(baseX, baseY);
     
-    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
+    PImage texture = ts.imageForTypeAndColor(type, color);
     gfx.blend(texture, 0, 0, spec.w, spec.h, p.x+spec.ox, p.y+spec.oy+ts.yOffset, spec.w, spec.h, PApplet.BLEND);
     
     //TODO: move, no sense here and it's called when drawing on image from drawModelOnImage which is wrong
-    if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
-      gfx.text(""+level.indexOfPiece(piece), p.x+spec.w/2, p.y+spec.oy+spec.h/2);
+    //if (Settings.values.get(Setting.SHOW_PIECE_ORDER))
+    //  gfx.text(""+level.indexOfPiece(piece), p.x+spec.w/2, p.y+spec.oy+spec.h/2);
+  }
+  
+  public static void drawPiece(PGfx gfx, int baseX, int baseY, Piece piece, int l, Level level)
+  {    
+    drawPiece(gfx, baseX, baseY, piece.type, piece.color, piece.x, piece.y, l);
   }
   
   public static void drawModelOnImage(PImage gfx, int baseX, int baseY, Model model, boolean showCaps)
   {
+    SpriteBatch batch = new SpriteBatch();
+
     for (int l = 0; l < model.levelCount(); ++l)
     {
       Level level = model.levelAt(l);
-      Iterator<Piece> pieces = level.iterator();
       
-      while (pieces.hasNext())
+      batch.clear();
+      
+      for (Piece piece : level)
       {
-        Piece piece = pieces.next();
-
-        if (piece.type != PieceType.CAP || showCaps)
-        PieceDrawer.drawPiece(gfx, baseX, baseY, piece, piece.x, piece.y, l, level);
+        if (showCaps || piece.type != PieceType.CAP)
+          generateSprites(piece, batch);
       }
+      
+      batch.setPosition(baseX, baseY - l*Brush.tileset.hOffset);
+      batch.draw(gfx);
+      batch.sortIfNeeded();
     }
   }
-  
-  
-  
-  public static Rectangle computeBoundsForModel(Model model)
-  {
-    int x = 0;
-    int y = 0;
-    
-    return new Rectangle(512,384,1024,768);
-  }
-  
+
   public static Rectangle computeLayerBounds(Model model, int l)
   {
     /* total width and height is offset*2 but we need to offset x by half width */
     int sx = -model.getWidth()*Brush.tileset.xOffset, sw = model.getWidth()*Brush.tileset.xOffset*2;
     int sh = model.getHeight()*Brush.tileset.yOffset*2;
 
-    Point base = basePositionForLayer(0,0,l);
+    Point base = isometricPositionForCoordinate(0,0,l);
     
     int sy = base.y - 2;
     
@@ -152,15 +141,15 @@ public class PieceDrawer
     System.out.println("top: "+topMost);
     System.out.println("bottom: "+bottomMost);*/
     
-    Point left = positionForPiece(0, 0, leftMost, l);
+    Point left = isometricPositionForCoordinate(leftMost.x, leftMost.y, l);
     left.x -= ts.xOffset*(leftMost.type.height-1);
     
-    Point right = positionForPiece(0, 0, rightMost, l);
+    Point right = isometricPositionForCoordinate(rightMost.x, rightMost.y, l);
     right.x += ts.xOffset*(rightMost.type.width-1);
     
-    Point top = positionForPiece(0, 0, topMost, l);
+    Point top = isometricPositionForCoordinate(topMost.x, topMost.y, l);
     
-    Point bottom = positionForPiece(0, 0, bottomMost, l);
+    Point bottom = isometricPositionForCoordinate(bottomMost.x, bottomMost.y, l);
     bottom.y += ts.yOffset*(bottomMost.type.height-1 + bottomMost.type.width-1);
 
     return new Rectangle(
@@ -171,4 +160,103 @@ public class PieceDrawer
     );
   }
   
+  
+  final static Rectangle rectCap = new Rectangle(45*8, 21, 44, 27);
+  
+  public static void generateSprites(Piece piece, SpriteBatch batch) { generateSprites(piece, batch, 0); }
+  public static void generateSprites(Piece piece, SpriteBatch batch, int l)
+  {
+    Tileset ts = Brush.tileset;
+    PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
+
+
+      if (piece.type == PieceType.CAP)
+      {
+        Point position = PieceDrawer.isometricPositionForCoordinate(piece.x, piece.y, l);
+      
+        batch.add(new Sprite(
+            new Sprite.Key(piece, piece.x, piece.y, l, Sprite.Type.TOP), 
+            texture,
+            new Point(position.x - ts.xOffset, position.y - 6),
+            rectCap
+            )
+        );
+      }
+      else
+      {
+        {
+          Atlas atlas = new Atlas(0, 0, 45, 24, 8);
+
+          for (int yy = 0; yy < piece.type.height; ++yy)
+            for (int xx = 0; xx < piece.type.width; ++xx)
+            {
+              final int isoX = piece.x + xx*2;
+              final int isoY = piece.y + yy*2; 
+              Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
+                   
+              int mask = piece.type.mask(xx, yy);    
+              batch.add(new Sprite(
+                  new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.TOP), 
+                  texture,
+                  new Point(position.x - ts.xOffset, position.y - ts.yOffset*2),
+                  atlas.get(mask)
+                  )
+              );
+            }
+        }
+        
+        {
+          Atlas atlas = new Atlas(0, 24*4 + 11,  22, 32,  45, 33);
+          for (int xx = 0; xx < piece.type.width; ++xx)
+          {
+            final int isoX = piece.x + xx*2;
+            final int isoY = piece.y + (piece.type.height - 1)*2; 
+            
+            Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY + 2, l); //TODO: +2 is an hack to adjust the value directly as coordinate
+            int mask = piece.type.maskSouth(xx, piece.type.height - 1); 
+            
+            batch.add(new Sprite(
+                new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+                texture,
+                new Point(position.x, position.y - ts.yOffset*2),
+                atlas.get(mask)
+                )
+            );
+          }
+        }
+
+        {
+          Atlas atlas = new Atlas(0, 24*4 + 11,  45, 32,  45, 33);
+          for (int yy = 0; yy < piece.type.height; ++yy)
+          {
+            final int isoX = piece.x + (piece.type.width - 1)*2;
+            final int isoY = piece.y + yy*2;
+            
+            Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
+            int mask = piece.type.maskEast(piece.type.width - 1, yy);   
+
+            batch.add(new Sprite(
+                new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+                texture,
+                new java.awt.Point(position.x - ts.xOffset, position.y - ts.yOffset*1),
+                atlas.get(mask)
+                )
+            );
+          }
+        }
+      }
+      
+      /*piece.type.forEachCap((xx, yy) -> {
+        final int isoX = piece.x + xx;
+        final int isoY = piece.y + yy; 
+        java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l+1);
+      
+        sprites.add(new Sprite(
+            new Sprite.Key(isoX, isoY, l+1, Sprite.Type.TOP), 
+            new java.awt.Point(getWidth()/2 + position.x - ts.xOffset, getHeight()/2 + position.y - ts.yOffset + 4),
+            new Rectangle(1, 121, 44, 27)
+            )
+        );
+      });*/
+  } 
 }

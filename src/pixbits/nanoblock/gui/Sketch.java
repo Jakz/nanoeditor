@@ -3,6 +3,7 @@ package pixbits.nanoblock.gui;
 
 import pixbits.nanoblock.*;
 import pixbits.nanoblock.data.*;
+import pixbits.nanoblock.gui.Tileset.PieceSpec;
 import pixbits.nanoblock.gui.ui.*;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
@@ -21,6 +22,8 @@ import java.nio.file.Paths;
 import javax.swing.event.*;
 
 import com.pixbits.lib.collections.LockableList;
+import com.pixbits.lib.lang.Point;
+import com.pixbits.lib.lang.Size;
 import com.pixbits.lib.ui.color.Color;
 
 import processing.core.*;
@@ -45,6 +48,8 @@ public class Sketch extends PApplet implements ChangeListener
 	public IsometricView isometricView;
 	
 	public PFont font;
+  PImage tmp = null;
+
 	
 	private Model model;
 	
@@ -57,9 +62,6 @@ public class Sketch extends PApplet implements ChangeListener
 
     //smooth();
     size(Main.SW, Main.SH, Sketch.P2D);
-    
-    PieceType.initMapping();
-    Brush.tileset = TileSetLoader.loadAndBuild(Paths.get("tileset.json"));
 
     font = createFont("Helvetica", 16);
         
@@ -70,6 +72,8 @@ public class Sketch extends PApplet implements ChangeListener
     drawables.add(pieceView);
         
     updatePiecePalette();
+    
+    tmp = loadImage("tileset.png");
 
     /*UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
     addDrawable(checkBox);
@@ -145,13 +149,27 @@ public class Sketch extends PApplet implements ChangeListener
   
   public int hoveredIndex = -1;
   
+  SpriteBatch sprites = new SpriteBatch();
+  
+  void generateSprites()
+  {
+    Piece piece = new Piece(PieceType.P2x4, PieceColor.CREAM, 0, 0);
+    PieceDrawer.generateSprites(piece, sprites);
+    sprites.setPosition(getWidth()/2, getHeight()/2); 
+  }
+      
   public void draw()
   {
   	if (model == null)
   	  return;
 
     background(GUI.theme.background);
-    	
+
+    /*if (sprites.isEmpty())
+      generateSprites();
+    
+    sprites.draw(this);*/
+
     drawables.setLocked(true);
   	for (Drawable d : drawables)
   	  d.draw();

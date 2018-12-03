@@ -10,6 +10,7 @@ public class PieceType
   public final int width, height;
   public final boolean rounded;
   private final int[][] caps;
+  private final int[][][] masks;
 
   PieceType(int width, int height, boolean rounded, int[][] caps)
   {
@@ -17,6 +18,60 @@ public class PieceType
     this.height = height;
     this.rounded = rounded;
     this.caps = caps;
+    
+    this.masks = new int[3][width][height];
+    
+    for (int i = 0; i < width; ++i)
+      for (int j = 0; j < height; ++j)
+      {      
+        masks[0][i][j] = 0;
+        masks[0][i][j] |= j > 0 ? Direction.NORTH.mask : 0;
+        masks[0][i][j] |= i > 0 ? Direction.WEST.mask : 0;
+        masks[0][i][j] |= j < height - 1 ? Direction.SOUTH.mask : 0;
+        masks[0][i][j] |= i < width - 1 ? Direction.EAST.mask : 0;
+        
+        masks[1][i][j] = (i > 0 ? 1 : 0) | (i < width - 1 ? 2 : 0);
+        masks[2][i][j] = 4 + (j > 0 ? 2 : 0) | (j < height - 1 ? 1 : 0);
+        
+        /* adjustments of tiles for rounded pieces */
+        if (rounded)
+        {
+          if (width == 1 && height == 1)
+          {
+            masks[0][i][j] = 20;
+            masks[1][i][j] = 10;
+            masks[2][i][j] = 12;
+          }
+          else
+          {
+            if (masks[0][i][j] == Direction.WEST.mask)
+            {
+              masks[0][i][j] = 16;
+              
+              masks[1][i][j] = 9;
+              masks[2][i][j] = 12;
+            }           
+            else if (masks[0][i][j] == Direction.NORTH.mask)
+            {
+              masks[0][i][j] = 17;
+              
+              masks[1][i][j] = 10;
+              masks[2][i][j] = 13;
+
+            }
+            else if (masks[0][i][j] == Direction.EAST.mask)
+            {
+              masks[0][i][j] = 18;
+              masks[1][i][j] = 8;
+            }
+            else if (masks[0][i][j] == Direction.SOUTH.mask) 
+            {
+              masks[0][i][j] = 19;
+              masks[2][i][j] = 11;
+            }
+          }
+        }
+      }
   }
   
   PieceType(int width, int height, boolean rounded)
@@ -38,6 +93,22 @@ public class PieceType
           consumer.accept(i*2, j*2);
     }
   }
+  
+  public boolean hasPartAt(int x, int y)
+  {
+    return x >= 0 && y >= 0 && x < width && y < height;
+  }
+  
+  public void forEachPart(IntBiConsumer consumer)
+  {
+    for (int i = 0; i < width; ++i)
+      for (int j = 0; j < height; ++j)
+        consumer.accept(i*2, j*2);
+  }
+  
+  public int mask(int ox, int oy) { return masks[0][ox][oy]; }
+  public int maskSouth(int ox, int oy) { return masks[1][ox][oy]; }
+  public int maskEast(int ox, int oy) { return masks[2][ox][oy]; }
   
   public final static PieceType CAP    = new PieceType(1, 1, false);
   
@@ -65,6 +136,9 @@ public class PieceType
   public final static PieceType P1x4   = new PieceType(1, 4, false);
   public final static PieceType P1x4r  = new PieceType(1, 4, true);
   
+  public final static PieceType P6x1   = new PieceType(6, 1, false);
+  public final static PieceType P1x6  = new PieceType(1, 6, false);
+  
   public final static PieceType P2x2   = new PieceType(2, 2, false);
   public final static PieceType P2x2c  = new PieceType(2, 2, false, new int[][] { { 1, 1 } });
   
@@ -76,16 +150,17 @@ public class PieceType
   public final static PieceType P8x2   = new PieceType(8, 2, false);
   public final static PieceType P2x8   = new PieceType(2, 8, false);
   
-  public final static PieceType[] pieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P4x2, P2x4, P8x2, P2x8
+  private final static PieceType[] pieces = new PieceType[] {
+    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P6x1, P1x6, P4x2, P2x4, P8x2, P2x8
   };
   
   public final static PieceType[] spieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P2x2lt, P3x1, P3x1r, P4x1, P4x2, P8x2
+    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P2x2lt, P3x1, P3x1r, P4x1, P6x1, P4x2, P8x2
   };
   
   public static int count() { return pieces.length; }
   public static PieceType at(int index) { return pieces[index]; }
+  public static Iterable<PieceType> pieces() { return Arrays.asList(pieces); }
   
   private static final Map<String, PieceType> mapping = new HashMap<String, PieceType>();
   private static final Map<PieceType, String> mapping2 = new HashMap<PieceType, String>();
@@ -137,6 +212,10 @@ public class PieceType
     mapping.put("1x4r", P1x4r);
     addRotation(P4x1r, P1x4r);
     addRotation(P4x1, P1x4);
+    
+    mapping.put("6x1", P6x1);
+    mapping.put("1x6", P1x6);
+    addRotation(P6x1, P1x6);
     
     mapping.put("2x2", P2x2);
     mapping.put("2x2c", P2x2c);

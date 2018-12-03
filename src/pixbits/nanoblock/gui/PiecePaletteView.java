@@ -157,7 +157,7 @@ public class PiecePaletteView extends Drawable
     }
     
     if (v > 0 && i + 1 < wrapper.size)
-    {
+    {    
       Brush.setType(wrapper.brushAt(i+1));
       if (scrollBar != null && i >= offset + cellCount - 1)
         scrollBar.downArrow();
@@ -181,47 +181,36 @@ public class PiecePaletteView extends Drawable
     p.noFill();
     
     PieceColor color = Brush.color;
-    
-    
-    PImage capGfx = Brush.tileset.imageForTypeAndColor(PieceType.CAP, color);
-    
+           
     int selectedIndex = -1;
     
     for (int i = 0; i < cellCount; ++i)
     {
       PieceType type = wrapper.at(offset+i);
-            
+      
       if (type == Brush.type())
         selectedIndex = i;
-
-      PImage pieceGfx = Brush.tileset.imageForTypeAndColor(type, color);
       
-      int maxW = pieceGfx.width;
-      int maxH = pieceGfx.height;
+      SpriteBatch batch = new SpriteBatch();
+      PieceDrawer.generateSprites(new Piece(type, color, 0, 0), batch);
       
-      int opx = cellSize+cellSize/2 - maxW/2, opy = cellSize+cellSize/2 - maxH/2;
-            
-      buffer.beginDraw();
-      buffer.fill(220);
-      buffer.rect(0,0,cellSize*2,cellSize*2);
-      buffer.blend(pieceGfx, 0, 0, pieceGfx.width, pieceGfx.height, opx, opy, maxW, maxH, Sketch.BLEND);
-        
       /* draw caps on piece */
       if (Settings.values.get(Setting.DRAW_CAPS))
       {
-        final int capOffsetX = Brush.tileset.spec(PieceType.CAP).ox, capOffsetY = Brush.tileset.spec(PieceType.CAP).oy;
-  
-        type.forEachCap((x,y) -> {
-          final Point pt = PieceDrawer.positionForPiece(
-              opx - Brush.tileset.spec(type).ox, 
-              opy - Brush.tileset.spec(type).oy, 
-              new Piece(PieceType.CAP, color, x, y), 
-              1
-              );
-          
-          buffer.blend(capGfx, 0, 0, capGfx.width, capGfx.height, pt.x + capOffsetX, pt.y + capOffsetY, capGfx.width, capGfx.height, Sketch.BLEND);
-        });
+        type.forEachCap((x,y) -> 
+          PieceDrawer.generateSprites(new Piece(PieceType.CAP, color, x, y), batch, 1)
+        );
       }
+      
+      //TODO: cache this graphics 
+      buffer.beginDraw();
+      buffer.fill(220);
+      buffer.rect(0,0,cellSize*2,cellSize*2);
+      Rectangle bounds = batch.bounds();
+      int opx = - bounds.x + cellSize+cellSize/2 - bounds.width/2, opy = - bounds.y + cellSize+cellSize/2 - bounds.height/2;
+
+      batch.setPosition(opx, opy);
+      batch.draw(buffer);
 
       buffer.endDraw();
       p.blend(buffer, cellSize, cellSize, cellSize, cellSize, ox+i*cellSize, oy, cellSize, cellSize, Sketch.BLEND);

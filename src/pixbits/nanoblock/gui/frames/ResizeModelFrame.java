@@ -98,7 +98,7 @@ public class ResizeModelFrame extends BaseDialog implements ModelOperationFrame
 
     labelSize = new JLabel("Model Size");
     labelBounds = new JLabel("Model Bounds");
-    
+        
     fieldSize = new JTextField("1x1");
     fieldSize.setHorizontalAlignment(JTextField.CENTER);
     fieldSize.setEditable(false);
