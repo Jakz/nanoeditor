@@ -22,17 +22,10 @@ public class ModelInfo
   {
     ModelInfo mi = new ModelInfo();
     
-    if (author != null)
-      mi.author = new String(author);
-    
-    if (name != null)
-      mi.name = new String(name);
-    
-    if (source != null)
-      mi.source = new String(source);
-    
-    if (modelNumber != null)
-      mi.modelNumber = new String(modelNumber);
+    mi.author = author;
+    mi.name = new String(name);
+    mi.source = new String(source);
+    mi.modelNumber = new String(modelNumber);
     
     mi.width = width;
     mi.height = height;

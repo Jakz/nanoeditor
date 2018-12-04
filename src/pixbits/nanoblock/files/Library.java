@@ -64,7 +64,8 @@ public class Library implements Iterable<LibraryModel>
     Collections.sort(models);
   }
   
-  public boolean isHashUnique(String hash) {
+  public boolean isHashUnique(String hash)
+  {
     return true;
   }
   

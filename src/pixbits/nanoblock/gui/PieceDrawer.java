@@ -164,101 +164,72 @@ public class PieceDrawer
   
   
   final static Rectangle rectCap = new Rectangle(45*8, 21, 44, 27);
-    
+  
+  final static Atlas baseAtlas = new Atlas(0, 0, 45, 24, 8);
+  final static Atlas southAtlas = new Atlas(0, 24*4 + 11,  22, 32,  45, 33);
+  final static Atlas eastAtlas = new Atlas(0, 24*4 + 11,  45, 32,  45, 33);
+
   public static void generateSprites(Piece piece, SpriteBatch batch) { generateSprites(piece, batch, 0); }
   public static void generateSprites(Piece piece, SpriteBatch batch, int l)
   {
     Tileset ts = Brush.tileset;
     PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
-
-
-    if (piece.type == PieceType.CAP)
-    {
-      Point position = PieceDrawer.isometricPositionForCoordinate(piece.x, piece.y, l);
     
-      batch.add(new Sprite(
-          new Sprite.Key(piece, piece.x, piece.y, l, Sprite.Type.TOP), 
-          texture,
-          new Point(position.x - ts.xOffset, position.y - 6),
-          rectCap
-          )
-      );
-    }
-    else
-    {
-      {
-        Atlas atlas = new Atlas(0, 0, 45, 24, 8);
+    piece.type.forEachPart(p -> {
+      final int x = piece.x + p.x*2;
+      final int y = piece.y + p.y*2;
+      final Point position = PieceDrawer.isometricPositionForCoordinate(x, y, l);
 
-        for (int yy = 0; yy < piece.type.height; ++yy)
-          for (int xx = 0; xx < piece.type.width; ++xx)
-          {
-            final int isoX = piece.x + xx*2;
-            final int isoY = piece.y + yy*2; 
-            Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
-                 
-            int mask = piece.type.mask(xx, yy);    
-            batch.add(new Sprite(
-                new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.TOP), 
-                texture,
-                new Point(position.x - ts.xOffset, position.y - ts.yOffset*2),
-                atlas.get(mask)
-                )
-            );
-          }
-      }
-      
+      //TODO: just use a standard rect for top so that this goes with the top face
+      if (piece.type == PieceType.CAP)
       {
-        Atlas atlas = new Atlas(0, 24*4 + 11,  22, 32,  45, 33);
-        for (int xx = 0; xx < piece.type.width; ++xx)
+        batch.add(new Sprite(
+            new Sprite.Key(piece, piece.x, piece.y, l, Sprite.Type.TOP), 
+            texture,
+            new Point(position.x - ts.xOffset, position.y - 6),
+            rectCap
+            )
+        );
+      }
+      else
+      {
         {
-          final int isoX = piece.x + xx*2;
-          final int isoY = piece.y + (piece.type.height - 1)*2; 
-          
-          Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY + 2, l); //TODO: +2 is an hack to adjust the value directly as coordinate
-          int mask = piece.type.maskSouth(xx, piece.type.height - 1); 
-          
+        int mask = piece.type.mask(p.x, p.y);    
           batch.add(new Sprite(
-              new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+              new Sprite.Key(piece, x, y, l, Sprite.Type.TOP), 
               texture,
-              new Point(position.x, position.y - ts.yOffset*2),
-              atlas.get(mask)
+              new Point(position.x - ts.xOffset, position.y - ts.yOffset*2),
+              baseAtlas.get(mask)
               )
           );
         }
-      }
-
-      {
-        Atlas atlas = new Atlas(0, 24*4 + 11,  45, 32,  45, 33);
-        for (int yy = 0; yy < piece.type.height; ++yy)
+        
+        if (p.lastSouth)
         {
-          final int isoX = piece.x + (piece.type.width - 1)*2;
-          final int isoY = piece.y + yy*2;
+          int mask = piece.type.maskSouth(p.x, p.y); 
           
-          Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l);
-          int mask = piece.type.maskEast(piece.type.width - 1, yy);   
-
           batch.add(new Sprite(
-              new Sprite.Key(piece, isoX, isoY, l, Sprite.Type.WALL), 
+              new Sprite.Key(piece, x, y, l, Sprite.Type.WALL), 
               texture,
-              new java.awt.Point(position.x - ts.xOffset, position.y - ts.yOffset*1),
-              atlas.get(mask)
+              new Point(position.x - ts.xOffset, position.y - ts.yOffset*1),
+              southAtlas.get(mask)
               )
           );
         }
-      }
-    }
-    
-    /*piece.type.forEachCap((xx, yy) -> {
-      final int isoX = piece.x + xx;
-      final int isoY = piece.y + yy; 
-      java.awt.Point position = PieceDrawer.isometricPositionForCoordinate(isoX, isoY, l+1);
-    
-      sprites.add(new Sprite(
-          new Sprite.Key(isoX, isoY, l+1, Sprite.Type.TOP), 
-          new java.awt.Point(getWidth()/2 + position.x - ts.xOffset, getHeight()/2 + position.y - ts.yOffset + 4),
-          new Rectangle(1, 121, 44, 27)
-          )
-      );
-    });*/
+        
+        if (p.lastEast)
+        {
+          int mask = piece.type.maskEast(p.x, p.y);   
+
+          batch.add(new Sprite(
+              new Sprite.Key(piece, x, y, l, Sprite.Type.WALL), 
+              texture,
+              new Point(position.x - ts.xOffset, position.y - ts.yOffset*1),
+              eastAtlas.get(mask)
+              )
+          );
+        }
+      }     
+    });
   } 
 }

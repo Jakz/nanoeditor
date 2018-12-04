@@ -2,6 +2,7 @@ package pixbits.nanoblock.data;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import com.pixbits.lib.functional.IntBiConsumer;
 
@@ -101,11 +102,13 @@ public class PieceType
     return x >= 0 && y >= 0 && x < width && y < height;
   }
   
-  public void forEachPart(IntBiConsumer consumer)
+  public void forEachPart(Consumer<PiecePart> consumer)
   {
     for (int i = 0; i < width; ++i)
       for (int j = 0; j < height; ++j)
-        consumer.accept(i*2, j*2);
+      {
+        consumer.accept(new PiecePart(i, j, j >= height - 1, i >= width - 1));
+      }
   }
   
   public int mask(int ox, int oy) { return masks[0][ox][oy]; }
