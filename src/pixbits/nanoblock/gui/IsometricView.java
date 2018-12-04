@@ -180,8 +180,9 @@ public class IsometricView extends Drawable
       p.fill(220,0,0,180);
       p.strokeWeight(1.0f);
       p.stroke(0);
-      
-      //TODO: same as drawGridHover but with beginShape() vertex() endShape(CLOSE) 
+
+      PieceOutline outline = r.outline;
+      outline.renderIsometric(p, r.x, r.y, ox, oy - 1);
     }
 
   }
@@ -191,29 +192,11 @@ public class IsometricView extends Drawable
     if (r != null)
     {
       p.strokeWeight(4.0f);
+      p.noFill();
       p.stroke(180,0,0,220);
-      
-      PieceOutline outline = r.outline;
-      
-      boolean hor = true;
-      int x = r.x, y = r.y;
-      
-      for (int step : outline.steps)
-      {
-        if (hor)
-        {
-          drawGridLine(x, y, x + step*2, y, h);
-          x += step*2;
-        }
-        else
-        {
-          drawGridLine(x, y, x, y + step*2, h);
-          y += step*2;
-        }
-        
-        hor = !hor;
-      }
 
+      PieceOutline outline = r.outline;
+      outline.renderIsometric(p, r.x, r.y, ox, oy - 1);
     }
   }
   
