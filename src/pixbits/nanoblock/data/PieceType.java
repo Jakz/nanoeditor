@@ -11,17 +11,42 @@ public class PieceType
   public final int width, height;
   public final boolean rounded;
   private final int[][] caps;
+  private final PiecePart[] parts;
   private final int[][][] masks;
 
-  PieceType(int width, int height, boolean rounded, int[][] caps)
+  PieceType(int width, int height, boolean rounded, int[][] parts, int[][] caps)
   {
     this.width = width;
     this.height = height;
     this.rounded = rounded;
     this.caps = caps;
     
+    if (parts != null)
+    {
+      this.parts = new PiecePart[parts.length];
+      
+      int[][][] partsGrid = new int[width][height][];
+      
+      for (int[] part : parts)
+        partsGrid[part[0]][part[1]] = part;
+      
+      for (int i = 0; i < parts.length; ++i)
+      {
+        final int x = parts[i][0], y = parts[i][1];
+        PiecePart part = new PiecePart(x, y, 
+            y >= height - 1 || partsGrid[x][y+1] == null, 
+            x >= width - 1 || partsGrid[x+1][y] == null
+        );
+        
+        this.parts[i] = part;
+      }
+    }
+    else
+      this.parts = null;
+    
     this.masks = new int[3][width][height];
     
+
     for (int i = 0; i < width; ++i)
       for (int j = 0; j < height; ++j)
       {      
@@ -77,7 +102,7 @@ public class PieceType
   
   PieceType(int width, int height, boolean rounded)
   {
-    this(width, height, rounded, null);
+    this(width, height, rounded, null, null);
   }
   
   public boolean isConvex() { return true; }
@@ -91,9 +116,7 @@ public class PieceType
     }
     else
     {
-      for (int i = 0; i < width; ++i)
-        for (int j = 0; j < height; ++j)
-          consumer.accept(i*2, j*2);
+      forEachPart(c -> consumer.accept(c.x*2, c.y*2));
     }
   }
   
@@ -104,11 +127,17 @@ public class PieceType
   
   public void forEachPart(Consumer<PiecePart> consumer)
   {
-    for (int i = 0; i < width; ++i)
-      for (int j = 0; j < height; ++j)
-      {
-        consumer.accept(new PiecePart(i, j, j >= height - 1, i >= width - 1));
-      }
+    if (parts == null)
+    {
+      for (int i = 0; i < width; ++i)
+        for (int j = 0; j < height; ++j)
+        {
+          consumer.accept(new PiecePart(i, j, j >= height - 1, i >= width - 1));
+        }
+    }
+    else
+      for (PiecePart part : parts)
+        consumer.accept(part);
   }
   
   public int mask(int ox, int oy) { return masks[0][ox][oy]; }
@@ -123,8 +152,8 @@ public class PieceType
   public final static PieceType P2x1   = new PieceType(2, 1, false);
   public final static PieceType P1x2   = new PieceType(1, 2, false);
   
-  public final static PieceType P2x1c  = new PieceType(2, 1, false, new int[][] { { 1, 0 } });
-  public final static PieceType P1x2c  = new PieceType(1, 2, false, new int[][] { { 0, 1 } });
+  public final static PieceType P2x1c  = new PieceType(2, 1, false, null, new int[][] { { 1, 0 } });
+  public final static PieceType P1x2c  = new PieceType(1, 2, false, null, new int[][] { { 0, 1 } });
   
   public final static PieceType P2x1r  = new PieceType(2, 1, true);
   public final static PieceType P1x2r  = new PieceType(1, 2, true);
@@ -145,9 +174,9 @@ public class PieceType
   public final static PieceType P1x6  = new PieceType(1, 6, false);
   
   public final static PieceType P2x2   = new PieceType(2, 2, false);
-  public final static PieceType P2x2c  = new PieceType(2, 2, false, new int[][] { { 1, 1 } });
+  public final static PieceType P2x2c  = new PieceType(2, 2, false, null, new int[][] { { 1, 1 } });
   
-  public final static PieceType P2x2lt = new PieceType(2, 2, false, new int[][] { { 0, 0 }, { 2, 0 }, { 0, 2 } });
+  public final static PieceType P2x2lt = new PieceType(2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 0, 1 } }, null);
   
   public final static PieceType P4x2   = new PieceType(4, 2, false);
   public final static PieceType P2x4   = new PieceType(2, 4, false);
