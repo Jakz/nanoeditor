@@ -209,7 +209,8 @@ public enum Item
       else if (task != null)
       {
         task.execute();
-        Main.sketch.isometricView.invalidate();
+        if (Main.sketch != null)
+          Main.sketch.isometricView.invalidate();
       }
     }
     else if (type == ItemType.CHECKBOX)

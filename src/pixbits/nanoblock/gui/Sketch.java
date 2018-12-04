@@ -21,7 +21,6 @@ import java.nio.file.Paths;
 
 import javax.swing.event.*;
 
-import com.pixbits.lib.collections.LockableList;
 import com.pixbits.lib.lang.Point;
 import com.pixbits.lib.lang.Size;
 import com.pixbits.lib.ui.color.Color;
@@ -40,7 +39,7 @@ public class Sketch extends PApplet implements ChangeListener
 
   boolean hasInit = false;
 
-  final LockableList<Drawable> drawables = new LockableList<>(new ArrayList<>());
+  final ArrayList<Drawable> drawables = new ArrayList<>();
     	
 	public LevelStackView levelStackView;
 	public Drawable.Wrapper<PiecePaletteView> pieceView;
@@ -170,10 +169,8 @@ public class Sketch extends PApplet implements ChangeListener
     
     sprites.draw(this);*/
 
-    drawables.setLocked(true);
   	for (Drawable d : drawables)
   	  d.draw();
-  	drawables.setLocked(false);
   }
     
   public boolean tabPressed = false;
