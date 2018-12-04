@@ -9,6 +9,7 @@ import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.Level;
 import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.data.Piece;
+import pixbits.nanoblock.data.PieceOutline;
 import pixbits.nanoblock.data.PieceType;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.misc.Setting;
@@ -54,7 +55,7 @@ public class IsometricView extends Drawable
     
     Level hovered = p.levelStackView.getHoveredLevel();
     hoveredIndex = -1;
-    Rectangle hoverRect = p.levelStackView.hover();
+    PieceHover hover = p.levelStackView.hover();
     
     if (p.levelStackView.getLocked() != null)
       hovered = p.levelStackView.getLocked();
@@ -77,12 +78,12 @@ public class IsometricView extends Drawable
               
         if (Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL)
         {
-          drawGridHover(hoveredIndex, hoverRect);
-          drawGridHoverFill(hoveredIndex, hoverRect);
+          drawGridHover(hoveredIndex, hover);
+          drawGridHoverFill(hoveredIndex, hover);
         }
         else if (Settings.values.getHoverPiece() == Setting.HoverPiece.BACK_STROKE)
         {
-          drawGridHover(hoveredIndex, hoverRect);
+          drawGridHover(hoveredIndex, hover);
         }
         
       }
@@ -117,7 +118,7 @@ public class IsometricView extends Drawable
     if (Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE_WITH_BACK_FILL || Settings.values.getHoverPiece() == Setting.HoverPiece.FRONT_STROKE)
     {
       if (hoveredIndex != -1)
-        drawGridHover(hoveredIndex, hoverRect);
+        drawGridHover(hoveredIndex, hover);
     }
     
     if (hoveredIndex != -1)
@@ -172,29 +173,47 @@ public class IsometricView extends Drawable
     drawGrid(l);
   }
   
-  public void drawGridHoverFill(int h, Rectangle r)
+  public void drawGridHoverFill(int h, PieceHover r)
   {    
     if (r != null)
     {
       p.fill(220,0,0,180);
       p.strokeWeight(1.0f);
       p.stroke(0);
-      this.drawIsoSquare(r.x, r.y, r.width*2, r.height*2, h);
+      
+      //TODO: same as drawGridHover but with beginShape() vertex() endShape(CLOSE) 
     }
 
   }
   
-  public void drawGridHover(int h, Rectangle r)
+  public void drawGridHover(int h, PieceHover r)
   {    
     if (r != null)
     {
       p.strokeWeight(4.0f);
       p.stroke(180,0,0,220);
-    
-      drawGridLine(r.x, r.y, r.x+r.width*2, r.y, h);
-      drawGridLine(r.x, r.y+r.height*2, r.x+r.width*2, r.y+r.height*2, h);
-      drawGridLine(r.x, r.y, r.x, r.y+r.height*2, h);
-      drawGridLine(r.x+r.width*2, r.y, r.x+r.width*2, r.y+r.height*2, h);
+      
+      PieceOutline outline = r.outline;
+      
+      boolean hor = true;
+      int x = r.x, y = r.y;
+      
+      for (int step : outline.steps)
+      {
+        if (hor)
+        {
+          drawGridLine(x, y, x + step*2, y, h);
+          x += step*2;
+        }
+        else
+        {
+          drawGridLine(x, y, x, y + step*2, h);
+          y += step*2;
+        }
+        
+        hor = !hor;
+      }
+
     }
   }
   
@@ -286,7 +305,7 @@ public class IsometricView extends Drawable
       bounds.x += ox;
       bounds.y += oy;
       
-      Rectangle hover = p.levelStackView.hover();
+      PieceHover hover = p.levelStackView.hover();
 
       if (bounds.contains(x, y) && hover != null)
       {        
@@ -359,7 +378,7 @@ public class IsometricView extends Drawable
       bounds.x += ox;
       bounds.y += oy;
       
-      Rectangle hover = p.levelStackView.hover();
+      PieceHover hover = p.levelStackView.hover();
 
       //TODO: redundant with isInside called for Drawable management?
       if (bounds.contains(x, y))
@@ -379,13 +398,16 @@ public class IsometricView extends Drawable
         int bh = Brush.type().height;
         
         Log.i("Hover: "+ix+", "+iy);
-
         
+        //TODO: half steps not working
+        PieceHover newHover = new PieceHover(ix*2, iy*2, Brush.type().outline());
+
+        /* TODO: no need to set it on each mouseMoved since it only changes with change of piece */
         if (ix >= 0 && ix+bw <= model.getWidth() && iy >= 0 && iy+bh <= model.getHeight())
         {
-          if (hover == null || hover.x != ix*2 || hover.y != iy*2 || hover.width != bw || hover.height != bh)
+          if (hover == null || !newHover.equals(hover))
           {            
-            p.levelStackView.setHover(new Rectangle(ix*2, iy*2, bw, bh));
+            p.levelStackView.setHover(newHover);
           }
         }
         else

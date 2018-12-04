@@ -136,13 +136,16 @@ public class LevelView extends Drawable
         wouldBeRemovedPiece = null;
     }
     
-    if (vx != hx || vy != hy || parent.getHoveredLevel() != level || (parent.hover() != null && (parent.hover().width != Brush.type().width || parent.hover().height != Brush.type().height)))
+    PieceHover hover = new PieceHover(hx, hy, type.outline());
+    
+    //TODO: verify if correct equals is called
+    if (vx != hx || vy != hy || parent.getHoveredLevel() != level || !parent.hover().equals(hover))
     {
       hx = vx;
       hy = vy;
       rhx = rx;
       rhy = ry;
-      parent.setHover(new Rectangle(hx, hy, Brush.type().width, Brush.type().height));
+      parent.setHover(hover);
       parent.setHoveredLevel(level);
 
       Main.sketch.redraw();
@@ -173,7 +176,6 @@ public class LevelView extends Drawable
     {
       if (parent.hover() != null)
       {   
-        Piece piece = level.pieceAt(rhx,rhy);
     
         if (!level.isFreeAt(rhx, rhy))
         {
@@ -301,8 +303,7 @@ public class LevelView extends Drawable
           p.fill(f.withAlpha(100));
           p.stroke(s.withAlpha(150));
           
-          p.rect(ox+piece.x*cellSize/2+2, oy+piece.y*cellSize/2+2, piece.type.width*cellSize-3, piece.type.height*cellSize-3);
-          
+          drawOutline(piece.x, piece.y, piece.type.outline());  
         }
       }
     }
@@ -326,41 +327,31 @@ public class LevelView extends Drawable
         p.fill(f.getRed(),f.getGreen(),f.getBlue(),80);
         p.stroke(s.getRed(),s.getGreen(),s.getBlue(),80);*/
       }
-        
-      p.rect(ox+piece.x*cellSize/2+2, oy+piece.y*cellSize/2+2, piece.type.width*cellSize-3, piece.type.height*cellSize-3);
+      
+      drawOutline(piece.x, piece.y, piece.type.outline());
     }
     
     
-    Rectangle h = parent.hover();
+    PieceHover h = parent.hover();
     if (wouldBeRemovedPiece == null && h != null)
     {
       p.noFill();
       p.strokeWeight(2.0f);
       p.stroke(220,0,0);
-      
-      float realCellSize = cellSize/2.0f;
-
-      
-      p.rect(ox+h.x*realCellSize+1, oy+h.y*realCellSize+1, h.width*cellSize-1, h.height*cellSize-1);
+      drawOutline(h.x, h.y, h.outline);
     }
     else if (wouldBeRemovedPiece != null)
     {
-      int rx = wouldBeRemovedPiece.x;
-      int ry = wouldBeRemovedPiece.y;
-      int rw = wouldBeRemovedPiece.type.width;
-      int rh = wouldBeRemovedPiece.type.height;
-      
       p.noFill();
       p.strokeWeight(2.0f);
       p.stroke(220,0,0);
+      drawOutline(wouldBeRemovedPiece.x, wouldBeRemovedPiece.y, wouldBeRemovedPiece.type.outline());
 
-      float realCellSize = cellSize/2.0f;
-      p.rect(ox+rx*realCellSize+1, oy+ry*realCellSize+1, rw*cellSize-1, rh*cellSize-1);
-      
+      //TODO: we had this but can't use anymore
+      /*
       p.line(ox+rx*realCellSize+1, oy+ry*realCellSize+1, ox+rx*realCellSize+1 + rw*cellSize-1, oy+ry*realCellSize+1 + rh*cellSize-1);
       p.line(ox+rx*realCellSize+1 + rw*cellSize-1, oy+ry*realCellSize+1, ox+rx*realCellSize+1, oy+ry*realCellSize+1 + rh*cellSize-1);
-
-
+       */
     }
     
     p.fill(0);
@@ -388,4 +379,9 @@ public class LevelView extends Drawable
   }
   
   Level level() { return level; }
+  
+  public void drawOutline(int x, int y, PieceOutline outline)
+  {    
+    outline.render(p, x, y, ox, oy, (int)(cellSize / 2.0f));
+  }
 }

@@ -15,7 +15,7 @@ public class LevelStackView
   public void setLocked(Level level) { this.locked = level; }
   public Level getLocked() { return locked; }
   
-  private Rectangle hover;
+  private PieceHover hover;
   private Level hoverLayer;
   
   private final Model model;
@@ -50,12 +50,12 @@ public class LevelStackView
     if (scrollbar != null) p.removeDrawable(scrollbar);
   }
   
-  public Rectangle hover()
+  public PieceHover hover()
   {
     return hover;
   }
   
-  public void setHover(Rectangle r)
+  public void setHover(PieceHover r)
   {
     hover = r;
   }

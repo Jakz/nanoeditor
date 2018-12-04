@@ -177,9 +177,15 @@ public class Level implements Iterable<Piece>
     {
       Piece piece = pieces.next();
 
+      /* coarse phase */
       if (x >= piece.x && x < piece.x+piece.type.width*2 && y >= piece.y && y < piece.y+piece.type.height*2)
       {
-        return piece;
+        /* fine phase*/
+        if (piece.type.isConvex())
+          return piece;
+        else
+          //TODO: for each part check if coordinate is inside
+          return piece;
       }
     }
 
