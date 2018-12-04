@@ -71,6 +71,7 @@ public class PiecePaletteView extends Drawable
     
     buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, Sketch.P2D);
     
+    //TODO: this is not added to drawables: events callbacks are not received 
     if (cellCount < wrapper.size)
       scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
     

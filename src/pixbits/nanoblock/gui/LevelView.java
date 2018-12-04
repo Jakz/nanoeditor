@@ -52,29 +52,25 @@ public class LevelView extends Drawable
   
   public void mouseMoved(int x, int y)
   {
-    float fx = x - ox;
-    float fy = y - oy;
+    final PieceType type = Brush.type();
     
-    float stepSize = cellSize / 4.0f;
+    final float fx = x - ox;
+    final float fy = y - oy;
     
-    float cx = fx / stepSize;
-    float cy = fy / stepSize;
-    
-    int rx = 0, ry = 0;
+    final float quarterSize = cellSize / 4.0f;
+    final float halfSize = cellSize / 2.0f;
+     
+    boolean halfSteps = Settings.values.get(Setting.HALF_STEPS_ENABLED);
+
+    final int pieceWidth = type.maxWidth();
+    final int pieceHeight = type.maxHeight();
+        
+    final int tx = (int)(fx / quarterSize), ty = (int)(fy / quarterSize);
+    final int rx = tx/2, ry = ty/2;
     int vx = 0, vy = 0;
     
-    boolean halfSteps = Settings.values.get(Setting.HALF_STEPS_ENABLED);
-    
-    rx = Math.round((fx - cellSize/4.0f)/(cellSize/2.0f));
-    ry = Math.round((fy - cellSize/4.0f)/(cellSize/2.0f));
-    
-    int bwidth = Brush.type().width;
-    int bheight = Brush.type().height;
-        
-    int tx = (int)cx, ty = (int)cy;
-    
     if (halfSteps)
-    {
+    {  
       vx = rx;
       vy = ry;
       
@@ -88,43 +84,49 @@ public class LevelView extends Drawable
       else
         vy = ty / 2; 
       
-      vx -= bwidth;
-      vy -= bheight;
+      vx -= pieceWidth;
+      vy -= pieceHeight;
     }
     else
     {
-      if (bwidth % 2 == 1)
-        vx = tx / 4 - bwidth/2;
+      if (pieceWidth % 2 == 1)
+        vx = tx / 4 - pieceWidth/2;
       else
       {
         if (tx % 4 >= 2)
-          vx = (tx + (4 - tx%4)) / 4 - bwidth/2;
+          vx = (tx + (4 - tx%4)) / 4 - pieceWidth/2;
         else
-          vx = tx / 4 - bwidth/2;
+          vx = tx / 4 - pieceWidth/2;
       }
       
-      if (bheight % 2 == 1)
-        vy = ty / 4 - bheight/2;
+      if (pieceHeight % 2 == 1)
+        vy = ty / 4 - pieceHeight/2;
       else
       {
         if (ty % 4 >= 2)
-          vy = (ty + (4 - ty%4)) / 4 - bheight/2;
+          vy = (ty + (4 - ty%4)) / 4 - pieceHeight/2;
  
         else
-          vy = ty / 4 - bheight/2;
+          vy = ty / 4 - pieceHeight/2;
       }
 
       vx *= 2;
       vy *= 2;
     }
     
-    if (vx < 0) vx = 0;
-    else if (vx > model.getWidth()*2 - Brush.type().width*2) vx = model.getWidth()*2 - Brush.type().width*2;
+    System.out.printf("t: %d,%d, v: %d,%d, r: %d,%d\n", tx, ty, vx, vy, rx, ry);
     
-    if (vy < 0) vy = 0;
-    else if (vy > model.getHeight()*2 - Brush.type().height*2) vy = model.getHeight()*2 - Brush.type().height*2;
+    /* if base is < 0 adjust to 0 */
+    vx = Math.max(vx, 0);
+    vy = Math.max(vy, 0);
+    
+    /* if base would place piece outside adjust it to max possible value */  
+    final int maxAllowedX = model.getWidth()*2 - pieceWidth*2;
+    final int maxAllowedY = model.getHeight()*2 - pieceHeight*2;
+    
+    vx = Math.min(vx, maxAllowedX);
+    vy = Math.min(vy, maxAllowedY);
 
-    
     if (Settings.values.get(Setting.VIEW_MARK_DELETED_PIECE_ON_LAYER))
     {
       Piece dpiece = level.pieceAt(rx, ry);
@@ -136,27 +138,13 @@ public class LevelView extends Drawable
     
     if (vx != hx || vy != hy || parent.getHoveredLevel() != level || (parent.hover() != null && (parent.hover().width != Brush.type().width || parent.hover().height != Brush.type().height)))
     {
-      if (vx + Brush.type().width <= model.getWidth()*2 && vy + Brush.type().height <= model.getHeight()*2)
-      {
-        hx = vx;
-        hy = vy;
-        rhx = rx;
-        rhy = ry;
-        parent.setHover(new Rectangle(hx, hy, Brush.type().width, Brush.type().height));
-        parent.setHoveredLevel(level);
-      }
-      else
-      {
-        parent.setHover(null);
-        parent.setHoveredLevel(null);
+      hx = vx;
+      hy = vy;
+      rhx = rx;
+      rhy = ry;
+      parent.setHover(new Rectangle(hx, hy, Brush.type().width, Brush.type().height));
+      parent.setHoveredLevel(level);
 
-        hx = -1;
-        hy = -1;
-        rhx = -1;
-        rhy = -1;
-      }
-
-      
       Main.sketch.redraw();
     }
   }

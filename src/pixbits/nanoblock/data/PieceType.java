@@ -105,6 +105,9 @@ public class PieceType
     this(width, height, rounded, null, null);
   }
   
+  public int maxWidth() { return width; }
+  public int maxHeight() { return height; }
+  
   public boolean isConvex() { return true; }
   
   public void forEachCap(IntBiConsumer consumer)

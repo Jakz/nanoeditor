@@ -20,7 +20,7 @@ public class Model implements Iterable<Level>
 
   public int getHeight() { return lmodel.info.height; }
   public int getWidth() { return lmodel.info.width; }
-  
+    
   public Level levelAt(int index)
   {
     return levels.get(index);

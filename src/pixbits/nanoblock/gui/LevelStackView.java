@@ -34,7 +34,7 @@ public class LevelStackView
       p.addDrawable(views[i]);
     }
     
-    scrollbar = new LevelScrollBar(p, model, views, ox+cellSize*model.getWidth(), oy, 20, model.getHeight()*cellSize*count + margin*(count-1), 20);
+    scrollbar = new LevelScrollBar(p, model, views, ox+cellSize*model.getWidth(), oy, GUI.scrollBarWidth, model.getHeight()*cellSize*count + margin*(count-1), GUI.scrollBarWidth);
     p.addDrawable(scrollbar);
     
     locked = null;
