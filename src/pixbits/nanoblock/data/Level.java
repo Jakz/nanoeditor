@@ -1,6 +1,7 @@
 package pixbits.nanoblock.data;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import pixbits.nanoblock.files.Log;
@@ -81,7 +82,7 @@ public class Level implements Iterable<Piece>
       coveredPieces.stream().forEach(coveredPiece -> {
        coveredPiece.type.forEachCap((i, j) -> {
          int xx = coveredPiece.x + i, yy = coveredPiece.y + j;
-         if (isReallyFreeAt(xx, yy) && xx >= piece.x-1 && yy >= piece.y-1 && xx <= piece.x+piece.type.width*2 && yy <= piece.y+piece.type.height*2)
+         if (isReallyFreeAt(xx, yy))
          {
            Log.i("Adding cap for removal at "+xx+", "+yy+" thanks to "+coveredPiece);
            addPiece(new Piece(PieceType.CAP, coveredPiece.color, xx, yy));
@@ -94,7 +95,7 @@ public class Level implements Iterable<Piece>
     /* remove caps to next level */
     if (next != null && piece.type != PieceType.CAP)
     {
-      next.removeCaps(piece.x, piece.y, piece.type.width*2, piece.type.height*2);
+      next.removeCaps(piece.x, piece.y, piece.type);
     }
     
     dirty = true;
@@ -137,36 +138,31 @@ public class Level implements Iterable<Piece>
   
   public boolean isFreeAt(int x, int y)
   {
-    Piece piece = pieceAt(x,y);
-        
+    Piece piece = pieceAt(x,y);       
     return piece == null || piece.type == PieceType.CAP;
   }
   
   public boolean canPlace(PieceType type, int x, int y)
   {    
-    if (x+type.width-1 >= model.getWidth()*2 || y+type.height-1 >= model.getHeight()*2)
-      return false;
-    
-    for (int i = x; i < x+type.width*2; ++i)
-      for (int j = y; j < y+type.height*2; ++j)
-        if (!isFreeAt(i,j))
-          return false;
-    
-    return true;
+    return type.parts().allMatch(p -> {
+      int px = x + p.x*2;
+      int py = y + p.y*2;
+      
+      return isFreeAt(px,py);
+    });
   }
   
-  public void removeCaps(int x, int y, int w, int h)
+  public void removeCaps(int x, int y, PieceType type)
   {
-    Iterator<Piece> pieces = iterator();
-    while (pieces.hasNext())
-    {
-      Piece piece = pieces.next();
-      if (piece.type == PieceType.CAP && piece.x >= x && piece.x < x+w && piece.y >= y && piece.y < y+h)
+    //TODO: inefficient
+    type.forEachCap((cx, cy) -> {
+      Piece piece = pieceAt(x + cx, y + cy);
+      if (piece != null && piece.type == PieceType.CAP)
       {
-        pieces.remove();
+        pieces.remove(piece);
         dirty = true;
       }
-    }
+    });
   }
   
   public Piece pieceAt(int x, int y)
@@ -178,14 +174,24 @@ public class Level implements Iterable<Piece>
       Piece piece = pieces.next();
 
       /* coarse phase */
-      if (x >= piece.x && x < piece.x+piece.type.width*2 && y >= piece.y && y < piece.y+piece.type.height*2)
+      if (x >= piece.x && x < piece.x+piece.type.maxWidth()*2 && y >= piece.y && y < piece.y+piece.type.maxHeight()*2)
       {
         /* fine phase*/
         if (piece.type.isConvex())
           return piece;
         else
-          //TODO: for each part check if coordinate is inside
-          return piece;
+        {
+          /* TODO: not efficient */
+          AtomicBoolean found = new AtomicBoolean(false);
+          
+          piece.type.forEachPart(p -> {
+            int bx = piece.x + p.x*2, by = piece.y + p.y*2;
+            if (!found.get() && x >= bx && x < bx + 2 && y >= by && y < by + 2)
+              found.set(true);
+          });
+          
+          return found.get() ? piece : null;
+        }
       }
     }
 

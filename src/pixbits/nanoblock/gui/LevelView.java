@@ -114,7 +114,7 @@ public class LevelView extends Drawable
       vy *= 2;
     }
     
-    System.out.printf("t: %d,%d, v: %d,%d, r: %d,%d\n", tx, ty, vx, vy, rx, ry);
+    //System.out.printf("t: %d,%d, v: %d,%d, r: %d,%d\n", tx, ty, vx, vy, rx, ry);
     
     /* if base is < 0 adjust to 0 */
     vx = Math.max(vx, 0);
@@ -176,7 +176,6 @@ public class LevelView extends Drawable
     {
       if (parent.hover() != null)
       {   
-    
         if (!level.isFreeAt(rhx, rhy))
         {
           new ModelOperations.Remove(model, index, rhx, rhy).execute();

@@ -3,6 +3,7 @@ package pixbits.nanoblock.data;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import com.pixbits.lib.functional.IntBiConsumer;
 
@@ -11,6 +12,8 @@ public class PieceType
   public final int width, height;
   public final boolean rounded;
   
+  
+  private final boolean convex;
   
   private final int[][] caps;
   private final PiecePart[] parts;
@@ -30,7 +33,7 @@ public class PieceType
       this.parts = new PiecePart[parts.length];
       
       int[][][] partsGrid = new int[width][height][];
-      
+         
       for (int[] part : parts)
         partsGrid[part[0]][part[1]] = part;
       
@@ -46,12 +49,17 @@ public class PieceType
       }
       
       this.outline = new PieceOutline(outline);
-
+      this.convex = false;
     }
     else
     {
-      this.parts = null;
+      this.parts = new PiecePart[width*height];
+      for (int i = 0; i < width; ++i)
+        for (int j = 0; j < height; ++j)
+          this.parts[j*width + i] = new PiecePart(i, j, j >= height - 1, i >= width - 1);
+          
       this.outline = new PieceOutline(new int[] { width, height, -width });
+      this.convex = true;
     }
     
     this.masks = new int[3][width][height];
@@ -120,7 +128,7 @@ public class PieceType
   public PieceOutline outline() { return outline; }
   
   public boolean isConvex() { return parts == null; }
-  
+
   public void forEachCap(IntBiConsumer consumer)
   {
     if (caps != null)
@@ -133,26 +141,12 @@ public class PieceType
       forEachPart(c -> consumer.accept(c.x*2, c.y*2));
     }
   }
-  
-  public boolean hasPartAt(int x, int y)
-  {
-    return x >= 0 && y >= 0 && x < width && y < height;
-  }
-  
-  
+
+  public Stream<PiecePart> parts() { return Arrays.stream(parts); }
   public void forEachPart(Consumer<PiecePart> consumer)
   {
-    if (parts == null)
-    {
-      for (int i = 0; i < width; ++i)
-        for (int j = 0; j < height; ++j)
-        {
-          consumer.accept(new PiecePart(i, j, j >= height - 1, i >= width - 1));
-        }
-    }
-    else
-      for (PiecePart part : parts)
-        consumer.accept(part);
+    for (PiecePart part : parts)
+      consumer.accept(part);
   }
   
   public int mask(int ox, int oy) { return masks[0][ox][oy]; }
@@ -192,6 +186,8 @@ public class PieceType
   public final static PieceType P2x2c  = new PieceType(2, 2, false, null, new int[][] { { 1, 1 } }, null);
   
   public final static PieceType P2x2lt = new PieceType(2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 0, 1 } }, null, new int[] { 2, 1, -1, 1, -1 });
+  public final static PieceType P2x2lb = new PieceType(2, 2, false, new int[][] { { 1, 0 }, { 0, 1 }, { 1, 1 } }, null, new int[] { 1, -1, 1, 2, -2 });
+
   
   public final static PieceType P4x2   = new PieceType(4, 2, false);
   public final static PieceType P2x4   = new PieceType(2, 4, false);
@@ -200,7 +196,7 @@ public class PieceType
   public final static PieceType P2x8   = new PieceType(2, 8, false);
   
   private final static PieceType[] pieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P6x1, P1x6, P4x2, P2x4, P8x2, P2x8
+    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P2x2lb, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P6x1, P1x6, P4x2, P2x4, P8x2, P2x8
   };
   
   public final static PieceType[] spieces = new PieceType[] {
@@ -270,6 +266,9 @@ public class PieceType
     mapping.put("2x2c", P2x2c);
     
     mapping.put("2x2lt", P2x2lt);
+    mapping.put("2x2lb", P2x2lb);
+    addRotation(P2x2lt, P2x2lb);
+
     
     mapping.put("4x2", P4x2);
     mapping.put("2x4", P2x4);
