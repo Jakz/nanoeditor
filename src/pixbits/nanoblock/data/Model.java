@@ -51,7 +51,7 @@ public class Model implements Iterable<Level>
   public void addPiece(Level l, PieceType type, PieceColor color, int x, int y)
   {
     Piece piece = new Piece(type, color, x, y);
-     l.addPiece(piece);
+    l.addPiece(piece);
   }
 
   public void allocateLevels(int count)

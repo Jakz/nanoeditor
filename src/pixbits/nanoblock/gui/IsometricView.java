@@ -182,7 +182,7 @@ public class IsometricView extends Drawable
       p.stroke(0);
 
       PieceOutline outline = r.outline;
-      outline.renderIsometric(p, r.x, r.y, ox, oy - 1);
+      outline.renderIsometric(p, r.x, r.y, ox, oy - 1 - h*Brush.tileset.hOffset);
     }
 
   }
@@ -196,7 +196,7 @@ public class IsometricView extends Drawable
       p.stroke(180,0,0,220);
 
       PieceOutline outline = r.outline;
-      outline.renderIsometric(p, r.x, r.y, ox, oy - 1);
+      outline.renderIsometric(p, r.x, r.y, ox, oy - 1 - h*Brush.tileset.hOffset);
     }
   }
   

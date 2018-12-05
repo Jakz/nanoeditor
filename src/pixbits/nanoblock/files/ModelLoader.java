@@ -13,6 +13,8 @@ public class ModelLoader
     String color;
     int x;
     int y;
+    
+    public String toString() { return String.format("(%d, %d, %s, %s)", x, y, type, color); }
   }
   
   private static class JsonModel
@@ -90,7 +92,16 @@ public class ModelLoader
           for (int j = 0; j < level.length; ++j)
           {
             JsonPiece piece = level[j];
-            model.addPiece(model.levelAt(i), PieceType.forName(piece.type), PieceColor.forName(piece.color), piece.x, piece.y);
+            
+            PieceType type = PieceType.forName(piece.type);
+            PieceColor color = PieceColor.forName(piece.color);
+            
+            if (type == null)
+              ;//throw new IllegalArgumentException("Unknown piece type: "+piece);
+            else if (color == null)
+              ;//throw new IllegalArgumentException("Unknown piece color: "+piece);
+            else
+              model.addPiece(model.levelAt(i), PieceType.forName(piece.type), PieceColor.forName(piece.color), piece.x, piece.y);
           }
         }
         

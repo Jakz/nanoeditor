@@ -276,6 +276,8 @@ public class Sketch extends PApplet implements ChangeListener
     int x = mouseX;
     int y = mouseY;
     
+    requestFocus();
+    
     for (Drawable d : drawables)
     {
       if (d.isInside(x, y))

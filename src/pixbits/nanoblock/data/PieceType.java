@@ -188,6 +188,9 @@ public class PieceType
   public final static PieceType P2x2lt = new PieceType(2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 0, 1 } }, null, new int[] { 2, 1, -1, 1, -1 });
   public final static PieceType P2x2lb = new PieceType(2, 2, false, new int[][] { { 1, 0 }, { 0, 1 }, { 1, 1 } }, null, new int[] { 1, -1, 1, 2, -2 });
 
+  public final static PieceType P2x2lr = new PieceType(2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 1, 1 } }, null, new int[] { 2, 2, -1, -1, -1 });
+  public final static PieceType P2x2ll = new PieceType(2, 2, false, new int[][] { { 0, 0 }, { 0, 1 }, { 1, 1 } }, null, new int[] { 1, 1, 1, 1, -2 });
+
   
   public final static PieceType P4x2   = new PieceType(4, 2, false);
   public final static PieceType P2x4   = new PieceType(2, 4, false);
@@ -196,11 +199,11 @@ public class PieceType
   public final static PieceType P2x8   = new PieceType(2, 8, false);
   
   private final static PieceType[] pieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P2x2lb, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P6x1, P1x6, P4x2, P2x4, P8x2, P2x8
+    P1x1, P1x1r, P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, P2x2, P2x2c, P2x2lt, P2x2lb, P2x2ll, P2x2lr, P3x1, P1x3, P3x1r, P1x3r, P4x1, P1x4, P6x1, P1x6, P4x2, P2x4, P8x2, P2x8
   };
   
   public final static PieceType[] spieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P2x2lt, P3x1, P3x1r, P4x1, P6x1, P4x2, P8x2
+    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P2x2lt, P2x2ll, P3x1, P3x1r, P4x1, P6x1, P4x2, P8x2
   };
   
   public static int count() { return pieces.length; }
@@ -269,7 +272,10 @@ public class PieceType
     mapping.put("2x2lb", P2x2lb);
     addRotation(P2x2lt, P2x2lb);
 
-    
+    mapping.put("2x2ll", P2x2ll);
+    mapping.put("2x2lr", P2x2lr);
+    addRotation(P2x2ll, P2x2lr);
+
     mapping.put("4x2", P4x2);
     mapping.put("2x4", P2x4);
     addRotation(P4x2, P2x4);
