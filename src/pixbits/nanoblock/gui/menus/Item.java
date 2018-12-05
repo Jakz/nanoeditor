@@ -223,7 +223,7 @@ public enum Item
         if (buttonToolbar != null && source != buttonToolbar) buttonToolbar.setSelected(source.isSelected());
         
         if (setting == Setting.USE_TAB_TO_ROTATE)
-          Main.sketch.updatePiecePalette();
+          Main.sketch.updateComponentPositions();
         
         if (isToolbar)
           Main.sketch.requestFocus();

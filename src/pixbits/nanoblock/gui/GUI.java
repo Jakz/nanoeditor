@@ -13,6 +13,7 @@ public class GUI
   public static int scrollBarWidth = 20;
   
   public static int piecePaletteCellSize = 100;
+  public static int colorPaletteCellSize = 30;
 
   private static Theme DEFAULT_THEME = new Theme();
   

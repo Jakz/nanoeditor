@@ -23,7 +23,7 @@ public class Model implements Iterable<Level>
     
   public Level levelAt(int index)
   {
-    return levels.get(index);
+    return index < levels.size() ? levels.get(index) : null;
   }
   
   public int levelCount()

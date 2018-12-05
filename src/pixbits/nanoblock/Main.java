@@ -15,7 +15,7 @@ import com.pixbits.lib.ui.UIUtils;
 public class Main
 {
   public static final int SW = 1440;
-  public static final int SH = 900;
+  public static final int SH = 1200;
   
   
   public static Sketch sketch;

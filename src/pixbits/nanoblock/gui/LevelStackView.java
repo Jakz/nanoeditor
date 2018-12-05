@@ -5,7 +5,7 @@ import pixbits.nanoblock.gui.ui.*;
 
 import java.awt.Rectangle;
 
-public class LevelStackView
+public class LevelStackView 
 {
   LevelView[] views;
   public LevelScrollBar scrollbar;
@@ -20,24 +20,41 @@ public class LevelStackView
   
   private final Model model;
   private final int cellSize;
+  private final int minMargin;
     
-  LevelStackView(Sketch p, int count, int ox, int oy, int cellSize, int margin, Model model)
-  {
-    views = new LevelView[count];
-    
+  LevelStackView(Sketch p, int ox, int oy, int cellSize, int minMargin, Model model)
+  {    
     this.cellSize = cellSize;
+    this.minMargin = minMargin;
     this.model = model;
     
-    for (int i = 0; i < count && i < model.levelCount(); ++i)
+    computePositioning(p, ox, oy, p.getHeight());
+
+    locked = null;
+  }
+  
+  void computePositioning(Sketch p, int ox, int oy, int height)
+  {
+    final int gridHeight = model.getHeight()*cellSize;
+    int count = height / gridHeight;
+    final int leftover = height - count*gridHeight;
+    
+    /* if remainder is too small for requested minMargin we need to remove a whole level */
+    if (leftover < minMargin*count-1)
+      --count;
+    
+    final int margin = leftover / count;
+    
+    views = new LevelView[count];
+    
+    for (int i = 0; i < count; ++i)
     {
-      views[i] = new LevelView(this, p, model, model.levelAt(i), i, ox, oy+(count-i-1)*(margin+cellSize*model.getHeight()), cellSize);
+      views[i] = new LevelView(this, p, model, model.levelAt(i), i, ox, oy+(count-i-1)*(margin+gridHeight), cellSize);
       p.addDrawable(views[i]);
     }
     
-    scrollbar = new LevelScrollBar(p, model, views, ox+cellSize*model.getWidth(), oy, GUI.scrollBarWidth, model.getHeight()*cellSize*count + margin*(count-1), GUI.scrollBarWidth);
+    scrollbar = new LevelScrollBar(p, model, views, ox+ gridWidth(), oy, GUI.scrollBarWidth, gridHeight*count + margin*(count-1), GUI.scrollBarWidth);
     p.addDrawable(scrollbar);
-    
-    locked = null;
   }
   
   int totalWidth() { return gridWidth() + scrollbar.width(); }

@@ -70,7 +70,7 @@ public class Sketch extends PApplet implements ChangeListener
     pieceView = new Drawable.Wrapper<>(null);
     drawables.add(pieceView);
         
-    updatePiecePalette();
+    updateComponentPositions();
     
     tmp = loadImage("tileset.png");
 
@@ -83,25 +83,29 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void initForModel(Model model)
   {
-    if (levelStackView != null) levelStackView.dispose(this);
-    levelStackView = new LevelStackView(this, 3, 0, 0, 14, 20, model);
+    this.model = model;
+
+    if (levelStackView != null)
+      levelStackView.dispose(this);
+    
+    if (model != null)
+      levelStackView = new LevelStackView(this, 0, 0, 14, 20, model);
+    
+    
+    updateComponentPositions();
     
     if (isometricView != null) drawables.remove(isometricView);
     isometricView = new IsometricView(this, model);
-    drawables.add(isometricView);
+    drawables.add(isometricView);   
     
-    colorPaletteView.setPosition(levelStackView.totalWidth() + GUI.margin, colorPaletteView.y());
-        
-    this.model = model;
     
-    updatePiecePalette();
   }
   
   public void onResize()
   {
     if (hasInit)
     {
-      updatePiecePalette();
+      updateComponentPositions();
       redraw();
     }
   }
@@ -111,7 +115,7 @@ public class Sketch extends PApplet implements ChangeListener
     this.model = null; 
   }
   
-  public void updatePiecePalette()
+  public void updateComponentPositions()
   {
     PieceType brush = Brush.realType();
     
@@ -123,14 +127,18 @@ public class Sketch extends PApplet implements ChangeListener
         break;
       }
     
+    
     if (!found)
       Brush.setType(PieceType.getRotation(brush));
-    
+
     int baseX = levelStackView != null ? levelStackView.totalWidth() + GUI.margin : 0;
+    int baseY = getHeight() - GUI.piecePaletteCellSize - GUI.scrollBarWidth;
     int availableWidth = getWidth() - baseX - GUI.margin;
     int availableCells = availableWidth / GUI.piecePaletteCellSize;
     
-    pieceView.set(new PiecePaletteView(this, baseX, 760, GUI.piecePaletteCellSize, availableCells, Settings.values.get(Setting.USE_TAB_TO_ROTATE)));
+    pieceView.set(new PiecePaletteView(this, baseX, baseY, GUI.piecePaletteCellSize, availableCells, Settings.values.get(Setting.USE_TAB_TO_ROTATE)));
+    
+    colorPaletteView.setPosition(baseX, baseY - GUI.margin - GUI.colorPaletteCellSize - GUI.scrollBarWidth);
   }
   
   public void addDrawable(Drawable d)
@@ -163,11 +171,6 @@ public class Sketch extends PApplet implements ChangeListener
   	  return;
 
     background(GUI.theme.background);
-
-    /*if (sprites.isEmpty())
-      generateSprites();
-    
-    sprites.draw(this);*/
 
   	for (Drawable d : drawables)
   	  d.draw();
@@ -246,7 +249,6 @@ public class Sketch extends PApplet implements ChangeListener
   public void mousePressed()
   {    	
 
-    
   }
  
   public void mouseDragged()
