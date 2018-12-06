@@ -141,8 +141,23 @@ public class IsometricView extends Node
       if (cacheEntry.image != null)
       {
         PImage i = cacheEntry.image;
-        p.blend(i, x + cacheEntry.x, y + cacheEntry.y - l*Brush.tileset.hOffset, Sketch.BLEND);
-
+        
+        p.loadPixels();
+        i.loadPixels();
+        
+        //TODO: fast unchecked blit, move to PImage?
+        // equivalent of p.blend(i, x + cacheEntry.x, y + cacheEntry.y - l*Brush.tileset.hOffset, Sketch.REPLACE);
+        final int bx = x + cacheEntry.x;
+        
+        for (int yy = 0; yy < i.height; ++yy)
+        {
+          final int dy = y + cacheEntry.y - l*Brush.tileset.hOffset + yy;
+          for (int xx = 0; xx < i.width; ++xx)
+          {
+            if ((i.pixels[yy*i.width + xx] & 0xFF000000) != 0)
+              p.pixels[dy*p.width + xx + bx] = i.pixels[yy*i.width + xx];
+          }
+        }
       }
       
       //drawnSprites += batch.size();
