@@ -47,9 +47,6 @@ public class ColorPaletteView extends ParentNode<Node>
   
   public void mouseReleased(int x, int y, int b)
   {
-    x -= this.x;
-    y -= this.y;
-    
     x /= cellSize;
     
     if (offset+x < PieceColor.count())

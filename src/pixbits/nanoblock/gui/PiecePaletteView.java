@@ -106,9 +106,6 @@ public class PiecePaletteView extends ParentNode<Node>
 
   public void mouseReleased(int x, int y, int b)
   {
-    x -= this.x;
-    y -= this.y;
-    
     x /= cellSize;
     Brush.setType(wrapper.brushAt(offset+x));
     
