@@ -21,17 +21,22 @@ import processing.core.PImage;
 
 public class IsometricView extends Node
 {  
-  private final Map<Level, SpriteBatch> cache; //TODO: never emptied, find a better solution
+  private class CachedLayerGfx
+  {
+    SpriteBatch batch;
+    PImage image;
+    int x, y;   
+  }
+  
+  private final Map<Level, CachedLayerGfx> cache; //TODO: never emptied, find a better solution
   private final Model model;
   
   private int hoveredIndex;
 
   IsometricView(Sketch p, Model model)
   {
-    super(p, 0, 0);
+    super(p);
     
-    Rectangle bounds = PieceDrawer.computeLayerBounds(model, 0);
-
     this.model = model;
     this.hoveredIndex = -1;
         
@@ -100,19 +105,47 @@ public class IsometricView extends Node
         
       }
       
-      SpriteBatch batch = cache.computeIfAbsent(level, __ -> new SpriteBatch());   
+      CachedLayerGfx cacheEntry = cache.computeIfAbsent(level, k -> new CachedLayerGfx());
+      boolean shouldGenerateBatch = level.dirty() || cacheEntry.image == null;
       
-      if (level.dirty())
+      if (shouldGenerateBatch)
       {
-        batch.clear();
+        SpriteBatch batch = new SpriteBatch();
         for (Piece piece : level)
           PieceDrawer.generateSprites(piece, batch);
+        
+        Rectangle bounds = batch.bounds();
+        System.out.println("Layer bounds: "+bounds);
+        
+        /* if cached image wasn't present or it's not large enough reallocate it */
+        if (cacheEntry.image == null || cacheEntry.image.width < bounds.width || cacheEntry.image.height < bounds.height)
+          cacheEntry.image = p.createGraphics(bounds.width, bounds.height, Sketch.P2D);
+        else if (cacheEntry.image != null)
+        {
+          cacheEntry.image.loadPixels();
+          for (int i = 0; i < cacheEntry.image.pixels.length; ++i)
+            cacheEntry.image.pixels[i] = 0;
+          cacheEntry.image.updatePixels();
+        }
+
+        cacheEntry.batch = batch;
+        cacheEntry.x = bounds.x;
+        cacheEntry.y = bounds.y;
+        
+        batch.setPosition(-bounds.x, -bounds.y);
+        batch.draw(cacheEntry.image);
+     
         level.setDirty(false);
       }
       
-      batch.setPosition(x, y - l*Brush.tileset.hOffset);
-      batch.draw(p);
-      drawnSprites += batch.size();
+      if (cacheEntry.image != null)
+      {
+        PImage i = cacheEntry.image;
+        p.blend(i, x + cacheEntry.x, y + cacheEntry.y - l*Brush.tileset.hOffset, Sketch.BLEND);
+
+      }
+      
+      //drawnSprites += batch.size();
   
       //TODO: reimplement DRAW_CAPS setting for new renderer
       /*for (Piece piece : level)

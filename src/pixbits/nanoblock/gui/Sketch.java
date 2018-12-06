@@ -70,7 +70,6 @@ public class Sketch extends PApplet implements ChangeListener
     addDrawable(checkBox);
     
     addDrawable(new UIButton(this,500,20,20,20));*/
-    hasInit = true;
   }
   
   public void initForModel(Model model)
@@ -91,6 +90,8 @@ public class Sketch extends PApplet implements ChangeListener
     
     node.setSize(getWidth(), getHeight());
     node.onRevalidate();
+    
+    hasInit = true;
   }
   
   public void onResize()
@@ -141,7 +142,7 @@ public class Sketch extends PApplet implements ChangeListener
       
   public void draw()
   {
-  	if (model == null)
+    if (model == null || !hasInit)
   	  return;
 
     background(GUI.theme.background);
