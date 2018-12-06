@@ -5,10 +5,10 @@ import pixbits.nanoblock.gui.ui.*;
 
 import java.awt.Rectangle;
 
-public class LevelStackView 
+public class LevelStackView extends ParentNode<Node>
 {
-  LevelView[] views;
-  public LevelScrollBar scrollbar;
+  private LevelView[] views;
+  private LevelScrollBar scrollbar;
   
   private Level locked;
   
@@ -22,19 +22,22 @@ public class LevelStackView
   private final int cellSize;
   private final int minMargin;
     
-  LevelStackView(Sketch p, int ox, int oy, int cellSize, int minMargin, Model model)
+  LevelStackView(Sketch p, int cellSize, int minMargin, Model model)
   {    
+    super(p);
+    
     this.cellSize = cellSize;
     this.minMargin = minMargin;
     this.model = model;
-    
-    computePositioning(p, ox, oy, p.getHeight());
 
     locked = null;
   }
   
-  void computePositioning(Sketch p, int ox, int oy, int height)
-  {
+  @Override
+  public void revalidate()
+  {    
+    final int height = parent().size.h;
+    
     final int gridHeight = model.getHeight()*cellSize;
     int count = height / gridHeight;
     final int leftover = height - count*gridHeight;
@@ -45,27 +48,21 @@ public class LevelStackView
     
     final int margin = leftover / count;
     
+    clear();
     views = new LevelView[count];
     
     for (int i = 0; i < count; ++i)
     {
-      views[i] = new LevelView(this, p, model, model.levelAt(i), i, ox, oy+(count-i-1)*(margin+gridHeight), cellSize);
-      p.addDrawable(views[i]);
+      views[i] = new LevelView(p, model, model.levelAt(i), i, 0, (count-i-1)*(margin+gridHeight), cellSize);
+      add(views[i]);
     }
     
-    scrollbar = new LevelScrollBar(p, model, views, ox+ gridWidth(), oy, GUI.scrollBarWidth, gridHeight*count + margin*(count-1), GUI.scrollBarWidth);
-    p.addDrawable(scrollbar);
+    scrollbar = new LevelScrollBar(p, model, views, gridWidth(), 0, GUI.scrollBarWidth, gridHeight*count + margin*(count-1), GUI.scrollBarWidth);
+    add(scrollbar);
   }
   
   int totalWidth() { return gridWidth() + scrollbar.width(); }
   int gridWidth() { return cellSize*model.getWidth(); }
-  
-  void dispose(Sketch p)
-  {
-    for (LevelView view : views)
-      p.removeDrawable(view);
-    if (scrollbar != null) p.removeDrawable(scrollbar);
-  }
   
   public PieceHover hover()
   {

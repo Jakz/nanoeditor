@@ -3,7 +3,7 @@ package pixbits.nanoblock.gui.ui;
 import pixbits.nanoblock.gui.*;
 import java.awt.Color;
 
-public class UIButton extends Drawable
+public class UIButton extends Node
 {
   private final int w;
   private final int h;
@@ -19,7 +19,7 @@ public class UIButton extends Drawable
     hover = false;
   }
   
-  public boolean isInside(int x, int y) { return x >= this.ox && x < this.ox+this.w && y >= this.oy && y < this.oy+this.h; }
+  public boolean isInside(int x, int y) { return x >= this.x && x < this.x+this.w && y >= this.y && y < this.y+this.h; }
   
   public void mouseReleased(int x, int y, int b) { }
   public void mouseDragged(int x, int y, int b) { }
@@ -35,6 +35,6 @@ public class UIButton extends Drawable
       p.stroke(new Color(180,0,0));
     
     p.fill(new Color(200,200,200));
-    p.rect(ox, oy, w, h);
+    p.rect(this.x, this.y, w, h);
   }
 }

@@ -18,30 +18,33 @@ import pixbits.nanoblock.tasks.ModelOperations;
 import processing.core.PConstants;
 import processing.core.PImage;
 
-public class IsometricView extends Drawable
+public class IsometricView extends Node
 {  
   private final Map<Level, SpriteBatch> cache; //TODO: never emptied, find a better solution
   private final Model model;
   
   private int hoveredIndex;
-  
-  
+
   IsometricView(Sketch p, Model model)
   {
     super(p, 0, 0);
     
     Rectangle bounds = PieceDrawer.computeLayerBounds(model, 0);
-        
-    ox = p.levelStackView.gridWidth() + p.levelStackView.scrollbar.width() + GUI.margin + bounds.width/2;
-    oy = p.colorPaletteView.y() - GUI.margin - bounds.width/2;
-    
+
     this.model = model;
     this.hoveredIndex = -1;
         
     cache = new HashMap<>();
   }
   
-  public void dispose() { }
+  @Override
+  public void revalidate()
+  {
+    Rectangle bounds = PieceDrawer.computeLayerBounds(model, 0);
+
+    x = p.levelStackView.totalWidth() + GUI.margin + bounds.width/2;
+    y = p.colorPaletteView.y() - GUI.margin - bounds.width/2;
+  }
 
   public void invalidate()
   {
@@ -98,7 +101,7 @@ public class IsometricView extends Drawable
         level.setDirty(false);
       }
       
-      batch.setPosition(ox, oy - l*Brush.tileset.hOffset);
+      batch.setPosition(x, y - l*Brush.tileset.hOffset);
       batch.draw(p);
       drawnSprites += batch.size();
   
@@ -128,22 +131,22 @@ public class IsometricView extends Drawable
       Rectangle bounds = PieceDrawer.computeLayerBoundsWithPiece(model, hoveredIndex);
       
       if (bounds != null)
-        p.rect(255, 0, 0, 200,  ox + bounds.x, oy + bounds.y, bounds.width, bounds.height);
+        p.rect(255, 0, 0, 200,  x + bounds.x, y + bounds.y, bounds.width, bounds.height);
 
       bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
 
       if (bounds != null)
-        p.rect(255, 128, 0, 200,  ox + bounds.x, oy + bounds.y, bounds.width, bounds.height);
+        p.rect(255, 128, 0, 200,  x + bounds.x, y + bounds.y, bounds.width, bounds.height);
       
       bounds = PieceDrawer.computeRealBounds(model, hoveredIndex, Settings.values.get(Setting.DRAW_CAPS));
       
       if (bounds != null)
-        p.rect(0, 0, 180, 200,  ox + bounds.x, oy + bounds.y, bounds.width, bounds.height);
+        p.rect(0, 0, 180, 200,  x + bounds.x, y + bounds.y, bounds.width, bounds.height);
       
       bounds = PieceDrawer.computeRealBounds(model, Settings.values.get(Setting.DRAW_CAPS));
       
       if (bounds != null)
-        p.rect(0, 180, 0, 200,  ox + bounds.x, oy + bounds.y, bounds.width, bounds.height);
+        p.rect(0, 180, 0, 200,  x + bounds.x, y + bounds.y, bounds.width, bounds.height);
     }
   }
   
@@ -182,7 +185,7 @@ public class IsometricView extends Drawable
       p.stroke(0);
 
       PieceOutline outline = r.outline;
-      outline.renderIsometric(p, r.x, r.y, ox, oy - 1 - h*Brush.tileset.hOffset);
+      outline.renderIsometric(p, r.x, r.y, x, y - 1 - h*Brush.tileset.hOffset);
     }
 
   }
@@ -196,14 +199,14 @@ public class IsometricView extends Drawable
       p.stroke(180,0,0,220);
 
       PieceOutline outline = r.outline;
-      outline.renderIsometric(p, r.x, r.y, ox, oy - 1 - h*Brush.tileset.hOffset);
+      outline.renderIsometric(p, r.x, r.y, x, y - 1 - h*Brush.tileset.hOffset);
     }
   }
   
   public void drawIsoSquare(int x, int y, int w, int h, int l)
   {
-    int bx = this.ox;
-    int by = this.oy - 1;
+    int bx = this.x;
+    int by = this.y - 1;
     
     Tileset ts = Brush.tileset;
 
@@ -235,8 +238,8 @@ public class IsometricView extends Drawable
   
   public void drawGridLine(int x1, int y1, int x2, int y2, int h)
   {
-    int bx = this.ox;
-    int by = this.oy - 1;
+    int bx = this.x;
+    int by = this.y - 1;
     
     int fx1 = (int) (bx + (x1 - y1)/2.0f * Brush.tileset.xOffset);
     int fy1 = (int) (by + (x1 + y1)/2.0f * Brush.tileset.yOffset);
@@ -256,8 +259,8 @@ public class IsometricView extends Drawable
     if (locked != null)
     {
       Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-      bounds.x += ox;
-      bounds.y += oy;
+      bounds.x += x;
+      bounds.y += y;
       
       return bounds.contains(x, y);
     }
@@ -285,8 +288,8 @@ public class IsometricView extends Drawable
     if (locked != null)
     {
       Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-      bounds.x += ox;
-      bounds.y += oy;
+      bounds.x += x;
+      bounds.y += y;
       
       PieceHover hover = p.levelStackView.hover();
 
@@ -320,8 +323,8 @@ public class IsometricView extends Drawable
         if (locked == null)
         {
           Rectangle bounds = PieceDrawer.computeRealBounds(model, false);
-          bounds.x += ox;
-          bounds.y += oy;
+          bounds.x += x;
+          bounds.y += y;
           
           //TODO: redundant with isInside called for Drawable management?
           if (bounds.contains(x, y))
@@ -358,8 +361,8 @@ public class IsometricView extends Drawable
     if (locked != null)
     {
       Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-      bounds.x += ox;
-      bounds.y += oy;
+      bounds.x += x;
+      bounds.y += y;
       
       PieceHover hover = p.levelStackView.hover();
 
@@ -413,8 +416,8 @@ public class IsometricView extends Drawable
     if (locked != null)
     {
       Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
-      bounds.x += ox;
-      bounds.y += oy;
+      bounds.x += x;
+      bounds.y += y;
       
       //TODO: redundant with isInside called for Drawable management?
       if (bounds.contains(x, y))

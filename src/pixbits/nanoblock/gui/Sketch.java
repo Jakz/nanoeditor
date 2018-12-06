@@ -39,15 +39,15 @@ public class Sketch extends PApplet implements ChangeListener
 
   boolean hasInit = false;
 
-  final ArrayList<Drawable> drawables = new ArrayList<>();
-    	
+    final ParentNode<Node> node = new ParentNode<>(this);
+      	
 	public LevelStackView levelStackView;
-	public Drawable.Wrapper<PiecePaletteView> pieceView;
+	public PiecePaletteView pieceView;
 	public ColorPaletteView colorPaletteView;
 	public IsometricView isometricView;
 	
 	public PFont font;
-  PImage tmp = null;
+    PImage tmp = null;
 
 	
 	private Model model;
@@ -63,15 +63,7 @@ public class Sketch extends PApplet implements ChangeListener
     size(Main.SW, Main.SH, Sketch.P2D);
 
     font = createFont("Helvetica", 16);
-        
-    colorPaletteView = new ColorPaletteView(this, 320, 700, 30, 10);
-    drawables.add(colorPaletteView);
-    
-    pieceView = new Drawable.Wrapper<>(null);
-    drawables.add(pieceView);
-        
-    updateComponentPositions();
-    
+                
     tmp = loadImage("tileset.png");
 
     /*UICheckBox checkBox = new UICheckBox(this, 400,20,20,"Antani");
@@ -84,28 +76,29 @@ public class Sketch extends PApplet implements ChangeListener
   public void initForModel(Model model)
   {
     this.model = model;
-
-    if (levelStackView != null)
-      levelStackView.dispose(this);
     
-    if (model != null)
-      levelStackView = new LevelStackView(this, 0, 0, 14, 20, model);
+    node.clear();
     
-    
-    updateComponentPositions();
-    
-    if (isometricView != null) drawables.remove(isometricView);
+    levelStackView = new LevelStackView(this, 14, 20, model);
+    colorPaletteView = new ColorPaletteView(this, 30, 10);
+    pieceView = new PiecePaletteView(this, GUI.piecePaletteCellSize);
     isometricView = new IsometricView(this, model);
-    drawables.add(isometricView);   
     
+    node.add(levelStackView);
+    node.add(colorPaletteView);
+    node.add(pieceView);
+    node.add(isometricView);
     
+    node.setSize(getWidth(), getHeight());
+    node.onRevalidate();
   }
   
   public void onResize()
   {
     if (hasInit)
     {
-      updateComponentPositions();
+      node.setSize(getWidth(), getHeight());
+      node.onRevalidate();
       redraw();
     }
   }
@@ -130,25 +123,6 @@ public class Sketch extends PApplet implements ChangeListener
     
     if (!found)
       Brush.setType(PieceType.getRotation(brush));
-
-    int baseX = levelStackView != null ? levelStackView.totalWidth() + GUI.margin : 0;
-    int baseY = getHeight() - GUI.piecePaletteCellSize - GUI.scrollBarWidth;
-    int availableWidth = getWidth() - baseX - GUI.margin;
-    int availableCells = availableWidth / GUI.piecePaletteCellSize;
-    
-    pieceView.set(new PiecePaletteView(this, baseX, baseY, GUI.piecePaletteCellSize, availableCells, Settings.values.get(Setting.USE_TAB_TO_ROTATE)));
-    
-    colorPaletteView.setPosition(baseX, baseY - GUI.margin - GUI.colorPaletteCellSize - GUI.scrollBarWidth);
-  }
-  
-  public void addDrawable(Drawable d)
-  {
-    drawables.add(d);
-  }
-  
-  public void removeDrawable(Drawable d)
-  {
-    drawables.remove(d);
   }
   
   //public int baseX = 750;
@@ -171,9 +145,7 @@ public class Sketch extends PApplet implements ChangeListener
   	  return;
 
     background(GUI.theme.background);
-
-  	for (Drawable d : drawables)
-  	  d.draw();
+  	node.onDraw();
   }
     
   public boolean tabPressed = false;
@@ -232,18 +204,8 @@ public class Sketch extends PApplet implements ChangeListener
   {    	
     int x = mouseX;
     int y = mouseY;
-
-    for (Drawable d : drawables)
-    {
-      boolean dragLocked = d.draggingLock(); 
-      d.draggingReset();
-      
-      if (!dragLocked && d.isInside(x, y))
-      {
-        d.mouseReleased(x, y, mouseButton);
-        return;
-      }
-    }
+    
+    node.onMouseReleased(x, y, mouseButton);
   }
   
   public void mousePressed()
@@ -255,22 +217,8 @@ public class Sketch extends PApplet implements ChangeListener
   {
     int x = mouseX;
     int y = mouseY;
-
-    for (Drawable d : drawables)
-      if (d.draggingLock())
-      {
-        d.mouseDragged(x, y, mouseButton);
-        return;
-      }
     
-    for (Drawable d : drawables)
-    {
-      if (d.isInside(x, y))
-      {
-        d.mouseDragged(x, y, mouseButton);
-        return;
-      }
-    }
+    node.onMouseDragged(x, y, mouseButton);
   }
   
   public void mouseMoved()
@@ -279,14 +227,7 @@ public class Sketch extends PApplet implements ChangeListener
     int y = mouseY;
     
     requestFocus();
-    
-    for (Drawable d : drawables)
-    {
-      if (d.isInside(x, y))
-        d.mouseMoved(x, y);
-      else
-        d.mouseExited();
-    }
+    node.onMouseMoved(x, y);
   }
   
   public void mouseWheelMoved(int amount)
@@ -294,11 +235,7 @@ public class Sketch extends PApplet implements ChangeListener
     int x = mouseX;
     int y = mouseY;
     
-    for (Drawable d : drawables)
-    {
-      if (d.isInside(x, y))
-        d.mouseWheelMoved(x, y, amount);
-    }
+    node.onMouseWheelMoved(x, y, amount);
   }
   
   public void stateChanged(ChangeEvent e)

@@ -14,10 +14,8 @@ import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.ModelOperations;
 import processing.core.*;
 
-public class LevelView extends Drawable
-{
-  private final LevelStackView parent;
-  
+public class LevelView extends Node
+{  
   //private final int width, height;
   private final float cellSize;
   private Level level;
@@ -30,13 +28,12 @@ public class LevelView extends Drawable
   Piece wouldBeRemovedPiece;
 
   
-  LevelView(LevelStackView parent, Sketch p, Model model, Level level, int index, int ox, int oy, float cellSize)
+  LevelView(Sketch p, Model model, Level level, int index, int ox, int oy, float cellSize)
   {
     super(p, ox, oy);
     this.cellSize = cellSize;
     this.level = level;
     this.model = model;
-    this.parent = parent;
     this.index = index;
     
     this.wouldBeRemovedPiece = null;
@@ -44,8 +41,8 @@ public class LevelView extends Drawable
   
   public boolean isInside(int x, int y)
   {
-    int rx = x - ox;
-    int ry = y - oy;
+    int rx = x - this.x;
+    int ry = y - this.y;
     
     return rx >= 0 && rx < model.getWidth()*cellSize && ry >= 0 && ry < model.getHeight()*cellSize;
   }
@@ -54,8 +51,8 @@ public class LevelView extends Drawable
   {
     final PieceType type = Brush.type();
     
-    final float fx = x - ox;
-    final float fy = y - oy;
+    final float fx = x - this.x;
+    final float fy = y - this.y;
     
     final float quarterSize = cellSize / 4.0f;
     final float halfSize = cellSize / 2.0f;
@@ -138,6 +135,8 @@ public class LevelView extends Drawable
     
     PieceHover hover = new PieceHover(hx, hy, type.outline());
     
+    LevelStackView parent = this.parent();
+    
     //TODO: verify if correct equals is called
     if (vx != hx || vy != hy || parent.getHoveredLevel() != level || !parent.hover().equals(hover))
     {
@@ -160,6 +159,8 @@ public class LevelView extends Drawable
       hy = -1;
       rhx = -1;
       rhy = -1;
+      
+      LevelStackView parent = this.parent();
       parent.setHover(null);
       parent.setHoveredLevel(null);
       wouldBeRemovedPiece = null;
@@ -172,6 +173,8 @@ public class LevelView extends Drawable
   
   public void mouseReleased(int x, int y, int b)
   {
+    LevelStackView parent = this.parent();
+
     if (b == PApplet.LEFT)
     {
       if (parent.hover() != null)
@@ -210,7 +213,9 @@ public class LevelView extends Drawable
   
   public void mouseWheelMoved(int x, int y, int v)
   { 
-    parent.scrollbar.mouseWheelMoved(x, y, v);
+    LevelStackView parent = this.parent();
+    //TODO: reimplement
+    // parent.scrollbar.mouseWheelMoved(x, y, v);
   }
     
   public void draw()
@@ -224,7 +229,7 @@ public class LevelView extends Drawable
       for (int x = 0; x < model.getWidth()*2+1; ++x)
         for (int y = 0; y < model.getHeight()*2+1; ++y)
         {
-          p.point(ox+cellSize/2*x, oy+cellSize/2*y);
+          p.point(this.x+cellSize/2*x, this.y+cellSize/2*y);
         }
     }
       
@@ -238,14 +243,14 @@ public class LevelView extends Drawable
         else
           p.strokeWeight(1.0f);
         
-        p.line(ox+cellSize*x, oy, ox+cellSize*x, oy+model.getHeight()*cellSize);
+        p.line(this.x+cellSize*x, this.y, this.x+cellSize*x, this.y+model.getHeight()*cellSize);
         
       }
     }
     else
     {
       int x = model.getWidth()/2;
-      p.line(ox+cellSize*x, oy, ox+cellSize*x, oy+model.getHeight()*cellSize);
+      p.line(this.x+cellSize*x, this.y, this.x+cellSize*x, this.y+model.getHeight()*cellSize);
     }
 
     /* draw horizontal line grid */
@@ -259,15 +264,17 @@ public class LevelView extends Drawable
           p.strokeWeight(1.0f);
         
         
-        p.line(ox, oy+cellSize*y, ox+model.getWidth()*cellSize, oy+cellSize*y);
+        p.line(this.x, this.y+cellSize*y, this.x+model.getWidth()*cellSize, this.y+cellSize*y);
     }
     }
     else
     {
       int y = model.getHeight()/2;
-      p.line(ox, oy+cellSize*y, ox+model.getWidth()*cellSize, oy+cellSize*y);
+      p.line(this.x, this.y+cellSize*y, this.x+model.getWidth()*cellSize, this.y+cellSize*y);
     }
     
+    
+    LevelStackView parent = parent();
     Level locked = parent.getLocked();
     
     /* draw border of locked level */
@@ -276,7 +283,7 @@ public class LevelView extends Drawable
       p.strokeWeight(3.0f);
       p.stroke(220,0,0);
       p.noFill();
-      p.rect(ox, oy+cellSize*0, cellSize*model.getWidth(), model.getHeight()*cellSize);
+      p.rect(this.x, this.y+cellSize*0, cellSize*model.getWidth(), model.getHeight()*cellSize);
     }
     
     /* draw pieces */
@@ -355,7 +362,7 @@ public class LevelView extends Drawable
     
     p.fill(0);
     p.textFont(Main.sketch.font);
-    p.text(""+index, ox+5, oy+cellSize*model.getHeight()+15);
+    p.text(""+index, x + 5, y + cellSize*model.getHeight()+15);
   }
   
   /*void moveToNext()
@@ -381,6 +388,6 @@ public class LevelView extends Drawable
   
   public void drawOutline(int x, int y, PieceOutline outline)
   {    
-    outline.render(p, x, y, ox, oy, (int)(cellSize / 2.0f));
+    outline.render(p, x, y, this.x, this.y, (int)(cellSize / 2.0f));
   }
 }

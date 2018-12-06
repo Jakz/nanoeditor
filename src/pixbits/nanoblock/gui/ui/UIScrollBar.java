@@ -6,7 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Dimension;
 
-public abstract class UIScrollBar extends Drawable
+public abstract class UIScrollBar extends Node
 {
   final int buttonSize;
   int width;
@@ -33,34 +33,33 @@ public abstract class UIScrollBar extends Drawable
     this.height = height;
     this.buttonSize = buttonSize;
     horizontal = width > height;
-    computeParts();
-
-
+    revalidate();
   }
   
-  private void computeParts()
+  @Override
+  public void revalidate()
   {
     if (horizontal)
     {
-      button1 = new Rectangle(ox, oy, buttonSize, height);
-      button2 = new Rectangle(ox + width - buttonSize, oy, buttonSize, height);
+      button1 = new Rectangle(x, y, buttonSize, height);
+      button2 = new Rectangle(x + width - buttonSize, y, buttonSize, height);
       
-      scroll = new Rectangle(ox + buttonSize, oy, width - buttonSize*2, height);
+      scroll = new Rectangle(x + buttonSize, y, width - buttonSize*2, height);
       scrollButton = new Dimension(buttonSize,height);
       
       length = new Point(width - buttonSize*3,0);
-      base = new Point(ox + buttonSize, oy);
+      base = new Point(x + buttonSize, y);
     }
     else
     {
-      button1 = new Rectangle(ox, oy, width, buttonSize);
-      button2 = new Rectangle(ox, oy + height - buttonSize, width, buttonSize);
+      button1 = new Rectangle(x, y, width, buttonSize);
+      button2 = new Rectangle(x, y + height - buttonSize, width, buttonSize);
       
-      scroll = new Rectangle(ox, oy + buttonSize, width, height - buttonSize*2);
+      scroll = new Rectangle(x, y + buttonSize, width, height - buttonSize*2);
       scrollButton = new Dimension(width, buttonSize);
       
       length = new Point(0, height - buttonSize*3);
-      base = new Point(ox, oy + buttonSize);
+      base = new Point(x, y + buttonSize);
     }
   }
   
@@ -68,33 +67,22 @@ public abstract class UIScrollBar extends Drawable
   public void setPosition(int x, int y)
   {
     super.setPosition(x, y);
-    computeParts();
+    revalidate();
   }
   
   public void setSize(int w, int h)
   {
     this.width = w;
     this.height = h;
-    computeParts();
+    revalidate();
   }
   
   public int width() { return width; }
   public int height() { return height; }
-  
-  public void shift(int x, int y)
-  {
-    ox += x;
-    oy += y;
-    
-    button1.translate(x,y);
-    button2.translate(x,y);
-    scroll.translate(x,y);
-    base.translate(x, y);  
-  }
-  
+
   public boolean isInside(int x, int y)
   {
-    return x >= ox && x < ox + width && y >= oy && y < oy + height;
+    return x >= this.x && x < this.x + width && y >= this.y && y < this.y + height;
   }
   
   public void draggingReset()
@@ -164,9 +152,9 @@ public abstract class UIScrollBar extends Drawable
       float progress;
       
       if (horizontal)
-        progress = (x - ox - button1.width - buttonSize/2) / (float)length.x;
+        progress = (x - this.x - button1.width - buttonSize/2) / (float)length.x;
       else
-        progress = (y - oy - button1.height - buttonSize/2) / (float)length.y;
+        progress = (y - this.y - button1.height - buttonSize/2) / (float)length.y;
       
       setProgressFromPercent(progress);
     }
@@ -176,7 +164,6 @@ public abstract class UIScrollBar extends Drawable
   
   public void mouseDragged(int x, int y, int b)
   {
-    
     if (!dragging)
     {
       if (scroll.contains(new Point(x,y)))
@@ -185,9 +172,8 @@ public abstract class UIScrollBar extends Drawable
         return;
     }
     
-    
-    x -= ox + button1.width;
-    y -= oy + button1.height;
+    x -= this.x + button1.width;
+    y -= this.y + button1.height;
     
     float progress;
 

@@ -2,7 +2,7 @@ package pixbits.nanoblock.gui.ui;
 
 import pixbits.nanoblock.gui.*;
 
-public class UICheckBox extends Drawable
+public class UICheckBox extends Node
 {
   final String text; 
   final int boxSize;
@@ -18,7 +18,7 @@ public class UICheckBox extends Drawable
   
   public boolean isInside(int x, int y)
   { 
-    return x >= ox && x < ox + boxSize && y >= oy && y < oy + boxSize;
+    return x >= this.x && x < this.x + boxSize && y >= this.y && y < this.y + boxSize;
   }
   
   public void mouseReleased(int x, int y, int b)
@@ -39,17 +39,17 @@ public class UICheckBox extends Drawable
     p.fill(160);
     p.strokeWeight(1.0f);
     
-    p.rect(ox, oy, boxSize, boxSize);
+    p.rect(x, y, boxSize, boxSize);
         
     p.textFont(p.font);
     p.fill(0);
-    p.text(text, ox + boxSize + 10, oy + boxSize/2 + p.getFontMetrics(p.font.getFont()).getHeight()/2);
+    p.text(text, x + boxSize + 10, y + boxSize/2 + p.getFontMetrics(p.font.getFont()).getHeight()/2);
     
     p.strokeWeight(3.0f);
     if (!selected)
     {
-      p.line(ox+4, oy+4, ox+boxSize-4, oy+boxSize-4);
-      p.line(ox+boxSize-4, oy+4, ox+4, oy+boxSize-4);
+      p.line(x+4, y+4, x+boxSize-4, y+boxSize-4);
+      p.line(x+boxSize-4, y+4, x+4, y+boxSize-4);
     }
   }
 }
