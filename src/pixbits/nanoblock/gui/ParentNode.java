@@ -22,8 +22,6 @@ public class ParentNode<T extends Node> extends Node
   @Override
   public final void onRevalidate()
   {
-    System.out.println("Revalidating "+this.getClass().getName());
-
     for (T node : nodes)
       node.onRevalidate();
     

@@ -57,7 +57,8 @@ public class Sketch extends PApplet implements ChangeListener
   
   public void setup()
   {
-    noLoop();
+    //noLoop();
+    frameRate(60.0f);
 
     //smooth();
     size(Main.SW, Main.SH, Sketch.P2D);
@@ -98,8 +99,11 @@ public class Sketch extends PApplet implements ChangeListener
   {
     if (hasInit)
     {
-      node.setSize(getWidth(), getHeight());
-      node.onRevalidate();
+      synchronized (node)
+      {
+        node.setSize(getWidth(), getHeight());
+        node.onRevalidate();
+      }
       redraw();
     }
   }
@@ -146,7 +150,11 @@ public class Sketch extends PApplet implements ChangeListener
   	  return;
 
     background(GUI.theme.background);
-  	node.onDraw();
+    
+    synchronized (node)
+    {
+      node.onDraw();
+    }
   }
     
   public boolean tabPressed = false;

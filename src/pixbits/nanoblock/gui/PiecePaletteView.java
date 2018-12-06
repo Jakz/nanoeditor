@@ -83,9 +83,9 @@ public class PiecePaletteView extends ParentNode<Node>
     LevelStackView levelStackView = parent().at(0);
     Size.Int parentSize = parent().size;
     
-    int baseX = levelStackView != null ? levelStackView.totalWidth() + GUI.margin : 0;
+    int baseX = levelStackView.totalWidth() + GUI.margin;
     int baseY = parentSize.h - GUI.piecePaletteCellSize - GUI.scrollBarWidth;
-    int availableWidth = parentSize.h - baseX - GUI.margin;
+    int availableWidth = parentSize.w - baseX - GUI.margin;
     int availableCells = availableWidth / GUI.piecePaletteCellSize;
     
     setPosition(baseX, baseY);
@@ -107,7 +107,9 @@ public class PiecePaletteView extends ParentNode<Node>
   public void mouseReleased(int x, int y, int b)
   {
     x /= cellSize;
-    Brush.setType(wrapper.brushAt(offset+x));
+    
+    if (offset+x < wrapper.size)
+      Brush.setType(wrapper.brushAt(offset+x));
     
     p.redraw();
   }
@@ -174,9 +176,6 @@ public class PiecePaletteView extends ParentNode<Node>
 
   public void draw()
   {
-    if (scrollBar != null)
-      scrollBar.draw();
-    
     p.stroke(0);
     p.noFill();
     
@@ -184,7 +183,7 @@ public class PiecePaletteView extends ParentNode<Node>
            
     int selectedIndex = -1;
     
-    for (int i = 0; i < cellCount; ++i)
+    for (int i = 0; i < cellCount && i + offset < wrapper.size; ++i)
     {
       PieceType type = wrapper.at(offset+i);
       

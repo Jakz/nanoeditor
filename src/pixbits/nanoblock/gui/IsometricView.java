@@ -153,9 +153,14 @@ public class IsometricView extends Node
         {
           final int dy = y + cacheEntry.y - l*Brush.tileset.hOffset + yy;
           for (int xx = 0; xx < i.width; ++xx)
-          {
+          {            
             if ((i.pixels[yy*i.width + xx] & 0xFF000000) != 0)
-              p.pixels[dy*p.width + xx + bx] = i.pixels[yy*i.width + xx];
+            {
+              final int index = dy*p.width + xx + bx;
+              
+              if (index >= 0 && index < p.pixels.length && bx + xx < p.width)
+                p.pixels[index] = i.pixels[yy*i.width + xx];
+            }         
           }
         }
       }

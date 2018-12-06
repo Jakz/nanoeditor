@@ -39,13 +39,8 @@ public class LevelStackView extends ParentNode<Node>
     final int height = parent().size.h;
     
     final int gridHeight = model.getHeight()*cellSize;
-    int count = height / gridHeight;
-    final int leftover = height - count*gridHeight;
-    
-    /* if remainder is too small for requested minMargin we need to remove a whole level */
-    if (leftover < minMargin*count-1)
-      --count;
-    
+    final int count = height / gridHeight*minMargin;
+    final int leftover = height - gridHeight*minMargin;
     final int margin = leftover / count;
     
     clear();
@@ -53,7 +48,7 @@ public class LevelStackView extends ParentNode<Node>
     
     for (int i = 0; i < count; ++i)
     {
-      views[i] = new LevelView(p, model, model.levelAt(i), i, 0, (count-i-1)*(margin+gridHeight), cellSize);
+      views[i] = new LevelView(p, model, model.levelAt(i), i, 0, height - (i+1)*(gridHeight+margin), cellSize);
       add(views[i]);
     }
     
