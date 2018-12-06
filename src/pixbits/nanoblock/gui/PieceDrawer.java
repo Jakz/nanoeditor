@@ -168,13 +168,13 @@ public class PieceDrawer
   final static Atlas baseAtlas = new Atlas(0, 0, 45, 24, 8);
   final static Atlas southAtlas = new Atlas(0, 24*4 + 11,  22, 32,  45, 33);
   final static Atlas eastAtlas = new Atlas(0, 24*4 + 11,  45, 32,  45, 33);
-
+  
   public static void generateSprites(Piece piece, SpriteBatch batch) { generateSprites(piece, batch, 0); }
   public static void generateSprites(Piece piece, SpriteBatch batch, int l)
   {
     Tileset ts = Brush.tileset;
     PImage texture = ts.imageForTypeAndColor(piece.type, piece.color);
-    
+        
     piece.type.forEachPart(p -> {
       final int x = piece.x + p.x*2;
       final int y = piece.y + p.y*2;

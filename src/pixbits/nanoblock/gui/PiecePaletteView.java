@@ -12,7 +12,9 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PiecePaletteView extends Drawable
+import com.pixbits.lib.lang.Size;
+
+public class PiecePaletteView extends ParentNode<Node>
 {
   private static abstract class PiecesPaletteWrapper
   {
@@ -45,7 +47,7 @@ public class PiecePaletteView extends Drawable
   }
   
   
-  public final int cellSize, cellCount;
+  public int cellSize, cellCount;
   private int offset;
   private final PGraphics buffer;
   
@@ -55,55 +57,57 @@ public class PiecePaletteView extends Drawable
   
   private final Map<PieceColor, Map<PieceType, PImage>> cache;
   
-  PiecePaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount, boolean implicitRotations)
+  PiecePaletteView(Sketch p, int cellSize)
   {
-    super(p,ox,oy);
+    super(p);
     
-    if (implicitRotations)
+    if (true)
       wrapper = new RotatedPiecesWrapper();
     else
+      //TODO: reimplement
       wrapper = new NormalPiecesWrapper();
 
-    
     this.cellSize = cellSize;
-    this.cellCount = Math.min(cellCount, wrapper.size);
     this.offset = 0;
     
     buffer = Main.sketch.createGraphics(cellSize*2, cellSize*2, Sketch.P2D);
-    
-    //TODO: this is not added to drawables: events callbacks are not received 
-    if (cellCount < wrapper.size)
-      scrollBar = new PieceScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
-    
+
     cache = new HashMap<>();
   }
   
   @Override
-  public void setPosition(int x, int y)
+  public void revalidate()
   {
-    if (scrollBar != null)
-      scrollBar.setPosition(x, y + cellSize);
-    super.setPosition(x, y);
+    clear();
+    
+    LevelStackView levelStackView = parent().at(0);
+    Size.Int parentSize = parent().size;
+    
+    int baseX = levelStackView != null ? levelStackView.totalWidth() + GUI.margin : 0;
+    int baseY = parentSize.h - GUI.piecePaletteCellSize - GUI.scrollBarWidth;
+    int availableWidth = parentSize.h - baseX - GUI.margin;
+    int availableCells = availableWidth / GUI.piecePaletteCellSize;
+    
+    setPosition(baseX, baseY);
+    this.cellCount = Math.min(availableCells, wrapper.size);
+    
+    if (cellCount < wrapper.size)
+      scrollBar = new PieceScrollBar(p, this, x, y + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
+
+    add(scrollBar);
   }
   
   public int brushCount() { return wrapper.size(); }
   
-  void dispose(Sketch p)
-  {
-    p.removeDrawable(this);
-    if (scrollBar != null) p.removeDrawable(scrollBar);
-  }
-  
-  
   public boolean isInside(int x, int y)
   {
-    return x >= ox && x < ox+cellSize*cellCount && y >= oy && y < oy+cellSize;
+    return x >= this.x && x < this.x+cellSize*cellCount && y >= this.y && y < this.y+cellSize;
   }
 
   public void mouseReleased(int x, int y, int b)
   {
-    x -= ox;
-    y -= oy;
+    x -= this.x;
+    y -= this.y;
     
     x /= cellSize;
     Brush.setType(wrapper.brushAt(offset+x));
@@ -111,49 +115,6 @@ public class PiecePaletteView extends Drawable
     p.redraw();
   }
 
-  public void mouseMoved(int x, int y)
-  {
-
-  }
-  
-  int lockX = -1;
-  int lockY = -1;
-  
-  public void mouseDragged(int x, int y, int b)
-  { 
-    if (b == PConstants.RIGHT)
-    {
-      if (!dragging)
-      {        
-        if (x >= ox && y >= oy && x < ox + cellSize*cellCount && y < oy + cellSize)
-        {
-          dragging = true;
-          lockX = x;
-          lockY = y;
-        }
-        else
-          return;
-      }
-      
-      this.ox += x - lockX;
-      this.oy += y - lockY;
-      
-      if (scrollBar != null)
-      {
-        scrollBar.shift(x-lockX, y-lockY);
-      }
-      
-      lockX = x;
-      lockY = y;
-      
-      
-      
-      p.redraw();
-    }
-  }
-
-  public void mouseExited() { }
-  
   public void mouseWheelMoved(int ___, int __, int v) 
   {
     int i = 0;
@@ -235,18 +196,18 @@ public class PiecePaletteView extends Drawable
       
       PImage image = getPieceGfx(type, color);
 
-      p.blend(image, 0, 0, cellSize, cellSize, ox+i*cellSize, oy, cellSize, cellSize, Sketch.BLEND);
+      p.blend(image, 0, 0, cellSize, cellSize, x + i*cellSize, y, cellSize, cellSize, Sketch.BLEND);
       
       p.strokeWeight(1.0f);
       p.stroke(0);
-      p.rect(ox+i*cellSize,oy,cellSize,cellSize);
+      p.rect(x + i*cellSize, y, cellSize, cellSize);
     }
     
     if (selectedIndex >= 0)
     {
       p.strokeWeight(3.0f);
       p.stroke(255,0,0);
-      p.rect(ox + selectedIndex*cellSize,oy,cellSize,cellSize);
+      p.rect(x + selectedIndex*cellSize, y, cellSize, cellSize);
     }
   }
   

@@ -5,7 +5,7 @@ import pixbits.nanoblock.data.PieceColor;
 import pixbits.nanoblock.gui.ui.ColorScrollBar;
 import processing.core.PConstants;
 
-public class ColorPaletteView extends Drawable 
+public class ColorPaletteView extends ParentNode<Node>
 {  
   public final int cellCount;
   public final int cellSize;
@@ -14,37 +14,41 @@ public class ColorPaletteView extends Drawable
   
   private ColorScrollBar scrollBar;
   
-  ColorPaletteView(Sketch p, int ox, int oy, int cellSize, int cellCount)
+  ColorPaletteView(Sketch p, int cellSize, int cellCount)
   {
-    super(p,ox,oy);
+    super(p);
     this.cellSize = cellSize;
     this.cellCount = cellCount;
     this.offset = 0;
     
     if (cellCount < PieceColor.count())
     {
-      scrollBar = new ColorScrollBar(p, this, ox, oy + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
-      p.addDrawable(scrollBar);
+      scrollBar = new ColorScrollBar(p, this, 0, cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
+      add(scrollBar);
     }
   }
-  
-  @Override
-  public void setPosition(int x, int y)
+
+  @Override 
+  public void revalidate()
   {
-    if (scrollBar != null)
-      scrollBar.setPosition(x, y + cellSize);
-    super.setPosition(x, y);
+    LevelStackView levelStackView = parent().at(0);
+    PiecePaletteView piecePaletteView = parent().at(2);
+    
+    int x = levelStackView.totalWidth() + GUI.margin;
+    int y = parent().size.h - piecePaletteView.cellSize - GUI.margin*2 - GUI.scrollBarWidth;
+    
+    setPosition(x, y);
   }
   
   public boolean isInside(int x, int y)
   {
-    return x >= ox && x < ox+cellSize*cellCount && y >= oy && y < oy+cellSize;
+    return x >= this.x && x < this.x+cellSize*cellCount && y >= this.y && y < this.y+cellSize;
   }
   
   public void mouseReleased(int x, int y, int b)
   {
-    x -= ox;
-    y -= oy;
+    x -= this.x;
+    y -= this.y;
     
     x /= cellSize;
     
@@ -54,45 +58,6 @@ public class ColorPaletteView extends Drawable
       Main.sketch.redraw();
     }
   }
-  
-  public void mouseMoved(int x, int y) { }
-  
-  int lockX = -1, lockY = -1;
-  
-  public void mouseDragged(int x, int y, int b)
-  { 
-
-    
-    if (b == PConstants.RIGHT)
-    {
-      if (!dragging)
-      {        
-        if (x >= ox && y >= oy && x < ox + cellSize*cellCount && y < oy + cellSize)
-        {
-          dragging = true;
-          lockX = x;
-          lockY = y;
-        }
-        else
-          return;
-      }
-      
-      this.ox += x - lockX;
-      this.oy += y - lockY;
-      
-      if (scrollBar != null)
-      {
-        scrollBar.shift(x-lockX, y-lockY);
-      }
-      
-      lockX = x;
-      lockY = y;
-      
-      p.redraw();
-    }
-  }
-  
-  public void mouseExited() { }
 
   public void mouseWheelMoved(int ___, int __, int v) 
   {
@@ -133,7 +98,7 @@ public class ColorPaletteView extends Drawable
 
       p.stroke(color.strokeColor);
       p.fill(color.fillColor);
-      p.rect(ox+i*cellSize, oy, cellSize, cellSize);
+      p.rect(x + i*cellSize, y, cellSize, cellSize);
     }
     
     /* draw selection border */
@@ -142,7 +107,7 @@ public class ColorPaletteView extends Drawable
       p.strokeWeight(3.0f);
       p.stroke(255,0,0);
       p.noFill();
-      p.rect(ox + selectedIndex*cellSize, oy, cellSize, cellSize);
+      p.rect(x + selectedIndex*cellSize, y, cellSize, cellSize);
     }
   }
   
