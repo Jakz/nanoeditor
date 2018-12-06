@@ -27,13 +27,17 @@ public class ColorPaletteView extends ParentNode<Node>
       add(scrollBar);
     }
   }
-  
-  @Override
-  public void setPosition(int x, int y)
+
+  @Override 
+  public void revalidate()
   {
-    if (scrollBar != null)
-      scrollBar.setPosition(x, y + cellSize);
-    super.setPosition(x, y);
+    LevelStackView levelStackView = parent().at(0);
+    PiecePaletteView piecePaletteView = parent().at(2);
+    
+    int x = levelStackView.totalWidth() + GUI.margin;
+    int y = parent().size.h - piecePaletteView.cellSize - GUI.margin*2 - GUI.scrollBarWidth;
+    
+    setPosition(x, y);
   }
   
   public boolean isInside(int x, int y)

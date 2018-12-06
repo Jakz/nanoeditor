@@ -1,6 +1,7 @@
 package pixbits.nanoblock.gui;
 
 import java.awt.Rectangle;
+import java.awt.SystemTray;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,8 +43,13 @@ public class IsometricView extends Node
   {
     Rectangle bounds = PieceDrawer.computeLayerBounds(model, 0);
 
-    x = p.levelStackView.totalWidth() + GUI.margin + bounds.width/2;
-    y = p.colorPaletteView.y() - GUI.margin - bounds.width/2;
+    LevelStackView levelStackView = parent().at(0);
+    ColorPaletteView colorPaletteView = parent().at(1);
+
+    setPosition(
+        levelStackView.totalWidth() + GUI.margin + bounds.width/2,
+        colorPaletteView.y() - GUI.margin - bounds.width/2        
+    );
   }
 
   public void invalidate()
@@ -56,12 +62,15 @@ public class IsometricView extends Node
   {
     int drawnSprites = 0;
     
-    Level hovered = p.levelStackView.getHoveredLevel();
-    hoveredIndex = -1;
-    PieceHover hover = p.levelStackView.hover();
+    LevelStackView levelStackView = parent().at(0);
+
     
-    if (p.levelStackView.getLocked() != null)
-      hovered = p.levelStackView.getLocked();
+    Level hovered = levelStackView.getHoveredLevel();
+    hoveredIndex = -1;
+    PieceHover hover = levelStackView.hover();
+   
+    if (levelStackView.getLocked() != null)
+      hovered = levelStackView.getLocked();
     
     for (int l = 0; l < model.levelCount(); ++l)
     {
@@ -255,7 +264,9 @@ public class IsometricView extends Node
   @Override
   public boolean isInside(int x, int y)
   {
-    Level locked = p.levelStackView.getLocked();
+    LevelStackView levelStackView = parent().at(0);
+
+    Level locked = levelStackView.getLocked();
     if (locked != null)
     {
       Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
@@ -284,21 +295,23 @@ public class IsometricView extends Node
   @Override
   public void mouseReleased(int x, int y, int b)
   {
-    Level locked = p.levelStackView.getLocked();
+    LevelStackView levelStackView = parent().at(0);
+
+    Level locked = levelStackView.getLocked();
     if (locked != null)
     {
       Rectangle bounds = PieceDrawer.computeLayerBounds(model, hoveredIndex);
       bounds.x += x;
       bounds.y += y;
       
-      PieceHover hover = p.levelStackView.hover();
+      PieceHover hover = levelStackView.hover();
 
       if (bounds.contains(x, y) && hover != null)
       {        
         if (!locked.isFreeAt(hover.x, hover.y))
         {
           new ModelOperations.Remove(model, hoveredIndex, hover.x, hover.y).execute();
-          p.levelStackView.clearToBeDeleted();
+          levelStackView.clearToBeDeleted();
         }
         else if (locked.canPlace(Brush.type(), hover.x, hover.y))
           new ModelOperations.Place(model, hoveredIndex, Brush.type(), Brush.color, hover.x, hover.y).execute();
@@ -318,7 +331,8 @@ public class IsometricView extends Node
     {
       if (!draggingLock())
       {        
-        Level locked = p.levelStackView.getLocked();
+        LevelStackView levelStackView = parent().at(0);
+        Level locked = levelStackView.getLocked();
 
         if (locked == null)
         {
@@ -356,7 +370,9 @@ public class IsometricView extends Node
   @Override
   public void mouseMoved(int x, int y)
   {
-    Level locked = p.levelStackView.getLocked();
+    LevelStackView levelStackView = parent().at(0);
+    
+    Level locked = levelStackView.getLocked();
 
     if (locked != null)
     {
@@ -364,7 +380,7 @@ public class IsometricView extends Node
       bounds.x += x;
       bounds.y += y;
       
-      PieceHover hover = p.levelStackView.hover();
+      PieceHover hover = levelStackView.hover();
 
       //TODO: redundant with isInside called for Drawable management?
       if (bounds.contains(x, y))
@@ -393,11 +409,11 @@ public class IsometricView extends Node
         {
           if (hover == null || !newHover.equals(hover))
           {            
-            p.levelStackView.setHover(newHover);
+            levelStackView.setHover(newHover);
           }
         }
         else
-          p.levelStackView.setHover(null);       
+          levelStackView.setHover(null);       
       }
     }
   }
@@ -411,7 +427,9 @@ public class IsometricView extends Node
   @Override
   public void mouseWheelMoved(int x, int y, int v)
   {
-    Level locked = p.levelStackView.getLocked();
+    LevelStackView levelStackView = parent().at(0);
+
+    Level locked = levelStackView.getLocked();
 
     if (locked != null)
     {
@@ -424,12 +442,12 @@ public class IsometricView extends Node
       {
         if (v > 0 && locked.previous() != null)
         {
-          p.levelStackView.setLocked(locked.previous());
+          levelStackView.setLocked(locked.previous());
           p.mouseMoved();
         }
         else if (v < 0 && locked.next() != null)
         {
-          p.levelStackView.setLocked(locked.next());
+          levelStackView.setLocked(locked.next());
           p.mouseMoved();
         }   
       }

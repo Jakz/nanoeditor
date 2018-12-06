@@ -41,7 +41,7 @@ public class Sketch extends PApplet implements ChangeListener
 
     final ParentNode<Node> node = new ParentNode<>(this);
       	
-	public LevelStackView levelStackView;
+    public LevelStackView levelStackView;
 	public PiecePaletteView pieceView;
 	public ColorPaletteView colorPaletteView;
 	public IsometricView isometricView;

@@ -59,7 +59,7 @@ public abstract class Node
   protected abstract void mouseExited();
   protected abstract void mouseWheelMoved(int x, int y, int v);
   
-  public void onRevalidate() { }
+  public void onRevalidate() { revalidate(); }
   protected void revalidate() { }
   
   public void onMouseReleased(int x, int y, int b) { mouseReleased(x, y, b); }

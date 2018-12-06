@@ -63,6 +63,7 @@ public class LevelStackView extends ParentNode<Node>
   
   int totalWidth() { return gridWidth() + scrollbar.width(); }
   int gridWidth() { return cellSize*model.getWidth(); }
+  UIScrollBar scrollbar() { return scrollbar; }
   
   public PieceHover hover()
   {

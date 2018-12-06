@@ -16,7 +16,6 @@ import processing.core.*;
 
 public class LevelView extends Node
 {  
-  //private final int width, height;
   private final float cellSize;
   private Level level;
   private int index;
@@ -214,8 +213,7 @@ public class LevelView extends Node
   public void mouseWheelMoved(int x, int y, int v)
   { 
     LevelStackView parent = this.parent();
-    //TODO: reimplement
-    // parent.scrollbar.mouseWheelMoved(x, y, v);
+    parent.scrollbar().mouseWheelMoved(x, y, v);
   }
     
   public void draw()
