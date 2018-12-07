@@ -51,7 +51,10 @@ public abstract class Node
   @SuppressWarnings("unchecked")
   protected <T extends ParentNode<?>> T parent() { return (T)parent; }
   
-  public abstract boolean isInside(int x, int y);
+  public boolean isInside(int x, int y)
+  {
+    return size != null && x >= this.x && y >= this.y && size.contains(x - this.x, y - this.y);
+  }
   
   protected abstract void mouseReleased(int x, int y, int b);
   protected abstract void mouseDragged(int x, int y, int b);

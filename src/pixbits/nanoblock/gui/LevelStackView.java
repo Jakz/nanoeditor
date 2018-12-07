@@ -39,20 +39,20 @@ public class LevelStackView extends ParentNode<Node>
     final int height = parent().size.h;
     
     final int gridHeight = model.getHeight()*cellSize;
-    final int count = height / gridHeight*minMargin;
-    final int leftover = height - gridHeight*minMargin;
-    final int margin = leftover / count;
-    
+    final int count = height / (gridHeight+minMargin);
+    final int leftover = height - minMargin - gridHeight*count - minMargin*(count-1);
+    final int distance = minMargin + leftover / (count-1);
+        
     clear();
     views = new LevelView[count];
     
     for (int i = 0; i < count; ++i)
     {
-      views[i] = new LevelView(p, model, model.levelAt(i), i, 0, height - (i+1)*(gridHeight+margin), cellSize);
+      views[i] = new LevelView(p, model, model.levelAt(i), i, 0, height - minMargin - (i+1)*gridHeight - i*distance, cellSize);
       add(views[i]);
     }
     
-    scrollbar = new LevelScrollBar(p, model, views, gridWidth(), 0, GUI.scrollBarWidth, gridHeight*count + margin*(count-1), GUI.scrollBarWidth);
+    scrollbar = new LevelScrollBar(p, model, views, gridWidth(), 0, GUI.scrollBarWidth, gridHeight*count + distance*(count-1) /*+ minMargin*/, GUI.scrollBarWidth);
     add(scrollbar);
   }
   

@@ -9,12 +9,13 @@ import com.pixbits.lib.ui.color.Color;
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.gui.menus.Item;
+import pixbits.nanoblock.gui.ui.UICheckBox;
 import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.ModelOperations;
 import processing.core.*;
 
-public class LevelView extends Node
+public class LevelView extends ParentNode<Node>
 {  
   private final float cellSize;
   private Level level;
@@ -36,14 +37,16 @@ public class LevelView extends Node
     this.index = index;
     
     this.wouldBeRemovedPiece = null;
+    
+    setSize((int)cellSize*model.getWidth(), (int)cellSize*model.getHeight() + 20);
+    
+    add(new UICheckBox(p, x + 20, y + (int)(cellSize*model.getHeight()) + 4, 16, ""));
   }
   
   public boolean isInside(int x, int y)
   {
-    int rx = x - this.x;
-    int ry = y - this.y;
-    
-    return rx >= 0 && rx < model.getWidth()*cellSize && ry >= 0 && ry < model.getHeight()*cellSize;
+    boolean inside = super.isInside(x, y);
+    return inside;
   }
   
   public void mouseMoved(int x, int y)
