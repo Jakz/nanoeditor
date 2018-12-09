@@ -200,6 +200,10 @@ public class PieceType
   public final static PieceType P8x2   = new PieceType("8x2", 8, 2, false);
   public final static PieceType P2x8   = new PieceType("2x8", 2, 8, false);
   
+  public final static PieceType P20x20 = new PieceType("20x20", 20, 20, false);
+  public final static PieceType P10x10 = new PieceType("10x10", 10, 10, false);
+
+  
   private final static PieceType[] pieces = new PieceType[] {
     P1x1, P1x1r, 
     P2x1, P1x2, P2x1r, P1x2r, P2x1c, P1x2c, 
@@ -208,11 +212,13 @@ public class PieceType
     P4x1, P1x4, 
     P6x1, P1x6, 
     P4x2, P2x4, 
-    P8x2, P2x8
+    P8x2, P2x8,
+    P10x10,
+    P20x20
   };
   
   public final static PieceType[] spieces = new PieceType[] {
-    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P2x2lt, P2x2ll, P3x1, P3x1r, P4x1, P6x1, P4x2, P8x2
+    P1x1, P1x1r, P2x1, P2x1r, P2x1c, P2x2, P2x2c, P2x2lt, P2x2ll, P3x1, P3x1r, P4x1, P6x1, P4x2, P8x2, P10x10, P20x20
   };
   
   public static int count() { return pieces.length; }

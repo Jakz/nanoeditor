@@ -55,7 +55,12 @@ public class Tileset
   public PImage imageForTypeAndColor(PieceType type, PieceColor color)
   {    
     PImage image = cache.computeIfAbsent(color, t -> { 
-      return createColoredCopy(specs.get(type), this.image, baseColors, colors.get(color));
+      final ColorMap map = colors.get(color);
+      
+      if (map == null)
+        throw new IllegalArgumentException("Missing colors for "+color);     
+      
+      return createColoredCopy(this.image, baseColors, map);
     });
     
     return image;
@@ -83,15 +88,14 @@ public class Tileset
   }
   
   //TODO: make private again
-  public static PImage createColoredCopy(PieceSpec spec, PImage source, ColorMap baseColors, ColorMap replacement)
+  public static PImage createColoredCopy(PImage source, ColorMap baseColors, ColorMap replacement)
   {
     PImage tex = Main.sketch.createImage(source.width, source.height, Sketch.ARGB);
 
     tex.loadPixels();
     source.loadPixels();
     
-    //TODO: hardcoded for now
-    ColorMap base = spec.flipX ? new ColorMap(baseColors.get(0), baseColors.get(2), baseColors.get(1), baseColors.get(3)) : baseColors;
+    ColorMap base = baseColors;
 
     for (int i = 0; i < tex.width*tex.height; ++i)
     {
