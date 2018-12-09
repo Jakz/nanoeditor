@@ -17,6 +17,7 @@ import pixbits.nanoblock.misc.Setting;
 import pixbits.nanoblock.misc.Settings;
 import pixbits.nanoblock.tasks.ModelOperations;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PImage;
 
 public class IsometricView extends Node
@@ -24,7 +25,7 @@ public class IsometricView extends Node
   private class CachedLayerGfx
   {
     SpriteBatch batch;
-    PImage image;
+    PGraphics image;
     int x, y;   
   }
   

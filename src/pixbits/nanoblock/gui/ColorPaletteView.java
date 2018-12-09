@@ -1,5 +1,7 @@
 package pixbits.nanoblock.gui;
 
+import com.pixbits.lib.lang.Size;
+
 import pixbits.nanoblock.Main;
 import pixbits.nanoblock.data.PieceColor;
 import pixbits.nanoblock.gui.ui.ColorScrollBar;
@@ -7,7 +9,7 @@ import processing.core.PConstants;
 
 public class ColorPaletteView extends ParentNode<Node>
 {  
-  public final int cellCount;
+  public int cellCount;
   public final int cellSize;
   
   private int offset;
@@ -20,24 +22,34 @@ public class ColorPaletteView extends ParentNode<Node>
     this.cellSize = cellSize;
     this.cellCount = cellCount;
     this.offset = 0;
-    
-    if (cellCount < PieceColor.count())
-    {
-      scrollBar = new ColorScrollBar(p, this, 0, cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
-      add(scrollBar);
-    }
   }
 
   @Override 
   public void revalidate()
   {
+    clear();
+
     LevelStackView levelStackView = parent().at(0);
     PiecePaletteView piecePaletteView = parent().at(2);
-    
+    Size.Int parentSize = parent().size;
+
     int x = levelStackView.totalWidth() + GUI.margin;
-    int y = parent().size.h - piecePaletteView.cellSize - GUI.margin*2 - GUI.scrollBarWidth;
+    int availableWidth = parentSize.w - x - GUI.margin;
+
+    int availableCells = availableWidth / GUI.colorPaletteCellSize;
+    this.cellCount = Math.min(availableCells, PieceColor.count());
+    
+    final boolean hasScrollbar = cellCount < PieceColor.count();
+    
+    int y = parentSize.h - piecePaletteView.cellSize - GUI.margin*2 - GUI.scrollBarWidth - (hasScrollbar ? GUI.scrollBarWidth : 0);
     
     setPosition(x, y);
+
+    if (hasScrollbar)
+    {
+      scrollBar = new ColorScrollBar(p, this, x, y + cellSize, cellSize*cellCount, GUI.scrollBarWidth, GUI.scrollBarWidth);
+      add(scrollBar);
+    }
   }
   
   public boolean isInside(int x, int y)
