@@ -407,6 +407,10 @@ public class PImage implements PConstants, PGfx, Cloneable {
     return my2;
   }  
   
+  public int width() { return width; }
+  public int height() { return height; }
+  public int[] pixels() { return pixels; }
+  
   
   /**
    * Loads the pixel data for the image into its <b>pixels[]</b> array. This function must always be called before reading from or writing to <b>pixels[]</b>.

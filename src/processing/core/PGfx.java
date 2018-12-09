@@ -4,6 +4,13 @@ import java.awt.Rectangle;
 
 public interface PGfx
 {
+  public void loadPixels();
+  public void updatePixels();
+  public int[] pixels();
+  
+  public int width();
+  public int height();
+  
   public void blend(PImage src, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, int mode);
   
   default void blend(PImage src, Rectangle rect, int dx, int dy, int mode)

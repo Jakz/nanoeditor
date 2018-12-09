@@ -1033,6 +1033,8 @@ public class PApplet extends JPanel
     finished = true;
   }
 
+  public int width() { return getWidth(); }
+  public int height() { return getHeight(); }
 
   //////////////////////////////////////////////////////////////
 
@@ -2736,159 +2738,6 @@ public class PApplet extends JPanel
     // for macosx, which wasn't honoring the invisible cursor
     cursor(invisibleCursor, 8, 8);
     cursorVisible = false;
-  }
-
-
-  //////////////////////////////////////////////////////////////
-
-
-  static public void print(byte what) {
-    System.out.print(what);
-    System.out.flush();
-  }
-
-  static public void print(boolean what) {
-    System.out.print(what);
-    System.out.flush();
-  }
-
-  static public void print(char what) {
-    System.out.print(what);
-    System.out.flush();
-  }
-
-  static public void print(int what) {
-    System.out.print(what);
-    System.out.flush();
-  }
-
-  static public void print(float what) {
-    System.out.print(what);
-    System.out.flush();
-  }
-
-  static public void print(String what) {
-    System.out.print(what);
-    System.out.flush();
-  }
-
-  static public void print(Object what) {
-    if (what == null) {
-      // special case since this does fuggly things on > 1.1
-      System.out.print("null");
-    } else {
-      System.out.println(what.toString());
-    }
-  }
-
-  //
-
-  static public void println() {
-    System.out.println();
-  }
-
-  //
-
-  static public void println(byte what) {
-    print(what); System.out.println();
-  }
-
-  static public void println(boolean what) {
-    print(what); System.out.println();
-  }
-
-  static public void println(char what) {
-    print(what); System.out.println();
-  }
-
-  static public void println(int what) {
-    print(what); System.out.println();
-  }
-
-  static public void println(float what) {
-    print(what); System.out.println();
-  }
-
-  static public void println(String what) {
-    print(what); System.out.println();
-  }
-
-  static public void println(Object what) {
-    if (what == null) {
-      // special case since this does fuggly things on > 1.1
-      System.out.println("null");
-
-    } else {
-      String name = what.getClass().getName();
-      if (name.charAt(0) == '[') {
-        switch (name.charAt(1)) {
-        case '[':
-          // don't even mess with multi-dimensional arrays (case '[')
-          // or anything else that's not int, float, boolean, char
-          System.out.println(what);
-          break;
-
-        case 'L':
-          // print a 1D array of objects as individual elements
-          Object poo[] = (Object[]) what;
-          for (int i = 0; i < poo.length; i++) {
-            if (poo[i] instanceof String) {
-              System.out.println("[" + i + "] \"" + poo[i] + "\"");
-            } else {
-              System.out.println("[" + i + "] " + poo[i]);
-            }
-          }
-          break;
-
-        case 'Z':  // boolean
-          boolean zz[] = (boolean[]) what;
-          for (int i = 0; i < zz.length; i++) {
-            System.out.println("[" + i + "] " + zz[i]);
-          }
-          break;
-
-        case 'B':  // byte
-          byte bb[] = (byte[]) what;
-          for (int i = 0; i < bb.length; i++) {
-            System.out.println("[" + i + "] " + bb[i]);
-          }
-          break;
-
-        case 'C':  // char
-          char cc[] = (char[]) what;
-          for (int i = 0; i < cc.length; i++) {
-            System.out.println("[" + i + "] '" + cc[i] + "'");
-          }
-          break;
-
-        case 'I':  // int
-          int ii[] = (int[]) what;
-          for (int i = 0; i < ii.length; i++) {
-            System.out.println("[" + i + "] " + ii[i]);
-          }
-          break;
-
-        case 'F':  // float
-          float ff[] = (float[]) what;
-          for (int i = 0; i < ff.length; i++) {
-            System.out.println("[" + i + "] " + ff[i]);
-          }
-          break;
-
-        case 'D':  // double
-          double dd[] = (double[]) what;
-          for (int i = 0; i < dd.length; i++) {
-            System.out.println("[" + i + "] " + dd[i]);
-          }
-          break;
-
-        default:
-          System.out.println(what);
-        }
-      } else {  // not an array
-        System.out.println(what);
-      }
-    }
   }
 
   //
@@ -7469,6 +7318,10 @@ public class PApplet extends JPanel
   public void loadPixels() {
     g.loadPixels();
     pixels = g.pixels;
+  }
+  
+  public int[] pixels() {
+    return pixels;
   }
 
   /**

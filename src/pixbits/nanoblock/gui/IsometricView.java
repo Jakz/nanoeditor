@@ -155,12 +155,41 @@ public class IsometricView extends Node
           final int dy = y + cacheEntry.y - l*Brush.tileset.hOffset + yy;
           for (int xx = 0; xx < i.width; ++xx)
           {            
-            if ((i.pixels[yy*i.width + xx] & 0xFF000000) != 0)
-            {
+            final int dp = i.pixels[yy*i.width + xx];
+            final int alpha = (dp >> 24) & 0xFF;
+            final float falpha = alpha / 255.0f;
+            final float nalpha = 1.0f - falpha;
+            
+            if (alpha != 0)
+            {              
+              if (alpha != 255)
+                System.out.println(alpha);
+                
               final int index = dy*p.width + xx + bx;
+              final int sp = p.pixels[index];
               
-              if (index >= 0 && index < p.pixels.length && bx + xx < p.width)
-                p.pixels[index] = i.pixels[yy*i.width + xx];
+              final int sr = (sp >> 16) & 0xFF;
+              final int sg = (sp >> 8) & 0xFF;
+              final int sb = sp & 0x000000FF;
+              
+              final int dr = (dp >> 16) & 0xFF;
+              final int dg = (dp >> 8) & 0xFF;
+              final int db = dp & 0x000000FF;              
+
+              final int fr = (int)(sr*nalpha + dr*falpha);
+              final int fg = (int)(sg*nalpha + dg*falpha);
+              final int fb = (int)(sb*nalpha + db*falpha);
+              
+              
+              //if (alpha == 0xFF)
+              {
+                if (index >= 0 && index < p.pixels.length && bx + xx < p.width)
+                  p.pixels[index] = (fr << 16) | (fg << 8) | fb;
+              }
+              //else
+              {
+                
+              }
             }         
           }
         }

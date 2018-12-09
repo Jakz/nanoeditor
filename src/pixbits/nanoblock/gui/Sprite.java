@@ -78,7 +78,28 @@ public class Sprite implements Comparable<Sprite>
   public void draw(PGfx gfx) { draw(gfx, 0, 0); }
   public void draw(PGfx gfx, int offsetX, int offsetY)
   {
-    gfx.blend(texture, rect, position.x + offsetX, position.y + offsetY, PConstants.BLEND);
+    gfx.loadPixels();
+    texture.loadPixels();
+    final int[] dest = gfx.pixels();
+    final int[] src = texture.pixels();
+    
+    int dw = gfx.width(), sw = texture.width();
+    
+    for (int y = 0; y < rect.height; ++y)
+      for (int x = 0; x < rect.width; ++x)
+      {
+        int p = src[sw*(rect.y + y) + (rect.x + x)];
+
+        if ((p & 0xFF000000) != 0)
+        {
+          final int fi = dw*(y + position.y + offsetY) + position.x + offsetX + x;
+          
+          if (fi >= 0 && fi < dest.length)
+            dest[fi] = p;
+        }
+      }
+    
+    gfx.updatePixels();
   }
 
   @Override
