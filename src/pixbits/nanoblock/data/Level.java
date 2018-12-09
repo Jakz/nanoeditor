@@ -148,7 +148,9 @@ public class Level implements Iterable<Piece>
       int px = x + p.x*2;
       int py = y + p.y*2;
       
-      return isFreeAt(px,py);
+      System.out.println("Checking free at "+px+", "+py);
+      
+      return isFreeAt(px,py) && isFreeAt(px+1, py) && isFreeAt(px, py+1) && isFreeAt(px+1, py+1);
     });
   }
   

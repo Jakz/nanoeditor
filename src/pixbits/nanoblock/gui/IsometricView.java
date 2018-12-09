@@ -115,7 +115,7 @@ public class IsometricView extends Node
           PieceDrawer.generateSprites(piece, batch);
         
         Rectangle bounds = batch.bounds();
-        System.out.println("Layer bounds: "+bounds);
+        //System.out.println("Layer bounds: "+bounds);
         
         /* if cached image wasn't present or it's not large enough reallocate it */
         if (cacheEntry.image == null || cacheEntry.image.width < bounds.width || cacheEntry.image.height < bounds.height)

@@ -22,7 +22,7 @@ public class PieceType
   
   private final PieceOutline outline;
 
-  PieceType(String ident, int width, int height, boolean rounded, int[][] parts, int[][] caps, int[] outline)
+  PieceType(String ident, int width, int height, boolean rounded, int[][] parts, int[][] caps, int[] outlineOffset, int[] outline)
   {
     this.ident = ident;
     this.width = width;
@@ -50,7 +50,7 @@ public class PieceType
         this.parts[i] = part;
       }
       
-      this.outline = new PieceOutline(outline);
+      this.outline = new PieceOutline(outlineOffset, outline);
       this.convex = false;
     }
     else
@@ -122,7 +122,7 @@ public class PieceType
   
   PieceType(String ident, int width, int height, boolean rounded)
   {
-    this(ident, width, height, rounded, null, null, null);
+    this(ident, width, height, rounded, null, null, null, null);
   }
   
   public int maxWidth() { return width; }
@@ -163,8 +163,8 @@ public class PieceType
   public final static PieceType P2x1   = new PieceType("2x1", 2, 1, false);
   public final static PieceType P1x2   = new PieceType("1x2", 1, 2, false);
   
-  public final static PieceType P2x1c  = new PieceType("2x1c", 2, 1, false, null, new int[][] { { 1, 0 } }, null);
-  public final static PieceType P1x2c  = new PieceType("1x2c", 1, 2, false, null, new int[][] { { 0, 1 } }, null);
+  public final static PieceType P2x1c  = new PieceType("2x1c", 2, 1, false, null, new int[][] { { 1, 0 } }, null, null);
+  public final static PieceType P1x2c  = new PieceType("1x2c", 1, 2, false, null, new int[][] { { 0, 1 } }, null, null);
   
   public final static PieceType P2x1r  = new PieceType("2x1r", 2, 1, true);
   public final static PieceType P1x2r  = new PieceType("1x2r", 1, 2, true);
@@ -185,13 +185,13 @@ public class PieceType
   public final static PieceType P1x6   = new PieceType("1x6", 1, 6, false);
   
   public final static PieceType P2x2   = new PieceType("2x2", 2, 2, false);
-  public final static PieceType P2x2c  = new PieceType("2x2c", 2, 2, false, null, new int[][] { { 1, 1 } }, null);
+  public final static PieceType P2x2c  = new PieceType("2x2c", 2, 2, false, null, new int[][] { { 1, 1 } }, null, null);
   
-  public final static PieceType P2x2lt = new PieceType("2x2lt", 2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 0, 1 } }, null, new int[] { 2, 1, -1, 1, -1 });
-  public final static PieceType P2x2lb = new PieceType("2x2lb", 2, 2, false, new int[][] { { 1, 0 }, { 0, 1 }, { 1, 1 } }, null, new int[] { 1, -1, 1, 2, -2 });
+  public final static PieceType P2x2lt = new PieceType("2x2lt", 2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 0, 1 } }, null, new int[] {0,0}, new int[] { 2, 1, -1, 1, -1 });
+  public final static PieceType P2x2lb = new PieceType("2x2lb", 2, 2, false, new int[][] { { 1, 0 }, { 0, 1 }, { 1, 1 } }, null, new int[] {0,2}, new int[] { 1, -1, 1, 2, -2 });
 
-  public final static PieceType P2x2lr = new PieceType("2x2lr", 2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 1, 1 } }, null, new int[] { 2, 2, -1, -1, -1 });
-  public final static PieceType P2x2ll = new PieceType("2x2ll", 2, 2, false, new int[][] { { 0, 0 }, { 0, 1 }, { 1, 1 } }, null, new int[] { 1, 1, 1, 1, -2 });
+  public final static PieceType P2x2lr = new PieceType("2x2lr", 2, 2, false, new int[][] { { 0, 0 }, { 1, 0 }, { 1, 1 } }, null, new int[] {0,0}, new int[] { 2, 2, -1, -1, -1 });
+  public final static PieceType P2x2ll = new PieceType("2x2ll", 2, 2, false, new int[][] { { 0, 0 }, { 0, 1 }, { 1, 1 } }, null, new int[] {0,0}, new int[] { 1, 1, 1, 1, -2 });
 
   
   public final static PieceType P4x2   = new PieceType("4x2", 4, 2, false);

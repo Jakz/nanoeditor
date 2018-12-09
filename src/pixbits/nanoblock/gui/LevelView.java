@@ -38,23 +38,22 @@ public class LevelView extends ParentNode<Node>
     
     this.wouldBeRemovedPiece = null;
     
-    setSize((int)cellSize*model.getWidth(), (int)cellSize*model.getHeight() + 20);
+    //setSize((int)cellSize*model.getWidth(), (int)cellSize*model.getHeight() + 20);
     
     add(new UICheckBox(p, x + 20, y + (int)(cellSize*model.getHeight()) + 4, 16, ""));
   }
   
   public boolean isInside(int x, int y)
   {
-    boolean inside = super.isInside(x, y);
-    return inside;
+    return x >= this.x && x < this.x + cellSize*model.getWidth() && y >= this.y && y < this.y + cellSize*model.getHeight();
   }
   
   public void mouseMoved(int x, int y)
   {
     final PieceType type = Brush.type();
     
-    final float fx = x - this.x;
-    final float fy = y - this.y;
+    final float fx = x;
+    final float fy = y;
     
     final float quarterSize = cellSize / 4.0f;
     final float halfSize = cellSize / 2.0f;
