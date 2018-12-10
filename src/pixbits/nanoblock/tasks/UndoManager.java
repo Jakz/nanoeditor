@@ -8,7 +8,7 @@ import pixbits.nanoblock.gui.menus.Item;
 
 public class UndoManager
 {
-  private static LinkedList<UndoableTask> undos = new LinkedList<UndoableTask>();
+  public static LinkedList<UndoableTask> undos = new LinkedList<UndoableTask>();
   private static LinkedList<UndoableTask> redos = new LinkedList<UndoableTask>();
   
   public static void actionUndone(UndoableTask action)

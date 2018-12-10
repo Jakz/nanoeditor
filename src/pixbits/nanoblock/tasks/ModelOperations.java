@@ -116,6 +116,12 @@ public class ModelOperations
       reverse.isRealAction = false;
       return reverse;
     }
+    
+    @Override
+    public String toString()
+    {
+      return String.format("Remove(%s, %s, %d:%d:%d)", oldPiece.type, oldPiece.color, oldPiece.x, oldPiece.y, level);
+    }
   }
   
   public static class Place extends UndoableLightTask
@@ -148,6 +154,12 @@ public class ModelOperations
       Remove reverse = new Remove(model, level, piece.x, piece.y);
       reverse.isRealAction = false;
       return reverse;
+    }
+    
+    @Override
+    public String toString()
+    {
+      return String.format("Place(%s, %s, %d:%d:%d)", piece.type, piece.color, piece.x, piece.y, level);
     }
   }
   

@@ -5,12 +5,14 @@ import pixbits.nanoblock.files.*;
 import pixbits.nanoblock.gui.*;
 import pixbits.nanoblock.gui.frames.*;
 import pixbits.nanoblock.tasks.Tasks;
+import pixbits.nanoblock.tasks.UndoManager;
 
 import java.nio.file.Paths;
 
 import javax.swing.JPopupMenu;
 
 import com.pixbits.lib.ui.UIUtils;
+import com.pixbits.lib.ui.WrapperFrame;
 
 public class Main
 {
@@ -25,6 +27,8 @@ public class Main
   public static ResizeModelFrame resizeModelFrame;
   public static ReplaceColorFrame replaceColorFrame;
   public static PreferencesFrame preferencesFrame;
+  
+  private static WrapperFrame<HistoryPanel> historyFrame;
   
   public static void main(String[] args)
   {
@@ -70,6 +74,9 @@ public class Main
     resizeModelFrame = new ResizeModelFrame();
     replaceColorFrame = new ReplaceColorFrame();
     preferencesFrame = new PreferencesFrame();
+    
+    historyFrame = UIUtils.buildFrame(new HistoryPanel(UndoManager.undos), "History");
+    historyFrame.setVisible(true);
     
     //preferencesFrame.showMe();
     //Main.mainFrame.setVisible(true);
