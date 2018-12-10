@@ -89,19 +89,46 @@ public class Sprite implements Comparable<Sprite>
     for (int y = 0; y < rect.height; ++y)
       for (int x = 0; x < rect.width; ++x)
       {
-        int p = src[sw*(rect.y + y) + (rect.x + x)];
-        int alpha = (p >> 24) & 0xFF;
-
+        int dp = src[sw*(rect.y + y) + (rect.x + x)];
+        int alpha = (dp >> 24) & 0xFF;
+                
         if (alpha != 0)
-        {
+        {              
           final int fi = dw*(y + position.y + offsetY) + position.x + offsetX + x;
-          
+          final int sp = dest[fi];
+
           if (fi >= 0 && fi < dest.length)
-            dest[fi] = p;
+          {
+            int fc = blend(sp, dp, alpha);
+            dest[fi] = fc | (alpha << 24);
+          }
         }
       }
     
     gfx.updatePixels();
+  }
+  
+  public int blend(int sp, int dp, int alpha)
+  {
+    final float falpha = alpha / 255.0f;
+    final float nalpha = 1.0f - falpha;
+    
+    final int sr = ((sp >> 16) & 0xFF);
+    final int sg = ((sp >> 8) & 0xFF);
+    final int sb = (sp & 0xFF);
+    
+    final int dr = (dp >> 16) & 0xFF;
+    final int dg = (dp >> 8) & 0xFF;
+    final int db = dp & 0xFF;              
+
+    final int fr = (int)(sr*nalpha + dr*falpha);
+    final int fg = (int)(sg*nalpha + dg*falpha);
+    final int fb = (int)(sb*nalpha + db*falpha);
+    
+    /*if (fr < 0 || fr > 255 || fg < 0 || fg > 255 || fb < 0 || fb > 255)
+      throw new IllegalArgumentException("Value out of bounds");*/
+    
+    return fr << 16 | fg << 8 | fb;
   }
 
   @Override

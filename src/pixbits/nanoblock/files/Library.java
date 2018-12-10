@@ -19,7 +19,7 @@ public class Library implements Iterable<LibraryModel>
 
   private LibraryModel libraryModel;
   
-  Library()
+  public Library()
   {
     models = new ArrayList<LibraryModel>();
     libraryModel = null;

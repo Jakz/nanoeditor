@@ -11,7 +11,6 @@ public class ModelOperations
   public static OperationBuilder buildShift(Direction direction) { return new ShiftBuilder(direction); }
   public static OperationBuilder buildRotate(Direction direction) { return new RotateBuilder(direction); }
 
-  
   private static class ShiftBuilder implements OperationBuilder
   {
     private final Direction direction;
