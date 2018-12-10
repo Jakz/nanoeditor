@@ -162,9 +162,6 @@ public class IsometricView extends Node
             
             if (alpha != 0)
             {              
-              if (alpha != 255)
-                System.out.println(alpha);
-                
               final int index = dy*p.width + xx + bx;
               final int sp = p.pixels[index];
               

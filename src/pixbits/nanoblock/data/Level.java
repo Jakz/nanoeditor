@@ -80,9 +80,9 @@ public class Level implements Iterable<Piece>
       
       //TODO: verify behavior
       coveredPieces.stream().forEach(coveredPiece -> {
-       coveredPiece.type.forEachCap((i, j) -> {
+       coveredPiece.type.forEachCap((i, j) -> {      
          int xx = coveredPiece.x + i, yy = coveredPiece.y + j;
-         if (isReallyFreeAt(xx, yy))
+         if (shouldPlaceCapFromBelow(xx, yy))
          {
            Log.i("Adding cap for removal at "+xx+", "+yy+" thanks to "+coveredPiece);
            addPiece(new Piece(PieceType.CAP, coveredPiece.color, xx, yy));
@@ -106,15 +106,18 @@ public class Level implements Iterable<Piece>
     //System.out.println("Place at "+piece.x+","+piece.y+"   "+piece);
     
     /* remove caps to current level */
-    Iterator<Piece> lpieces = iterator();
-    while (lpieces.hasNext())
+    if (piece.type != PieceType.CAP && piece.color.opaque)
     {
-      Piece piece2 = lpieces.next();
-      if (piece2.type == PieceType.CAP)
-        if (piece2.x >= piece.x-1 && piece2.x < piece.x+piece.type.width*2 && piece2.y >= piece.y-1 && piece2.y < piece.y+piece.type.height*2)
-          lpieces.remove();
+      Iterator<Piece> lpieces = iterator();
+      while (lpieces.hasNext())
+      {
+        Piece piece2 = lpieces.next();
+        if (piece2.type == PieceType.CAP)
+          if (piece2.x >= piece.x-1 && piece2.x < piece.x+piece.type.width*2 && piece2.y >= piece.y-1 && piece2.y < piece.y+piece.type.height*2)
+            lpieces.remove();
+      }
     }
-    
+
     //System.out.println("Add "+piece);
     pieces.add(piece);    
     
@@ -122,18 +125,19 @@ public class Level implements Iterable<Piece>
     if (next != null && piece.type != PieceType.CAP)
     {
       piece.type.forEachCap((i, j) -> {
-        if (next.isFreeAt(piece.x+i,piece.y+j))
+        
+        if (next.shouldPlaceCapFromBelow(piece.x+i,piece.y+j))
           next.addPiece(new Piece(PieceType.CAP, piece.color, piece.x+i, piece.y+j));
       });
     }
     
     dirty = true;
   }
-  
-  public boolean isReallyFreeAt(int x, int y)
+
+  public boolean shouldPlaceCapFromBelow(int x, int y)
   {
-    Piece piece = pieceAt(x,y);
-    return piece == null;
+    Piece piece = pieceAt(x, y);
+    return piece == null || !piece.color.opaque;
   }
   
   public boolean isFreeAt(int x, int y)

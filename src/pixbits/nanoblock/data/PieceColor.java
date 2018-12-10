@@ -13,14 +13,16 @@ public enum PieceColor {
   ORANGE("Orange"),
   PINK("Pink"),
   BROWN("Brown"),
-  CLEAR("Clear"),
+  CLEAR("Clear", false),
   ;
   
   public Color fillColor;
   public Color strokeColor;
   public final String caption;
+  public final boolean opaque;
   
-  PieceColor(String caption) { this.caption = caption; }
+  PieceColor(String caption, boolean opaque) { this.caption = caption; this.opaque = opaque; }
+  PieceColor(String caption) { this(caption, true); }
   
   public void setColors(Color strokeColor, Color fillColor)
   {
