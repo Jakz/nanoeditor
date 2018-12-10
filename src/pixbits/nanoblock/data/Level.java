@@ -151,9 +151,7 @@ public class Level implements Iterable<Piece>
     return type.parts().allMatch(p -> {
       int px = x + p.x*2;
       int py = y + p.y*2;
-      
-      System.out.println("Checking free at "+px+", "+py);
-      
+            
       return isFreeAt(px,py) && isFreeAt(px+1, py) && isFreeAt(px, py+1) && isFreeAt(px+1, py+1);
     });
   }

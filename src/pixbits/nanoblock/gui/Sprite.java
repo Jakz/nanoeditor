@@ -13,6 +13,7 @@ public class Sprite implements Comparable<Sprite>
 {
   public static enum Type
   {
+    BOTTOM,
     TOP,
     WALL
   };
@@ -89,8 +90,9 @@ public class Sprite implements Comparable<Sprite>
       for (int x = 0; x < rect.width; ++x)
       {
         int p = src[sw*(rect.y + y) + (rect.x + x)];
+        int alpha = (p >> 24) & 0xFF;
 
-        if ((p & 0xFF000000) != 0)
+        if (alpha != 0)
         {
           final int fi = dw*(y + position.y + offsetY) + position.x + offsetX + x;
           

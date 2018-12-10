@@ -194,7 +194,7 @@ public class PieceDrawer
       else
       {
         {
-        int mask = piece.type.mask(p.x, p.y);    
+          int mask = piece.type.mask(p.x, p.y);    
           batch.add(new Sprite(
               new Sprite.Key(piece, x, y, l, Sprite.Type.TOP), 
               texture,
@@ -202,6 +202,17 @@ public class PieceDrawer
               baseAtlas.get(mask)
               )
           );
+          
+          if (!piece.color.opaque)
+          {
+            batch.add(new Sprite(
+                new Sprite.Key(piece, x, y, l, Sprite.Type.BOTTOM), 
+                texture,
+                new Point(position.x - ts.xOffset, position.y - ts.yOffset*2 + ts.hOffset),
+                baseAtlas.get(mask)
+                )
+            );
+          }
         }
         
         if (p.lastSouth)
