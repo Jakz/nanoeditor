@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  AttachMaskTest.class
+  BinaryModelTest.class
 })
 public class Tests
 {

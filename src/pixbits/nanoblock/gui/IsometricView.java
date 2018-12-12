@@ -163,29 +163,24 @@ public class IsometricView extends Node
             if (alpha != 0)
             {              
               final int index = dy*p.width + xx + bx;
-              final int sp = p.pixels[index];
               
-              final int sr = (sp >> 16) & 0xFF;
-              final int sg = (sp >> 8) & 0xFF;
-              final int sb = sp & 0x000000FF;
-              
-              final int dr = (dp >> 16) & 0xFF;
-              final int dg = (dp >> 8) & 0xFF;
-              final int db = dp & 0x000000FF;              
-
-              final int fr = (int)(sr*nalpha + dr*falpha);
-              final int fg = (int)(sg*nalpha + dg*falpha);
-              final int fb = (int)(sb*nalpha + db*falpha);
-              
-              
-              //if (alpha == 0xFF)
+              if (index >= 0 && index < p.pixels.length && bx + xx < p.width)
               {
-                if (index >= 0 && index < p.pixels.length && bx + xx < p.width)
-                  p.pixels[index] = (fr << 16) | (fg << 8) | fb;
-              }
-              //else
-              {
+                final int sp = p.pixels[index];
                 
+                final int sr = (sp >> 16) & 0xFF;
+                final int sg = (sp >> 8) & 0xFF;
+                final int sb = sp & 0x000000FF;
+                
+                final int dr = (dp >> 16) & 0xFF;
+                final int dg = (dp >> 8) & 0xFF;
+                final int db = dp & 0x000000FF;              
+  
+                final int fr = (int)(sr*nalpha + dr*falpha);
+                final int fg = (int)(sg*nalpha + dg*falpha);
+                final int fb = (int)(sb*nalpha + db*falpha);
+  
+                p.pixels[index] = (fr << 16) | (fg << 8) | fb;
               }
             }         
           }

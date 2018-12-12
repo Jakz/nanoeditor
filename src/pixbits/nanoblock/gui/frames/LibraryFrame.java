@@ -79,8 +79,6 @@ public class LibraryFrame extends JFrame
     @Override
     public void valueChanged(ListSelectionEvent e)
     {
-
-      
       if (!e.getValueIsAdjusting())
       {
         int index = list.getSelectedIndex();

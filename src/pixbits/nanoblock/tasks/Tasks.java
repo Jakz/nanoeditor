@@ -10,6 +10,7 @@ import javax.swing.JDialog;
 
 import pixbits.nanoblock.data.*;
 import pixbits.nanoblock.Main;
+import pixbits.nanoblock.files.BinaryModel;
 import pixbits.nanoblock.files.FileUtils;
 import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.LibraryModel;
@@ -170,10 +171,16 @@ public class Tasks
     public boolean execute(LibraryModel lmodel) {
       Item.setLevelOperationsEnabled(false);
       Item.setUndoRedoEnabled(false, false);
-      
+
       Main.libraryFrame.setVisible(false);
       Library.i().setLibraryModel(lmodel);
       lmodel.load();
+      
+      //TODO: remove
+      BinaryModel bmodel = new BinaryModel(lmodel);
+      byte[] data = bmodel.write();
+      bmodel.load(data);
+      
       Main.sketch.initForModel(lmodel.model);
       Main.mainFrame.setVisible(true);
       Item.setLibraryModelOperationsEnabled(true);
@@ -181,6 +188,20 @@ public class Tasks
       return true;
     }
   };
+  
+  public static class ExportModelAsImageWithDataTask implements Task
+  {
+    public ExportModelAsImageWithDataTask(JDialog parent, Model model, File file, boolean withCaps, boolean allRotations)
+    {
+      
+    }
+
+    @Override
+    public boolean execute()
+    {
+      return false;
+    }
+  }
   
   public static class ExportModelImageTask implements Task
   {
@@ -217,6 +238,15 @@ public class Tasks
         Rectangle bounds = PieceDrawer.computeRealBounds(model, withCaps);
         PImage pimage = Main.sketch.createImage(bounds.width, bounds.height, Sketch.ARGB);
         PieceDrawer.drawModelOnImage(pimage, -bounds.x, -bounds.y, model, withCaps);
+        
+        /*{
+          pimage.loadPixels();
+          for (int i = 0; i < pimage.pixels.length; ++i)
+            if ((pimage.pixels[i] & 0xFF000000) == 0)
+              pimage.pixels[i] = 0x00FFFFFF;
+          pimage.updatePixels();
+        }*/
+        
         image = (RenderedImage)pimage.getImage();
       }
       else

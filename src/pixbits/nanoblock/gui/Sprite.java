@@ -95,10 +95,10 @@ public class Sprite implements Comparable<Sprite>
         if (alpha != 0)
         {              
           final int fi = dw*(y + position.y + offsetY) + position.x + offsetX + x;
-          final int sp = dest[fi];
 
           if (fi >= 0 && fi < dest.length)
           {
+            final int sp = dest[fi];
             int fc = blend(sp, dp, alpha);
             dest[fi] = fc | (alpha << 24);
           }

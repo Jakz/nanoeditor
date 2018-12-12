@@ -13,7 +13,9 @@ public enum PieceColor {
   ORANGE("Orange"),
   PINK("Pink"),
   BROWN("Brown"),
+  
   CLEAR("Clear", false),
+  CLEAR_BLUE("Clear Blue", false)
   ;
   
   public Color fillColor;
