@@ -16,6 +16,7 @@ import pixbits.nanoblock.files.Library;
 import pixbits.nanoblock.files.LibraryModel;
 import pixbits.nanoblock.files.Log;
 import pixbits.nanoblock.files.ModelLoader;
+import pixbits.nanoblock.files.Stegano;
 import pixbits.nanoblock.gui.PieceDrawer;
 import pixbits.nanoblock.gui.Sketch;
 import pixbits.nanoblock.gui.frames.Dialogs;
@@ -238,6 +239,9 @@ public class Tasks
         Rectangle bounds = PieceDrawer.computeRealBounds(model, withCaps);
         PImage pimage = Main.sketch.createImage(bounds.width, bounds.height, Sketch.ARGB);
         PieceDrawer.drawModelOnImage(pimage, -bounds.x, -bounds.y, model, withCaps);
+        
+        Stegano stegano = new Stegano(Stegano.AlphaMode.USE_BEFORE_COLOR, 2);
+        System.out.println("Can store up to "+stegano.countUsableSpace(pimage.pixels)+" in image");
         
         /*{
           pimage.loadPixels();

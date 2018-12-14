@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  BinaryModelTest.class
+  BinaryModelTest.class,
+  SteganoTest.class
 })
 public class Tests
 {
