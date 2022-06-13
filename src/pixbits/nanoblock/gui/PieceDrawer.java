@@ -70,8 +70,8 @@ public class PieceDrawer
   public static Rectangle computeLayerBounds(Model model, int l)
   {
     /* total width and height is offset*2 but we need to offset x by half width */
-    int sx = -model.getWidth()*Brush.tileset.xOffset, sw = model.getWidth()*Brush.tileset.xOffset*2;
-    int sh = model.getHeight()*Brush.tileset.yOffset*2;
+    int sx = -model.width()*Brush.tileset.xOffset, sw = model.width()*Brush.tileset.xOffset*2;
+    int sh = model.height()*Brush.tileset.yOffset*2;
 
     Point base = isometricPositionForCoordinate(0,0,l);
     
@@ -116,7 +116,7 @@ public class PieceDrawer
   {
     Piece leftMost = null, rightMost = null, topMost = null, bottomMost = null;
     Level level = model.levelAt(l);
-    int w = model.getWidth()*2, h = model.getHeight()*2;
+    int w = model.width()*2, h = model.height()*2;
     
     if (level.count() == 0) return null;
     

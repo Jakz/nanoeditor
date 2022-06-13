@@ -38,7 +38,7 @@ public class LevelStackView extends ParentNode<Node>
   {    
     final int height = parent().size.h;
     
-    final int gridHeight = model.getHeight()*cellSize;
+    final int gridHeight = model.height()*cellSize;
     final int count = height / (gridHeight+minMargin);
     final int leftover = height - minMargin - gridHeight*count - minMargin*(count-1);
     final int distance = minMargin + leftover / (count-1);
@@ -57,7 +57,7 @@ public class LevelStackView extends ParentNode<Node>
   }
   
   int totalWidth() { return gridWidth() + scrollbar.width(); }
-  int gridWidth() { return cellSize*model.getWidth(); }
+  int gridWidth() { return cellSize*model.width(); }
   UIScrollBar scrollbar() { return scrollbar; }
   
   public PieceHover hover()

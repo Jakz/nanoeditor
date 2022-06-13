@@ -18,8 +18,8 @@ public class Model implements Iterable<Level>
     this.lmodel = lmodel;
   }
 
-  public int getHeight() { return lmodel.info.height; }
-  public int getWidth() { return lmodel.info.width; }
+  public int height() { return lmodel.info.height; }
+  public int width() { return lmodel.info.width; }
     
   public Level levelAt(int index)
   {
@@ -74,9 +74,9 @@ public class Model implements Iterable<Level>
     
   public boolean canShift(Direction dir)
   {
-    int minX = getWidth()*2;
+    int minX = width()*2;
     int maxX = 0;
-    int minY = getHeight()*2;
+    int minY = height()*2;
     int maxY = 0;
     
     for (Level l : levels)
@@ -93,9 +93,9 @@ public class Model implements Iterable<Level>
     switch (dir)
     {
       case NORTH: return minY >= 2;
-      case SOUTH: return maxY <= getHeight()*2 - 2;
+      case SOUTH: return maxY <= height()*2 - 2;
       
-      case EAST: return maxX <= getWidth()*2 - 2;
+      case EAST: return maxX <= width()*2 - 2;
       case WEST: return minX >= 2;
       
       default: return false;
@@ -123,7 +123,7 @@ public class Model implements Iterable<Level>
         {
           int oldY = p.y;
           p.y = p.x;
-          p.x = getHeight()*2 - oldY- 1; // height pre swap
+          p.x = height()*2 - oldY- 1; // height pre swap
           p.type = PieceType.getRotation(p.type);
           p.x -= p.type.width*2 - 1;
         }
@@ -140,7 +140,7 @@ public class Model implements Iterable<Level>
         {
           int oldX = p.x;
           p.x = p.y;
-          p.y = getWidth()*2 - oldX - 1; // height pre swap
+          p.y = width()*2 - oldX - 1; // height pre swap
           p.type = PieceType.getRotation(p.type);
           p.y -= p.type.height*2 - 1;
         }
@@ -278,7 +278,7 @@ public class Model implements Iterable<Level>
     int minX = bounds.x, minY = bounds.y;
     int maxX = bounds.width, maxY = bounds.height;
     int bwidth = maxX - minX, bheight = maxY - minY;
-    int width = this.getWidth(), height = this.getHeight();
+    int width = this.width(), height = this.height();
     boolean shrinkX = false, enlargeX = false, shrinkY = false, enlargeY = false;
     int deltaX = 0, deltaY = 0;
     
@@ -344,7 +344,7 @@ public class Model implements Iterable<Level>
   
   public ModelState dumpState()
   {
-    ModelState state = new ModelState(getWidth(), getHeight(), lmodel.info.levels);
+    ModelState state = new ModelState(width(), height(), lmodel.info.levels);
     
     int i = 0;
     for (Level l : this)

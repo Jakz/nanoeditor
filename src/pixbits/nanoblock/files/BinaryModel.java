@@ -5,18 +5,22 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import pixbits.nanoblock.data.Level;
+import pixbits.nanoblock.data.Model;
 import pixbits.nanoblock.data.Piece;
+import pixbits.nanoblock.data.PieceType;
 
 public class BinaryModel
 {
-  private final LibraryModel model;
+  private final Model model;
   
   private int bytesPerX, bytesPerY, bytesPerZ;
-  
+  private int bytesPerPieceType;
+    
   private int bytesRequiredFor(int value)
   {
     if (value < 1<<8) return 1;
@@ -25,13 +29,14 @@ public class BinaryModel
     else return 4;
   }
   
-  public BinaryModel(LibraryModel model)
+  public BinaryModel(Model model)
   {
     this.model = model;
     
-    bytesPerX = bytesRequiredFor(model.info.width);
-    bytesPerY = bytesRequiredFor(model.info.height);
-    bytesPerZ = bytesRequiredFor(model.info.levels);
+    bytesPerX = bytesRequiredFor(model.width());
+    bytesPerY = bytesRequiredFor(model.height());
+    bytesPerZ = bytesRequiredFor(model.levelCount());
+    bytesPerPieceType = bytesRequiredFor(PieceType.count());
   }
   
   public byte[] write()
@@ -43,11 +48,11 @@ public class BinaryModel
     blob.write(bytesPerY, 1);
     blob.write(bytesPerZ, 1);
     
-    blob.write(model.info.width, bytesPerX);
-    blob.write(model.info.height, bytesPerY);
-    blob.write(model.info.levels, bytesPerZ);
+    blob.write(model.width(), bytesPerX);
+    blob.write(model.height(), bytesPerY);
+    blob.write(model.levelCount(), bytesPerZ);
     
-    for (Level level : model.model)
+    for (Level level : model)
     {
       blob.writeWord(level.count());
       

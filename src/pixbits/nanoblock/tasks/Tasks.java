@@ -176,12 +176,7 @@ public class Tasks
       Main.libraryFrame.setVisible(false);
       Library.i().setLibraryModel(lmodel);
       lmodel.load();
-      
-      //TODO: remove
-      BinaryModel bmodel = new BinaryModel(lmodel);
-      byte[] data = bmodel.write();
-      bmodel.load(data);
-      
+
       Main.sketch.initForModel(lmodel.model);
       Main.mainFrame.setVisible(true);
       Item.setLibraryModelOperationsEnabled(true);
@@ -209,16 +204,18 @@ public class Tasks
     private final Model model;
     private final boolean withCaps;
     private final boolean allRotations;
+    private final boolean embedData;
     private final File file;
     
     private JDialog parent;
     
-    public ExportModelImageTask(JDialog parent, Model model, File file, boolean withCaps, boolean allRotations)
+    public ExportModelImageTask(JDialog parent, Model model, File file, boolean withCaps, boolean allRotations, boolean embedData)
     {
       this.model = model;
       this.file = file;
       this.withCaps = withCaps;
       this.allRotations = allRotations;
+      this.embedData = embedData;
       
       this.parent = parent;
     }
@@ -240,16 +237,8 @@ public class Tasks
         PImage pimage = Main.sketch.createImage(bounds.width, bounds.height, Sketch.ARGB);
         PieceDrawer.drawModelOnImage(pimage, -bounds.x, -bounds.y, model, withCaps);
         
-        Stegano stegano = new Stegano(Stegano.AlphaMode.USE_BEFORE_COLOR, 2);
-        System.out.println("Can store up to "+stegano.countUsableSpace(pimage.pixels)+" in image");
-        
-        /*{
-          pimage.loadPixels();
-          for (int i = 0; i < pimage.pixels.length; ++i)
-            if ((pimage.pixels[i] & 0xFF000000) == 0)
-              pimage.pixels[i] = 0x00FFFFFF;
-          pimage.updatePixels();
-        }*/
+        if (embedData)
+          embedModelInImage(model, pimage);
         
         image = (RenderedImage)pimage.getImage();
       }
@@ -370,5 +359,19 @@ public class Tasks
     Main.mainFrame.setVisible(false);
     Main.libraryFrame.setLocationRelativeTo(Main.mainFrame);
     Main.libraryFrame.showMe();
+  }
+  
+  public static void embedModelInImage(Model model, PImage destination)
+  {
+    Stegano stegano = new Stegano(Stegano.AlphaMode.USE_BEFORE_COLOR, 2);
+    
+    destination.loadPixels();
+        
+    BinaryModel binary = new BinaryModel(model);
+    byte[] data = binary.write();
+   
+    Log.i("Embedding model data in png, png can contain up to %d bytes, % bytes required.",stegano.countUsableSpace(destination.pixels),data.length);
+
+    stegano.embed(destination.pixels, data);   
   }
 }

@@ -240,7 +240,7 @@ public class IsometricView extends Node
     p.stroke(40,40,40,128);
     p.noFill();
     
-    int w = model.getWidth(), h = model.getHeight();
+    int w = model.width(), h = model.height();
     
     for (int i = 0; i < w+1; ++i)
       drawGridLine(0,i*2,h*2,i*2,l);
@@ -251,7 +251,7 @@ public class IsometricView extends Node
   
   public void drawFilledGrid(int l)
   {
-    int w = model.getWidth(), h = model.getHeight();
+    int w = model.width(), h = model.height();
 
     p.noStroke();
     p.fill(220,220,220,150);    
@@ -480,7 +480,7 @@ public class IsometricView extends Node
         PieceHover newHover = new PieceHover(ix*2, iy*2, Brush.type().outline());
 
         /* TODO: no need to set it on each mouseMoved since it only changes with change of piece */
-        if (ix >= 0 && ix+bw <= model.getWidth() && iy >= 0 && iy+bh <= model.getHeight())
+        if (ix >= 0 && ix+bw <= model.width() && iy >= 0 && iy+bh <= model.height())
         {
           if (hover == null || !newHover.equals(hover))
           {            

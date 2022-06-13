@@ -58,6 +58,12 @@ public class ModelOperations
       reverse.isRealAction = false;
       return reverse;
     }
+    
+    @Override
+    public String toString()
+    {
+      return String.format("Shift(%s)", direction);
+    }
   }
   
   public static class Rotate extends UndoableLightTask
@@ -82,6 +88,12 @@ public class ModelOperations
       Rotate reverse = new Rotate(model, direction.flipped());
       reverse.isRealAction = false;
       return reverse;
+    }
+    
+    @Override
+    public String toString()
+    {
+      return String.format("Rotate(%s)", direction);
     }
   }
   

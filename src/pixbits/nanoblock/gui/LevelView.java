@@ -40,12 +40,12 @@ public class LevelView extends ParentNode<Node>
     
     //setSize((int)cellSize*model.getWidth(), (int)cellSize*model.getHeight() + 20);
     
-    add(new UICheckBox(p, x + 20, y + (int)(cellSize*model.getHeight()) + 4, 16, ""));
+    add(new UICheckBox(p, x + 20, y + (int)(cellSize*model.height()) + 4, 16, ""));
   }
   
   public boolean isInside(int x, int y)
   {
-    return x >= this.x && x < this.x + cellSize*model.getWidth() && y >= this.y && y < this.y + cellSize*model.getHeight();
+    return x >= this.x && x < this.x + cellSize*model.width() && y >= this.y && y < this.y + cellSize*model.height();
   }
   
   public void mouseMoved(int x, int y)
@@ -119,8 +119,8 @@ public class LevelView extends ParentNode<Node>
     vy = Math.max(vy, 0);
     
     /* if base would place piece outside adjust it to max possible value */  
-    final int maxAllowedX = model.getWidth()*2 - pieceWidth*2;
-    final int maxAllowedY = model.getHeight()*2 - pieceHeight*2;
+    final int maxAllowedX = model.width()*2 - pieceWidth*2;
+    final int maxAllowedY = model.height()*2 - pieceHeight*2;
     
     vx = Math.min(vx, maxAllowedX);
     vy = Math.min(vy, maxAllowedY);
@@ -226,8 +226,8 @@ public class LevelView extends ParentNode<Node>
     /* draw point grid */
     if (Settings.values.get(Setting.VIEW_SHOW_HALF_GRID_POINTS))
     {
-      for (int x = 0; x < model.getWidth()*2+1; ++x)
-        for (int y = 0; y < model.getHeight()*2+1; ++y)
+      for (int x = 0; x < model.width()*2+1; ++x)
+        for (int y = 0; y < model.height()*2+1; ++y)
         {
           p.point(this.x+cellSize/2*x, this.y+cellSize/2*y);
         }
@@ -236,41 +236,41 @@ public class LevelView extends ParentNode<Node>
     /* draw vertical line grid */
     if (Settings.values.get(Setting.VIEW_SHOW_GRID_LINES))
     {
-      for (int x = 0; x < model.getWidth()+1; ++x)
+      for (int x = 0; x < model.width()+1; ++x)
       {
-        if (x == model.getWidth()/2)
+        if (x == model.width()/2)
           p.strokeWeight(2.0f);
         else
           p.strokeWeight(1.0f);
         
-        p.line(this.x+cellSize*x, this.y, this.x+cellSize*x, this.y+model.getHeight()*cellSize);
+        p.line(this.x+cellSize*x, this.y, this.x+cellSize*x, this.y+model.height()*cellSize);
         
       }
     }
     else
     {
-      int x = model.getWidth()/2;
-      p.line(this.x+cellSize*x, this.y, this.x+cellSize*x, this.y+model.getHeight()*cellSize);
+      int x = model.width()/2;
+      p.line(this.x+cellSize*x, this.y, this.x+cellSize*x, this.y+model.height()*cellSize);
     }
 
     /* draw horizontal line grid */
     if (Settings.values.get(Setting.VIEW_SHOW_GRID_LINES))
     {
-      for (int y = 0; y < model.getHeight()+1; ++y)
+      for (int y = 0; y < model.height()+1; ++y)
       {
-        if (y == model.getHeight()/2)
+        if (y == model.height()/2)
           p.strokeWeight(2.0f);
         else
           p.strokeWeight(1.0f);
         
         
-        p.line(this.x, this.y+cellSize*y, this.x+model.getWidth()*cellSize, this.y+cellSize*y);
+        p.line(this.x, this.y+cellSize*y, this.x+model.width()*cellSize, this.y+cellSize*y);
     }
     }
     else
     {
-      int y = model.getHeight()/2;
-      p.line(this.x, this.y+cellSize*y, this.x+model.getWidth()*cellSize, this.y+cellSize*y);
+      int y = model.height()/2;
+      p.line(this.x, this.y+cellSize*y, this.x+model.width()*cellSize, this.y+cellSize*y);
     }
     
     
@@ -283,7 +283,7 @@ public class LevelView extends ParentNode<Node>
       p.strokeWeight(3.0f);
       p.stroke(220,0,0);
       p.noFill();
-      p.rect(this.x, this.y+cellSize*0, cellSize*model.getWidth(), model.getHeight()*cellSize);
+      p.rect(this.x, this.y+cellSize*0, cellSize*model.width(), model.height()*cellSize);
     }
     
     /* draw pieces */
@@ -362,7 +362,7 @@ public class LevelView extends ParentNode<Node>
     
     p.fill(0);
     p.textFont(Main.sketch.font);
-    p.text(""+index, x + 5, y + cellSize*model.getHeight()+15);
+    p.text(""+index, x + 5, y + cellSize*model.height()+15);
   }
   
   /*void moveToNext()

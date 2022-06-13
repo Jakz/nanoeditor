@@ -25,6 +25,7 @@ public class ExportImageFrame extends BaseDialog
   
   private final JCheckBox showCaps;
   private final JCheckBox allRotations;
+  private final JCheckBox embedModelInImage;
   
   private Model model;
   private File file;
@@ -51,9 +52,11 @@ public class ExportImageFrame extends BaseDialog
 
     allRotations = new JCheckBox("Export all rotations");
     showCaps = new JCheckBox("Show caps");
+    embedModelInImage = new JCheckBox("Embed model data in image");
     
     top.add(showCaps);
     top.add(allRotations);
+    top.add(embedModelInImage);
     
     middle.add(fileName);
     
@@ -110,7 +113,7 @@ public class ExportImageFrame extends BaseDialog
       
       file = new File(fileName.getText());
       
-      Task task = new Tasks.ExportModelImageTask(this, model, file, showCaps.isSelected(), allRotations.isSelected());
+      Task task = new Tasks.ExportModelImageTask(this, model, file, showCaps.isSelected(), allRotations.isSelected(), embedModelInImage.isSelected());
       if (task.execute())
         this.setVisible(false);
     }

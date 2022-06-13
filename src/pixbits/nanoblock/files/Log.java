@@ -5,4 +5,6 @@ public class Log
   public static void e(String str) { System.out.println(str); }
   public static void i(String str) { System.out.println(str); }
   public static void e(Exception e) { System.out.println("Exception!"); e.printStackTrace(); }
+  
+  public static void i(String fmt, Object... args) { i(String.format(fmt, args)); }
 }

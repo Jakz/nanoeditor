@@ -51,10 +51,10 @@ public class ResizeModelFrame extends BaseDialog implements ModelOperationFrame
   public void show(Model model)
   {
     bounds = model.computeBound();
-    fieldSize.setText(model.getWidth()+"x"+model.getHeight());
+    fieldSize.setText(model.width()+"x"+model.height());
     fieldBounds.setText((bounds.width-bounds.x)+"x"+(bounds.height-bounds.y));
-    width.setText(""+model.getWidth());
-    height.setText(""+model.getHeight());
+    width.setText(""+model.width());
+    height.setText(""+model.height());
     this.model = model;
     
     setLocationRelativeTo(Main.mainFrame);
